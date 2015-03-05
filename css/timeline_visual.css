@@ -1,0 +1,31 @@
+body {
+	margin: 10px 10px 10px 10px;
+}
+
+pre#json_viewer {
+	width : 100%;
+	float : left;
+	margin : 10px 0 10px 0;
+}
+
+.group_line {
+	margin-top:10px;
+}
+
+.timeline-column {
+	width : 150px;
+	height : 2000px;
+	float : left;
+	/*border : 1px solid #000;*/
+	border-radius: 10px;
+	margin: 0 3px 0 3px;
+	font-size: 10px;
+}
+.timeline-column p {
+    margin: 5px;
+}
+.event {
+	width : 96%;
+	margin: 0 3px;
+	border-radius: 5px;
+}
