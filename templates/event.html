@@ -1,4 +1,4 @@
-	<div ng-repeat="event in timeLineObj.event" ng-show="event.id" class="event" id="event_{{timeLineObj.id}}_{{event.id}}" style="background-color:{{event.color}};" >
+	<div ng-repeat="event in timeLineObj.event" ng-show="event.id" class="event" id="event_{{timeLineObj.id}}_{{event.id}}" style="top:{{140+event.vPlacement}}px; background-color:{{event.color}};" >
 		<button ng-click="showConfirmRemoveEvent(timeLineObj.id, event.id)" class="btn">-</button>
 		Event : {{event.id}}<br />
 		Text : {{event.text}}<br />

@@ -15,8 +15,6 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
           event : {}
         };
         $scope.timeLineObj = timeLineObj;
-        //angular.element('#timeline_' + (number) ).css("background-color", randColor );
-
         nbEvent[number] = 1;
         number+=1;
     };
@@ -40,7 +38,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
        delete timeLineObj[$numberCol];
     };
 
-    $scope.showDlgAddEvent = function($numberCol){
+    $scope.showDlgAddEvent = function($numberCol, $date){
       ModalService.showModal({
         templateUrl: "templates/modal_dlg_add_event.html",
         controller: "ComplexController",
@@ -50,21 +48,30 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
-          $scope.addEvent($numberCol, result.text, result.date, result.type);
+          if(result.type == null){
+            bootbox.alert("Please enter type value to create event !");
+          } else {
+            $scope.addEvent($numberCol, result.text, $date, result.type);
+          }
         });
       });
     };
 
     $scope.addEvent = function($numberCol, $text, $date, $type){
-        var $date = new Date();
+        var $dateEvent = new Date();
         var $randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+        var $vPlInit = $date/1e3|0; //date of timeline
+        var $vPl = $dateEvent/1e3|0;
+        
+        $vPlacement = $vPl - $vPlInit;
 
         timeLineObj[$numberCol].event[nbEvent[$numberCol]] = {
             id : nbEvent[$numberCol],
             text : $text,
-            date : $date,
+            date : $dateEvent,
             type : $type,
-            color : $randColor
+            color : $randColor,
+            vPlacement : $vPlacement
         }
         nbEvent[$numberCol]+=1;
     };

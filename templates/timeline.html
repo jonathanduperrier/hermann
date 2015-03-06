@@ -2,8 +2,12 @@
 	<p>
 		Timeline : {{timeLineObj.id}}<br />
 		Date : {{timeLineObj.date}}<br />
-		<button ng-click="showDlgAddEvent(timeLineObj.id)" class="btn">+</button>
+		<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn">+</button>
 		<button ng-click="showConfirmRemoveTimeline(timeLineObj.id)" class="btn">-</button>
 	</p>
 	<div event-dir></div>
 </div>
+
+  <div class="form-group" id="error_val_type" style="display:none;">
+  	<p>Select Type value before validate</p> 
+  </div>
