@@ -15,8 +15,10 @@
     </head>
     <body ng-app="myapp">
         <div ng-controller="mainController">
-            <button ng-click="addTimeline()" class="btn">+</button>
-	        <button ng-click="syncJSON()" class="btn">Synchronize JSON</button>
+            <button ng-click="showDlgAddTimeLine()" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+            </button>
+	        <button ng-click="syncJSON()" class="btn btn-default">Synchronize JSON</button>
             <div id="placeholder">
                 <div class="group_line" time-line-dir></div>
             </div>

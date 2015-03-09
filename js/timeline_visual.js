@@ -3,7 +3,26 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     var nbEvent = [];
     var timeLineObj = [];
 
-    $scope.addTimeline = function(){
+    $scope.showDlgAddTimeLine = function(){
+      ModalService.showModal({
+        templateUrl: "templates/modal_dlg_add_timeline.html",
+        controller: "AddTimeLineController",
+        inputs: {
+          title: "Event information",
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          if(result.name == null){
+            bootbox.alert("Please enter the name this timeline !");
+          } else {
+            $scope.addTimeline(result.name);
+          }
+        });
+      });
+    }
+
+    $scope.addTimeline = function($name){
         var datetimeCol = new Date();
         var randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
 
@@ -12,6 +31,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
           id : number,
           date : datetimeCol,
           color : randColor,
+          name : $name,
           event : {}
         };
         $scope.timeLineObj = timeLineObj;
@@ -41,7 +61,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     $scope.showDlgAddEvent = function($numberCol, $date){
       ModalService.showModal({
         templateUrl: "templates/modal_dlg_add_event.html",
-        controller: "ComplexController",
+        controller: "AddEventController",
         inputs: {
           title: "Event information",
         }
@@ -49,7 +69,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         modal.element.modal();
         modal.close.then(function(result) {
           if(result.type == null){
-            bootbox.alert("Please enter type value to create event !");
+            bootbox.alert("Please choose type to create event !");
           } else {
             $scope.addEvent($numberCol, result.text, $date, result.type);
           }
@@ -95,6 +115,12 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     };
     $scope.syncJSON = function() {
         $scope.jsonContent = angular.toJson(timeLineObj);
+    };
+    $scope.mouseOverEvent = function($timeline_id, $event_id) {
+        angular.element("#event_" + $timeline_id + "_" + $event_id).css("z-index", "10");
+    };
+    $scope.mouseLeaveEvent = function($timeline_id, $event_id) {
+        angular.element("#event_" + $timeline_id + "_" + $event_id).css("z-index", "0");
     }
 });
 
@@ -116,7 +142,36 @@ app.directive('eventDir', function(){
   };
 });
 
-app.controller('ComplexController', [
+app.controller('AddTimeLineController', [
+  '$scope', '$element', 'title', 'close', 
+  function($scope, $element, title, close) {
+
+  $scope.name = null;
+  $scope.title = title;
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    close({
+      name: $scope.name
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+
+    //  Manually hide the modal.
+    $element.modal('hide');
+    
+    //  Now call close, returning control to the caller.
+    close({
+      name: $scope.name
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+}]);
+
+app.controller('AddEventController', [
   '$scope', '$element', 'title', 'close', 
   function($scope, $element, title, close) {
 
@@ -150,3 +205,4 @@ app.controller('ComplexController', [
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
+

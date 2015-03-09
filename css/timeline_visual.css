@@ -1,5 +1,12 @@
 body {
 	margin: 10px 10px 10px 10px;
+	overflow : scroll!important;
+}
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('../fonts/glyphicons-halflings-regular.eot');
+  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
 
 pre#json_viewer {
@@ -20,15 +27,17 @@ pre#json_viewer {
 	border-radius: 10px;
 	margin: 0 3px 0 3px;
 	font-size: 10px;
+	/*overflow : scroll;*/
 }
+
 .timeline-column p {
     margin: 5px;
 }
+
 .event {
     margin-left: 5px;
     margin-right: 5px;
-
 	width : 140px;
 	border-radius: 5px;
-	position: fixed; 
+	position: absolute; 
 }

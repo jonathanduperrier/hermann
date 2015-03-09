@@ -1,7 +1,9 @@
-	<div ng-repeat="event in timeLineObj.event" ng-show="event.id" class="event" id="event_{{timeLineObj.id}}_{{event.id}}" style="top:{{140+event.vPlacement}}px; background-color:{{event.color}};" >
-		<button ng-click="showConfirmRemoveEvent(timeLineObj.id, event.id)" class="btn">-</button>
+	<div ng-repeat="event in timeLineObj.event" ng-show="event.id"  ng-mouseover="mouseOverEvent(timeLineObj.id, event.id)" ng-mouseleave="mouseLeaveEvent(timeLineObj.id, event.id)" class="event" id="event_{{timeLineObj.id}}_{{event.id}}" style="top:{{140+event.vPlacement}}px; background-color:{{event.color}};" >
+		<button ng-click="showConfirmRemoveEvent(timeLineObj.id, event.id)" class="btn btn-default">
+			<span class="glyphicon glyphicon-minus-sign"></span>
+		</button>
 		Event : {{event.id}}<br />
 		Text : {{event.text}}<br />
 		Date : {{event.date}}<br />
 		Type : {{event.type}}<br />
-	</dir>
+	</div>
