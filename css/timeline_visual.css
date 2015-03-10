@@ -21,7 +21,7 @@ pre#json_viewer {
 
 .timeline-column {
 	width : 150px;
-	height : 500px;
+	height: 100%;
 	float : left;
 	/*border : 1px solid #000;*/
 	border-radius: 10px;
@@ -39,5 +39,6 @@ pre#json_viewer {
     margin-right: 5px;
 	width : 140px;
 	border-radius: 5px;
-	position: absolute; 
+	position: absolute;
+	transform-origin: 0 0;
 }

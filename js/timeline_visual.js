@@ -47,6 +47,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
             modal.element.modal();
             modal.close.then(function(result) {
                 if (result=="Yes") {
+                    //angular.element('.event').css("display", "none");
                     $scope.removeTimeline($numberCol);
                 }
             });
@@ -56,6 +57,8 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     $scope.removeTimeline = function($numberCol){
        angular.element('#timeline_' + $numberCol).remove();
        delete timeLineObj[$numberCol];
+       //angular.element('.event').css("display", "block") ;
+       angular.element('.event').css("transform : ", "translateX(90px) translateY(0)") ;
     };
 
     $scope.showDlgAddEvent = function($numberCol, $date){
@@ -93,6 +96,9 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
             color : $randColor,
             vPlacement : $vPlacement
         }
+        $vLimitTimeline = $vPlacement+200;
+
+        angular.element("#timeline_" + $numberCol).css("height", $vLimitTimeline.toString()+"px") ;
         nbEvent[$numberCol]+=1;
     };
 
