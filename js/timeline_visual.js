@@ -8,7 +8,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         templateUrl: "templates/modal_dlg_add_timeline.html",
         controller: "AddTimeLineController",
         inputs: {
-          title: "Event information",
+          title: "Timeline information",
         }
       }).then(function(modal) {
         modal.element.modal();
@@ -57,8 +57,6 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     $scope.removeTimeline = function($numberCol){
        angular.element('#timeline_' + $numberCol).remove();
        delete timeLineObj[$numberCol];
-       //angular.element('.event').css("display", "block") ;
-       angular.element('.event').css("transform : ", "translateX(90px) translateY(0)") ;
     };
 
     $scope.showDlgAddEvent = function($numberCol, $date){
@@ -85,13 +83,19 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         var $randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0;
-        
-        $vPlacement = $vPl - $vPlInit;
+        var $dateFormat = $dateEvent.format('mm/dd/yyyy - h:MM');
+
+        if($scope.px_sec>=1){
+            $vPlacement = ($vPl - $vPlInit)/$scope.px_sec;
+        } else {
+            $vPlacement = $vPl - $vPlInit;
+        }
 
         timeLineObj[$numberCol].event[nbEvent[$numberCol]] = {
             id : nbEvent[$numberCol],
             text : $text,
             date : $dateEvent,
+            dateFormat : $dateFormat,
             type : $type,
             color : $randColor,
             vPlacement : $vPlacement
@@ -101,7 +105,6 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         angular.element("#timeline_" + $numberCol).css("height", $vLimitTimeline.toString()+"px") ;
         nbEvent[$numberCol]+=1;
     };
-
     $scope.showConfirmRemoveEvent = function($numberCol, $nbEvent) {
         ModalService.showModal({
             templateUrl: 'templates/modal_confirm_remove_event.html',
@@ -122,12 +125,13 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     $scope.syncJSON = function() {
         $scope.jsonContent = angular.toJson(timeLineObj);
     };
-    $scope.mouseOverEvent = function($timeline_id, $event_id) {
+    $scope.eventZIndex = function($timeline_id, $event_id) {
+        angular.element(".event").css("z-index", "0");
         angular.element("#event_" + $timeline_id + "_" + $event_id).css("z-index", "10");
     };
-    $scope.mouseLeaveEvent = function($timeline_id, $event_id) {
-        angular.element("#event_" + $timeline_id + "_" + $event_id).css("z-index", "0");
-    }
+    $scope.changeScaleEvents = function(){
+        $scope.px_sec = $scope.displayScaleEvents;
+    };
 });
 
 app.controller('ModalController', function($scope, close) {

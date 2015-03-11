@@ -9,6 +9,7 @@
         <script type="text/javascript" src="js/ui-bootstrap-tpls-0.12.1.min.js"></script>
         <script type="text/javascript" src="js/angular-modal-service.js"></script>
         <script type="text/javascript" src="js/bootbox.min.js"></script>
+        <script type="text/javascript" src="js/date.format.js"></script>
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/bootstrap-theme.css">
         <link rel="stylesheet" href="css/timeline_visual.css">
@@ -19,6 +20,18 @@
                 <span class="glyphicon glyphicon-plus-sign"></span>
             </button>
 	        <button ng-click="syncJSON()" class="btn btn-default">Synchronize JSON</button>
+            <div class="form-group">
+                <label for="displayScaleEvents" class="col-xs-4 col-sm-3 control-label">
+                    Display Scale : 1 px /
+                </label>
+                <div class="col-xs-5 col-sm-3">
+                    <input type="number" min="1" value="1" class="form-control" id="displayScaleEvents" name="displayScaleEvents" placeholder="scale ..." ng-model="displayScaleEvents" ng-change="changeScaleEvents()">
+                </div>
+                <div class="col xs-2 col-sm-1" style="font-weight: bold;">
+                    {{px_sec}} Sec
+                </div>
+            </div>
+            <div>&nbsp;</div>
             <div id="placeholder">
                 <div class="group_line" time-line-dir></div>
             </div>

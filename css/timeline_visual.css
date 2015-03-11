@@ -23,17 +23,21 @@ pre#json_viewer {
 	width : 150px;
 	height: 100%;
 	float : left;
-	/*border : 1px solid #000;*/
 	border-radius: 10px;
 	margin: 0 3px 0 3px;
 	font-size: 10px;
-	/*overflow : scroll;*/
 }
 
 .timeline-column p {
     margin: 5px;
 }
-
+.timeline-column .btnAddEvent {
+	margin: 5px;
+}
+.timeline_name {
+	font-weight: bold;
+	font-size:11px;
+}
 .event {
     margin-left: 5px;
     margin-right: 5px;
@@ -41,4 +45,17 @@ pre#json_viewer {
 	border-radius: 5px;
 	position: absolute;
 	transform-origin: 0 0;
+}
+.btnDelEvent {
+	float:left;
+}
+.dateTypeEvent {
+	float:left;
+	margin-left:5px;
+	min-height: 30px;
+	font-weight: bold;
+}
+.textEvent {
+	float:left;
+	min-width: 139px;
 }
