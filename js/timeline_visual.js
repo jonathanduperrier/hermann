@@ -25,18 +25,18 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         var datetimeCol = new Date();
         var randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
 
-        $scope.addTimeline($name, $scope.timeLineObj.length+1, datetimeCol, randColor);
+        $scope.addTimeline($name, $scope.timeLineObj.length+1, datetimeCol, randColor, 150);
     };
 
-    $scope.addTimeline = function($name, $id, $date, $color){
+    $scope.addTimeline = function($name, $id, $date, $color, $height){
         //création objet
-        // timeLineObj[$id] = {
         $scope.timeLineObj.push( {
           id : $id,
           date : $date,
           color : $color,
           name : $name,
-          event : {}
+          event : {},
+          height : $height
         } );
     };
 
@@ -91,8 +91,6 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
             $vPlacement = $vPl - $vPlInit;
         }
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement);
-        $vLimitTimeline = $vPlacement+200;
-        angular.element("#timeline_" + $numberCol).css("height", $vLimitTimeline.toString()+"px") ;
     };
 
     $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement){
@@ -101,6 +99,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         } else {
           $idEvent = (angular.element($scope.timeLineObj[$numberCol-1].event).size())+1;
         }
+        $scope.timeLineObj[$numberCol-1].height = $vPlacement+150;
         $scope.timeLineObj[$numberCol-1].event[$idEvent] = {
             id : $idEvent,
             text : $text,
@@ -138,12 +137,9 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         $jsonTimelines = angular.fromJson($stringJSONTest);
         angular.forEach($jsonTimelines, function(value, key) {
             if(value != null){
-                $scope.addTimeline(value.name, value.id, value.date, value.color);
+                $scope.addTimeline(value.name, value.id, value.date, value.color, 150);
                 angular.forEach(value.event, function(evtVal, evtKey) {
                     $scope.addEvent(value.id, evtVal.text, evtVal.date, evtVal.dateFormat, evtVal.type, evtVal.color, evtVal.vPlacement);
-
-                    //$vLimitTimeline = evtVal.vPlacement+200;
-                    //angular.element("#timeline_" + value.id).css("height", $vLimitTimeline.toString()+"px") ;
                 });
             }
         });
