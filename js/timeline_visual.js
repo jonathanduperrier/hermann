@@ -1,6 +1,10 @@
-var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).controller('mainController', function ($scope, $compile, ModalService) {
+var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).controller('mainController', function ($scope, $compile, ModalService, $http) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
+    $scope.eventObj = [];
+    $scope.djangoAuth = "username=jonathan&username=jonathan&api_key=e8op8ezrahuireuihreazhuiiu"
+    $scope.timeLineUrl = "http://helm1/notebooks/timeline/?format=json";//+$scope.djangoAuth;
+    $scope.eventUrl = "http://helm1/notebooks/event/?format=json";//+$scope.djangoAuth;
 
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
@@ -24,20 +28,32 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     $scope.createTimeLine = function ($name) {
         var datetimeCol = new Date();
         var randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
-
-        $scope.addTimeline($name, $scope.timeLineObj.length+1, datetimeCol, randColor, 150);
+        //$scope.addTimeline($name, $scope.timeLineObj.length+1, datetimeCol, randColor, 150);
+        if($scope.timeLineObj.length < 1) {
+          $id = 1;
+        }
+        else {
+          angular.forEach($scope.timeLineObj, function(value){
+            if($scope.timeLineObj.id > $id){
+              $id = $scope.timeLineObj.id;
+            }
+          });
+          $id++;
+        }
+        $scope.addTimeline($name, $id, datetimeCol, randColor, 150);
     };
 
     $scope.addTimeline = function($name, $id, $date, $color, $height){
         //création objet
-        $scope.timeLineObj.push( {
-          id : $id,
-          date : $date,
-          color : $color,
-          name : $name,
-          event : {},
-          height : $height
-        } );
+        $scope.timeLineObj.push(
+          {
+            id : $id,
+            date : $date,
+            color : $color,
+            name : $name,
+            height : $height
+          }
+        );
     };
 
     $scope.showConfirmRemoveTimeline = function($numberCol) {
@@ -56,7 +72,11 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
 
     $scope.removeTimeline = function($numberCol){
        angular.element('#timeline_' + $numberCol).remove();
-       delete $scope.timeLineObj[$numberCol-1];
+        angular.forEach($scope.timeLineObj, function($value, $key) {
+          if($value.id == $numberCol){
+            $scope.timeLineObj.splice($key, 1);
+          }
+        });
     };
 
     $scope.showDlgAddEvent = function($numberCol, $date){
@@ -90,28 +110,44 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
         } else {
             $vPlacement = $vPl - $vPlInit;
         }
+        if($vPlacement < 0) {
+          $vPlacement = 0;
+        }
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement);
     };
 
     $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement){
-        if(angular.element.isEmptyObject($scope.timeLineObj[$numberCol-1].event)) {
+        if(angular.element.isEmptyObject($scope.eventObj)) {
           $idEvent = 1;
         } else {
-          $idEvent = (angular.element($scope.timeLineObj[$numberCol-1].event).size())+1;
+          angular.forEach($scope.eventObj, function(value){
+            if($scope.eventObj.id > $idEvent){
+              $idEvent = $scope.eventObj.id;
+            }
+          });
+          $idEvent++;
         }
-        $scope.timeLineObj[$numberCol-1].height = $vPlacement+150;
-        $scope.timeLineObj[$numberCol-1].event[$idEvent] = {
-            id : $idEvent,
-            text : $text,
-            date : $dateEvent,
-            dateFormat : $dateFormat,
-            type : $type,
-            color : $randColor,
-            vPlacement : $vPlacement
-        }
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          if($scope.timeLineObj.id = $numberCol){
+            $scope.timeLineObj[$key].height = $vPlacement+150;
+          }
+        });
+
+        $scope.eventObj.push (
+            {
+                id : $idEvent,
+                timeline : "/notebooks/timeline/" + $numberCol,
+                text : $text,
+                date : $dateEvent,
+                dateFormat : $dateFormat,
+                type : $type,
+                color : $randColor,
+                vPlacement : $vPlacement
+            }
+        );
     };
 
-    $scope.showConfirmRemoveEvent = function($numberCol, $nbEvent) {
+    $scope.showConfirmRemoveEvent = function($nbEvent) {
         ModalService.showModal({
             templateUrl: 'templates/modal_confirm_remove_event.html',
             controller: "ModalController"
@@ -119,35 +155,74 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
             modal.element.modal();
             modal.close.then(function(result) {
                 if (result=="Yes") {
-                    $scope.removeEvent($numberCol, $nbEvent);
+                    $scope.removeEvent($nbEvent);
                 }
             });
         });
     };
-    $scope.removeEvent = function($numberCol, $nbEvent){
-        angular.element('#event_' + $numberCol + '_' + $nbEvent).remove();
-        delete $scope.timeLineObj[$numberCol-1].event[$nbEvent];
-    };
-    $scope.toJSON = function() {
-        $scope.jsonContent = angular.toJson($scope.timeLineObj);
-    };
-    $scope.fromJSON = function() {
-        //$stringJSONTest = '[null,{"id":1,"date":"2015-03-11T16:30:18.263Z","color":"#6b96fa","name":"euz ru ioezar reiaoz uirezoa","event":{"1":{"id":1,"text":"rez rezaio reziour ezaio urezio","date":"2015-03-11T16:30:36.126Z","dateFormat":"03/11/2015 - 05:30","type":"Type 3","color":"#7246b0","vPlacement":18},"2":{"id":2,"text":"etzat","date":"2015-03-11T16:30:56.838Z","dateFormat":"03/11/2015 - 05:30","type":"Type 3","color":"#81bd30","vPlacement":38}}},{"id":2,"date":"2015-03-11T16:30:23.415Z","color":"#3f0c29","name":"ioerzu eruioz uirez ureizou irzeoret","event":{"1":{"id":1,"text":"reza zearuio reziou erzerza","date":"2015-03-11T16:30:50.895Z","dateFormat":"03/11/2015 - 05:30","type":"Type 3","color":"#6f44f5","vPlacement":27},"2":{"id":2,"text":"fsdf sfd sdgfdgd","date":"2015-03-11T16:31:18.080Z","dateFormat":"03/11/2015 - 05:31","type":"Type 3","color":"#8bd2f2","vPlacement":55}}},{"id":3,"date":"2015-03-11T16:30:28.941Z","color":"#7cc1a6","name":"ezr irezuiop rezuoi rueoziau rezoia","event":{"1":{"id":1,"text":"rez erzçua reuioaz rueizoaireozareza","date":"2015-03-11T16:30:43.959Z","dateFormat":"03/11/2015 - 05:30","type":"Type 3","color":"#6066a8","vPlacement":15},"2":{"id":2,"text":"gdfsgs gf !dçp gfduiogdfs gf","date":"2015-03-11T16:31:26.013Z","dateFormat":"03/11/2015 - 05:31","type":"Type 4","color":"#a3ed7d","vPlacement":58}}}]';
-        $stringJSONTest = '[{"id":1,"date":"2015-03-12T13:55:00.747Z","color":"#e3a14a","name":"rezaerzvdv cvdfsgerzbv cvxvcxb01","event":{"1":{"id":1,"text":"hgf","date":"2015-03-12T13:55:22.532Z","dateFormat":"03/12/2015 - 02:55","type":"Type 4","color":"#106a7c","vPlacement":22},"2":{"id":2,"text":"fds","date":"2015-03-12T13:55:39.776Z","dateFormat":"03/12/2015 - 02:55","type":"Type 4","color":"#4f2039","vPlacement":39}}},{"id":2,"date":"2015-03-12T13:55:07.145Z","color":"#e8e6d8","name":"ifsduiyo dsqfi odfs upiofdqs02","event":{"1":{"id":1,"text":"oiuytr tyuiop","date":"2015-03-12T13:55:30.313Z","dateFormat":"03/12/2015 - 02:55","type":"Type 4","color":"#382ded","vPlacement":23},"2":{"id":2,"text":"hfg vbncnb  hg","date":"2015-03-12T13:56:01.171Z","dateFormat":"03/12/2015 - 02:56","type":"Type 1","color":"#af9436","vPlacement":54}}},{"id":3,"date":"2015-03-12T13:55:12.108Z","color":"#3573f0","name":"fds sfd uiofs duio 03","event":{"2":{"id":2,"text":"jghnb","date":"2015-03-12T13:55:49.113Z","dateFormat":"03/12/2015 - 02:55","type":"Type 3","color":"#70acc3","vPlacement":37}}}]';
-        $jsonTimelines = angular.fromJson($stringJSONTest);
-        angular.forEach($jsonTimelines, function(value, key) {
-            if(value != null){
-                $scope.addTimeline(value.name, value.id, value.date, value.color, 150);
-                angular.forEach(value.event, function(evtVal, evtKey) {
-                    $scope.addEvent(value.id, evtVal.text, evtVal.date, evtVal.dateFormat, evtVal.type, evtVal.color, evtVal.vPlacement);
-                });
-            }
+
+    $scope.removeEvent = function($nbEvent){
+        angular.element('#event_' + $nbEvent).remove();        
+        angular.forEach($scope.eventObj, function($value, $key) {
+          if($value.id == $nbEvent){
+            $scope.eventObj.splice($key, 1);
+          }
         });
-        $stringJSONTest = '';
     };
-    $scope.eventZIndex = function($timeline_id, $event_id) {
+
+    $scope.toJSON = function() {
+        $scope.toJsonTimeLine();
+        $scope.toJsonEvent();
+    };
+
+    $scope.toJsonTimeLine = function() {
+        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
+        $http.put($scope.timeLineUrl, $scope.jsonContentTimeLine)
+        .success(function(){
+          return true;
+        });
+    };
+    $scope.toJsonEvent = function() {
+        $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
+        $http.put($scope.eventUrl, $scope.jsonContentEvent)
+        .success(function(){
+          return true;
+        });
+    };
+
+    $scope.fromJSON = function() {
+      $scope.fromJsonTimeLine();
+      $scope.fromJsonEvent();
+    };
+
+    $scope.fromJsonTimeLine = function () {
+        $http.get($scope.timeLineUrl).then(function(response){
+            $jsonTimelines = angular.fromJson(response.data.objects);
+            angular.forEach($jsonTimelines, function(value, key) {
+                if(value != null){
+                    $scope.addTimeline(value.name, value.id, value.date, value.color, value.height);
+                }
+            });
+        });
+    };
+    
+    $scope.fromJsonEvent = function () {
+        $http.get($scope.eventUrl).then(function(response){
+          $jsonEvents = angular.fromJson(response.data.objects);
+          angular.forEach($jsonEvents, function(value, key) {
+            if(value != null){
+              $nCol = value.timeline.split('/');
+              $numberCol = $nCol[3];
+              //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
+              $scope.addEvent($numberCol, value.text, value.date, "", value.type, value.color, value.vPlacement);
+            }
+          });
+        });
+    };
+
+    $scope.eventZIndex = function($event_id) {
         angular.element(".event").css("z-index", "0");
-        angular.element("#event_" + $timeline_id + "_" + $event_id).css("z-index", "10");
+        angular.element(".event_" + $event_id).css("z-index", "10");
     };
     $scope.changeScaleEvents = function(){
         $scope.px_sec = $scope.displayScaleEvents;

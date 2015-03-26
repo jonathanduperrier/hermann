@@ -1,15 +1,17 @@
-	<div ng-repeat="event in timeLineObj.event" ng-show="event.id"  ng-click="eventZIndex(timeLineObj.id, event.id)" class="event" id="event_{{timeLineObj.id}}_{{event.id}}" style="top:{{140+event.vPlacement}}px; background-color:{{event.color}};" >
-		<div class="btn-group btn-group-sm btnDelEvent">
-			<button ng-click="showConfirmRemoveEvent(timeLineObj.id, event.id)" class="btn btn-default">
-				<span class="glyphicon glyphicon-minus-sign"></span>
-			</button>
-		</div>
-		<div class="dateTypeEvent">
-			{{event.dateFormat}}<br />
-			{{event.type}}
-		</div>
+	<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{140+eventObj.vPlacement}}px; background-color:{{eventObj.color}};" >
+		<div ng-if="eventObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
+			<div class="btn-group btn-group-sm btnDelEvent">
+				<button ng-click="showConfirmRemoveEvent(eventObj.id)" class="btn btn-default">
+					<span class="glyphicon glyphicon-minus-sign"></span>
+				</button>
+			</div>
+			<div class="dateTypeEvent">
+				{{eventObj.dateFormat}}<br />
+				{{eventObj.type}}
+			</div>
 
-		<div class="textEvent">
-			{{event.text}}
+			<div class="textEvent">
+				{{eventObj.text}}
+			</div>
 		</div>
 	</div>
