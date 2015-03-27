@@ -1,10 +1,8 @@
-var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).controller('mainController', function ($scope, $compile, ModalService, $http) {
+var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('mainController', function ($scope, $compile, ModalService, $http, timeLine, events) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
     $scope.djangoAuth = "username=jonathan&username=jonathan&api_key=e8op8ezrahuireuihreazhuiiu"
-    $scope.timeLineUrl = "http://helm1/notebooks/timeline/?format=json";//+$scope.djangoAuth;
-    $scope.eventUrl = "http://helm1/notebooks/event/?format=json";//+$scope.djangoAuth;
 
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
@@ -177,15 +175,13 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
 
     $scope.toJsonTimeLine = function() {
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
-        $http.put($scope.timeLineUrl, $scope.jsonContentTimeLine)
-        .success(function(){
+        timeLine.put($scope.jsonContentTimeLine, function(){
           return true;
-        });
+        });     
     };
     $scope.toJsonEvent = function() {
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
-        $http.put($scope.eventUrl, $scope.jsonContentEvent)
-        .success(function(){
+        events.put($scope.jsonContentEvent, function(){
           return true;
         });
     };
@@ -196,9 +192,9 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     };
 
     $scope.fromJsonTimeLine = function () {
-        $http.get($scope.timeLineUrl).then(function(response){
-            $jsonTimelines = angular.fromJson(response.data.objects);
-            angular.forEach($jsonTimelines, function(value, key) {
+        $scope.response = timeLine.get({}, function(data){
+          $jsonTimelines = angular.fromJson(data.objects);
+          angular.forEach($jsonTimelines, function(value, key) {
                 if(value != null){
                     $scope.addTimeline(value.name, value.id, value.date, value.color, value.height);
                 }
@@ -207,17 +203,19 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService']).contr
     };
     
     $scope.fromJsonEvent = function () {
-        $http.get($scope.eventUrl).then(function(response){
-          $jsonEvents = angular.fromJson(response.data.objects);
-          angular.forEach($jsonEvents, function(value, key) {
-            if(value != null){
+        $scope.response = events.get({}, function(data){
+        $jsonEvents = angular.fromJson(data.objects);
+        angular.forEach($jsonEvents, function(value, key) {
+          if(value != null){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
+              $dateEvt = new Date(value.date);
+              $dateFormat = $dateEvt.format('mm/dd/yyyy - hh:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
-              $scope.addEvent($numberCol, value.text, value.date, "", value.type, value.color, value.vPlacement);
-            }
-          });
+              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, value.color, value.vPlacement);
+          }
         });
+      });
     };
 
     $scope.eventZIndex = function($event_id) {
