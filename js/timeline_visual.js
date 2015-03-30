@@ -102,7 +102,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
         var $randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0;
-        var $dateFormat = $dateEvent.format('mm/dd/yyyy - hh:MM');
+        var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
         if($scope.px_sec>=1){
             $vPlacement = ($vPl - $vPlInit)/$scope.px_sec;
         } else {
@@ -169,24 +169,28 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
     };
 
     $scope.toJSON = function() {
-        $scope.toJsonTimeLine();
-        $scope.toJsonEvent();
+        /*$scope.toJsonTimeLine();
+        $scope.toJsonEvent();*/
+        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
+        $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
+
+        timeLine.put($scope.jsonContentTimeLine, function(){
+          events.put($scope.jsonContentEvent, function(){});
+        });
     };
 
-    $scope.toJsonTimeLine = function() {
+    /*$scope.toJsonTimeLine = function() {
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         timeLine.put($scope.jsonContentTimeLine, function(){
-          console.log($scope.jsonContentTimeLine);
           return true;
         });     
     };
     $scope.toJsonEvent = function() {
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
         events.put($scope.jsonContentEvent, function(){
-          console.log($scope.jsonContentEvent);
           return true;
         });
-    };
+    };*/
 
     $scope.fromJSON = function() {
       $scope.fromJsonTimeLine();
@@ -212,7 +216,7 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
-              $dateFormat = $dateEvt.format('mm/dd/yyyy - hh:MM');
+              $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
               $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, value.color, value.vPlacement);
           }
