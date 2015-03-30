@@ -176,12 +176,14 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
     $scope.toJsonTimeLine = function() {
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         timeLine.put($scope.jsonContentTimeLine, function(){
+          console.log($scope.jsonContentTimeLine);
           return true;
         });     
     };
     $scope.toJsonEvent = function() {
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
         events.put($scope.jsonContentEvent, function(){
+          console.log($scope.jsonContentEvent);
           return true;
         });
     };
