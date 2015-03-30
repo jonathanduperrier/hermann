@@ -169,8 +169,6 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
     };
 
     $scope.toJSON = function() {
-        /*$scope.toJsonTimeLine();
-        $scope.toJsonEvent();*/
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
 
@@ -178,19 +176,6 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
           events.put($scope.jsonContentEvent, function(){});
         });
     };
-
-    /*$scope.toJsonTimeLine = function() {
-        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
-        timeLine.put($scope.jsonContentTimeLine, function(){
-          return true;
-        });     
-    };
-    $scope.toJsonEvent = function() {
-        $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
-        events.put($scope.jsonContentEvent, function(){
-          return true;
-        });
-    };*/
 
     $scope.fromJSON = function() {
       $scope.fromJsonTimeLine();
