@@ -26,14 +26,16 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
     $scope.createTimeLine = function ($name) {
         var datetimeCol = new Date();
         var randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
-        //$scope.addTimeline($name, $scope.timeLineObj.length+1, datetimeCol, randColor, 150);
+        
+        $id=0;
+        
         if($scope.timeLineObj.length < 1) {
           $id = 1;
         }
         else {
-          angular.forEach($scope.timeLineObj, function(value){
-            if($scope.timeLineObj.id > $id){
-              $id = $scope.timeLineObj.id;
+          angular.forEach($scope.timeLineObj, function($value){
+            if($value.id > $id){
+              $id = $value.id;
             }
           });
           $id++;
@@ -127,7 +129,9 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
         }
         angular.forEach($scope.timeLineObj, function($value, $key){
           if($scope.timeLineObj.id = $numberCol){
-            $scope.timeLineObj[$key].height = $vPlacement+150;
+            if(($vPlacement+150) > $scope.timeLineObj[$key].height){
+              $scope.timeLineObj[$key].height = $vPlacement+150;
+            }
           }
         });
 
