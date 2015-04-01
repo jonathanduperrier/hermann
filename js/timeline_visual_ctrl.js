@@ -1,4 +1,7 @@
-var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('mainController', function ($scope, $compile, ModalService, $http, timeLine, events) {
+var base_url = 'http://helm1/';
+//var base_url = 'https://www.dbunic.cnrs-gif.fr/visiondb/';
+
+var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('timeLineVisualController', function ($scope, $compile, ModalService, $http, timeLine, events) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
@@ -221,25 +224,25 @@ var app = angular.module('myapp', ['ui.bootstrap', 'angularModalService', 'timeL
     };
 });
 
-app.controller('ModalController', function($scope, close) {
+mod_tlv.controller('ModalController', function($scope, close) {
   $scope.close = function(result) {
     close(result, 100); // close, but give 500ms for bootstrap to animate
   };
 });
 
-app.directive('timeLineDir', function(){
+mod_tlv.directive('timeLineDir', function(){
   return {
     templateUrl: 'templates/timeline.html'
   };
 });
 
-app.directive('eventDir', function(){
+mod_tlv.directive('eventDir', function(){
   return {
     templateUrl: 'templates/event.html'
   };
 });
 
-app.controller('AddTimeLineController', [
+mod_tlv.controller('AddTimeLineController', [
   '$scope', '$element', 'title', 'close', 
   function($scope, $element, title, close) {
 
@@ -268,7 +271,7 @@ app.controller('AddTimeLineController', [
   };
 }]);
 
-app.controller('AddEventController', [
+mod_tlv.controller('AddEventController', [
   '$scope', '$element', 'title', 'close', 
   function($scope, $element, title, close) {
 
@@ -302,4 +305,3 @@ app.controller('AddEventController', [
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
-
