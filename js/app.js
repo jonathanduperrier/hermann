@@ -3,6 +3,10 @@ var mainApp = angular.module('mainApp', ['ngRoute', 'mod_tlv']);
 mainApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
+      when('/list_exp', {
+        templateUrl: 'experiment.html',
+        controller: ''
+      }).
       when('/timeline', {
         templateUrl: 'timeline_visual.html',
         controller: 'timeLineVisualController'
@@ -12,6 +16,6 @@ mainApp.config(['$routeProvider',
         controller: 'PhoneDetailCtrl'
       }).*/
       otherwise({
-        redirectTo: '/'
+        redirectTo: '/list_exp'
       });
   }]);
