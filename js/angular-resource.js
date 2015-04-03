@@ -390,7 +390,8 @@ angular.module('ngResource', ['ng']).
         return encodeUriQuery(val, true).
           replace(/%26/gi, '&').
           replace(/%3D/gi, '=').
-          replace(/%2B/gi, '+');
+          replace(/%2B/gi, '+').
+          replace(/%2F/gi, '/'); // <--- Add this line (Jonathan DUPERRIER)
       }
 
 

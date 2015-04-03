@@ -1,5 +1,3 @@
-var base_url = 'http://helm1/';
-//var base_url = 'https://www.dbunic.cnrs-gif.fr/visiondb/';
 
 var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('timeLineVisualController', function ($scope, $compile, ModalService, $http, timeLine, events) {
     $scope.nbEvent = [];

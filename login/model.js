@@ -1,32 +1,15 @@
 'use strict';
 
-/* Login Module */
-
-angular.module( 'hermann.login', [
-    'ngResource',
-    'ngCookies',
-])
-
-/**
- * Module Routes
- * AngularJS will handle the merging
- * Controller for each route are managed in the corresponding <module>/controllers.js
- */
-.config(
-    function( $routeProvider ) {
-        $routeProvider
-        .when('/login', {
-             templateUrl: 'login/form.tpl.html',   
-             controller: LoginForm
-        })
-    }
-)
-
 /**
  * Function for creating new instances of the service model
  * containing as well the source of data and the methods to access it
  */
-.factory( 
+mod_login.config(['$resourceProvider', function($resourceProvider) {
+  // Do not strip trailing slashes from calculated URLs
+  $resourceProvider.defaults.stripTrailingSlashes = false;
+}]);
+
+mod_login.factory( 
     'Login', // Object model
     function( $resource, $rootScope, $http, $location ){ // , $filter can be added if ngFilter is injected above
         // define 'Logout' function
@@ -43,6 +26,4 @@ angular.module( 'hermann.login', [
             get: { method: 'GET', params:{ format:'json' }, isArray: false },
         });
     }
-)
-
-;
+);

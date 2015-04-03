@@ -1,4 +1,14 @@
-var mainApp = angular.module('mainApp', ['ngRoute', 'mod_exp', 'mod_tlv', 'hermann.experiments' ]);
+var base_url = 'http://helm1/';
+//var base_url = 'https://www.dbunic.cnrs-gif.fr/visiondb/';
+
+
+var mainApp = angular.module('mainApp', [
+	'ngRoute',
+	'mod_tlv',
+	'hermann.experiments',
+	'hermann.login',
+	'hermann.people'
+]);
 
 /**
  * Module Routes
@@ -6,9 +16,13 @@ var mainApp = angular.module('mainApp', ['ngRoute', 'mod_exp', 'mod_tlv', 'herma
  * Controller for each route are managed in the corresponding <module>/controllers.js
  */
 
-mainApp.config(['$routeProvider',
-  function($routeProvider) {
+mainApp.config(['$routeProvider', '$resourceProvider',
+  function($routeProvider, $resourceProvider) {
     $routeProvider.
+      when('/login', {
+        templateUrl: 'login/form.tpl.html',   
+        controller: 'LoginForm'
+      }).
       when('/experiments', {
         templateUrl: 'experiments/list.tpl.html',
         controller: 'ListExperiment'
@@ -21,11 +35,11 @@ mainApp.config(['$routeProvider',
 	     templateUrl: 'experiments/edit.tpl.html', 
 	     controller: 'EditExperiment'
 	  }).
-      when('/timeline', {
+      when('/timeline/:eID', {
         templateUrl: 'timeline_visual.html',
         controller: 'timeLineVisualController'
       }).
       otherwise({
-        redirectTo: '/experiments'
+        redirectTo: '/login'
       });
   }]);
