@@ -1,11 +1,12 @@
 
-        <div ng-controller="timeLineVisualController">
-            <button ng-click="showDlgAddTimeLine()" class="btn btn-default">
+        <div ng-controller="timeLineVisualController" ng-init="fromJSON()">
+            <!--<button ng-click="showDlgAddTimeLine()" class="btn btn-default">
                 <span class="glyphicon glyphicon-plus-sign"></span>
+            </button>-->
+	        <button ng-click="toJSON()" class="btn btn-default">
+                <span class="glyphicon glyphicon-floppy-save"></span>
             </button>
-	        <button ng-click="toJSON()" class="btn btn-default">Synchronize to JSON</button>
-            <button ng-click="fromJSON()" class="btn btn-default">Synchronize from JSON</button>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label for="displayScaleEvents" class="col-xs-4 col-sm-3 control-label">
                     Display Scale : 1 px /
                 </label>
@@ -15,7 +16,7 @@
                 <div class="col xs-2 col-sm-1" style="font-weight: bold;">
                     {{px_sec}} Sec
                 </div>
-            </div>
+            </div>-->
             <div>&nbsp;</div>
             <div id="placeholder">
                 <div class="group_line" time-line-dir></div>

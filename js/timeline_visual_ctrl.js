@@ -1,9 +1,13 @@
 
-var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('timeLineVisualController', function ($scope, $compile, ModalService, $http, timeLine, events) {
+var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('timeLineVisualController', function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
+    /*if(angular.isUndefined($scope.timeLineObj)){
+      $scope.timeLineObj = [];
+    }*/
+
     $scope.eventObj = [];
-    $scope.djangoAuth = "username=jonathan&username=jonathan&api_key=e8op8ezrahuireuihreazhuiiu"
+    $scope.$routeParams = $routeParams;
 
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
@@ -52,7 +56,8 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             date : $date,
             color : $color,
             name : $name,
-            height : $height
+            height : $height,
+            experiment : "/experiment/" + $routeParams.eID
           }
         );
     };
@@ -106,14 +111,14 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0;
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
-        if($scope.px_sec>=1){
-            $vPlacement = ($vPl - $vPlInit)/$scope.px_sec;
-        } else {
-            $vPlacement = $vPl - $vPlInit;
-        }
-        if($vPlacement < 0) {
+        /*if($scope.px_sec>=1){
+            $vPlacement = ($vPl - vPlInit)/$scope.px_sec;
+        } else {*/
+            $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
+        //}
+        /*if($vPlacement < 0) {
           $vPlacement = 0;
-        }
+        }*/
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement);
     };
 
@@ -174,11 +179,11 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     };
 
     $scope.toJSON = function() {
-        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
+        //$scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
-        timeLine.put($scope.jsonContentTimeLine, function(){
+        //timeLine.put($scope.jsonContentTimeLine, function(){
           events.put($scope.jsonContentEvent, function(){});
-        });
+        //});
     };
 
     $scope.fromJSON = function() {
@@ -191,7 +196,9 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           $jsonTimelines = angular.fromJson(data.objects);
           angular.forEach($jsonTimelines, function(value, key) {
                 if(value != null){
-                    $scope.addTimeline(value.name, value.id, value.date, value.color, value.height);
+                    if(value.experiment == '/experiment/'+$routeParams.eID) {
+                      $scope.addTimeline(value.name, value.id, value.date, value.color, value.height);
+                    }
                 }
             });
         });

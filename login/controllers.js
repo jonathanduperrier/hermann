@@ -27,7 +27,7 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
             if( headers('content-type').search('json') > 0 ){
                 $rootScope.showLogout = true;
                 $rootScope.username = username;
-                $location.path( '/experiments' );
+                $location.path( '/experiment' );
             }
         });
     };

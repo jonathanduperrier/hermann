@@ -23,7 +23,7 @@ mainApp.config(['$routeProvider', '$resourceProvider',
         templateUrl: 'login/form.tpl.html',   
         controller: 'LoginForm'
       }).
-      when('/experiments', {
+      when('/experiment', {
         templateUrl: 'experiments/list.tpl.html',
         controller: 'ListExperiment'
       }).
@@ -35,7 +35,7 @@ mainApp.config(['$routeProvider', '$resourceProvider',
 	     templateUrl: 'experiments/edit.tpl.html', 
 	     controller: 'EditExperiment'
 	  }).
-      when('/timeline/:eID', {
+      when('/timeline/experiment/:eID', {
         templateUrl: 'timeline_visual.html',
         controller: 'timeLineVisualController'
       }).
