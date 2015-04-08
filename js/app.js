@@ -36,7 +36,7 @@ mainApp.config(['$routeProvider', '$resourceProvider',
 	     controller: 'EditExperiment'
 	  }).
       when('/timeline/experiment/:eID', {
-        templateUrl: 'timeline_visual.html',
+        templateUrl: 'timeline/timeline_visual.tpl.html',
         controller: 'timeLineVisualController'
       }).
       otherwise({

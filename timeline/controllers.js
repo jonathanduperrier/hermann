@@ -11,7 +11,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
-        templateUrl: "templates/modal_dlg_add_timeline.html",
+        templateUrl: "timeline/modal_dlg_add_timeline.tpl.html",
         controller: "AddTimeLineController",
         inputs: {
           title: "Timeline information",
@@ -64,7 +64,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.showConfirmRemoveTimeline = function($numberCol) {
         ModalService.showModal({
-            templateUrl: 'templates/modal_confirm_remove_timeline.html',
+            templateUrl: 'timeline/modal_confirm_remove_timeline.tpl.html',
             controller: "ModalController"
         }).then(function(modal) {
             modal.element.modal();
@@ -88,7 +88,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     $scope.showDlgAddEvent = function($numberCol, $date){
       $date = new Date($date);
       ModalService.showModal({
-        templateUrl: "templates/modal_dlg_add_event.html",
+        templateUrl: "timeline/modal_dlg_add_event.tpl.html",
         controller: "AddEventController",
         inputs: {
           title: "Event information",
@@ -157,7 +157,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.showConfirmRemoveEvent = function($nbEvent) {
         ModalService.showModal({
-            templateUrl: 'templates/modal_confirm_remove_event.html',
+            templateUrl: 'timeline/modal_confirm_remove_event.tpl.html',
             controller: "ModalController"
         }).then(function(modal) {
             modal.element.modal();
@@ -237,13 +237,13 @@ mod_tlv.controller('ModalController', function($scope, close) {
 
 mod_tlv.directive('timeLineDir', function(){
   return {
-    templateUrl: 'templates/timeline.html'
+    templateUrl: 'timeline/timeline.tpl.html'
   };
 });
 
 mod_tlv.directive('eventDir', function(){
   return {
-    templateUrl: 'templates/event.html'
+    templateUrl: 'timeline/event.tpl.html'
   };
 });
 
