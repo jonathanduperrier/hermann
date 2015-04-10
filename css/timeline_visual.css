@@ -1,6 +1,7 @@
 body {
 	margin: 10px 10px 10px 10px;
 	overflow : scroll!important;
+	padding-top: 70px;
 }
 
 @font-face {

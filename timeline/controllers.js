@@ -202,6 +202,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                 }
             });
         });
+        
     };
     
     $scope.fromJsonEvent = function () {

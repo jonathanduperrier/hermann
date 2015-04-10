@@ -1,15 +1,11 @@
-<div ng-controller="LoginForm">
-
-    <center>
-        <fieldset class="textbox">
-            <label class="username">
-                <input id="username" ng-model="username" value="" type="text" placeholder="Username">
-            </label>
-            <label class="password">
-                <input id="password" ng-model="password" value="" type="password" placeholder="Password">
-            </label>
-            <button class="btn btn-primary" ng-click="submitLogin()">Sign in</button>
-        </fieldset>
-    </center>
-
+<div ng-controller="LoginForm" align="center">
+    <fieldset class="textbox">
+        <label class="username">
+            <input id="username" ng-model="username" value="" type="text" placeholder="Username" class="form-control">
+        </label><br />
+        <label class="password">
+            <input id="password" ng-model="password" value="" type="password" placeholder="Password" class="form-control">
+        </label><br />
+        <button class="btn btn-primary" ng-click="submitLogin()"><span class="glyphicon glyphicon-ok-sign"></span> &nbsp; Sign in</button>
+    </fieldset>
 </div>

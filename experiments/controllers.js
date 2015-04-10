@@ -5,12 +5,71 @@
 var mod_exp = angular.module( 'hermann.experiments', [
     'ngResource',
     'ngRoute',
-    'hermann.people'
+    'hermann.people',
+    'ui.bootstrap', 
+    'angularModalService'
     ]);
 
-mod_exp.controller('ListExperiment', ['$scope', 'Experiment' , function($scope, Experiment){
+mod_exp.controller('ListExperiment', ['$scope', 'Experiment' ,'ModalService', function($scope, Experiment, ModalService){
     $scope.experiment = Experiment.get();
+
+    $scope.showDlgAddExperiment = function(){
+      ModalService.showModal({
+        templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
+        controller: "AddExperimentController",
+        inputs: {
+          title: "Experiment information",
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          if(result.type == null){
+            bootbox.alert("Please choose type to create experiment !");
+          } else {
+            //$scope.createEvent($numberCol, result.text, $date, result.type);
+            $scope.experiment.push(
+                {
+                    label: result.label,
+                    type: result.type
+                }
+            );
+          }
+        });
+      });
+    }
+
+
 }]);
+
+mod_exp.controller('AddExperimentController', [
+  '$scope', '$element', 'title', 'close', 
+  function($scope, $element, title, close) {
+
+  $scope.name = null;
+  $scope.title = title;
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    close({
+      name: $scope.name
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+
+    //  Manually hide the modal.
+    $element.modal('hide');
+    
+    //  Now call close, returning control to the caller.
+    close({
+      name: $scope.name
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+}]);
+
 
 //mod_exp.controller('DetailExperiment', ['$scope', '$routeParams', 'Experiment', 'People', 'Preparation', 'Animal' , function($scope, $routeParams, Experiment, People, Preparation, Animal){
 mod_exp.controller('DetailExperiment', ['$scope', '$routeParams', 'Experiment', 'People', function($scope, $routeParams, Experiment, People, Preparation, Animal){
