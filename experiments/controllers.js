@@ -10,7 +10,9 @@ var mod_exp = angular.module( 'hermann.experiments', [
     'angularModalService'
     ]);
 
-mod_exp.controller('ListExperiment', ['$scope', 'Experiment' ,'ModalService', function($scope, Experiment, ModalService){
+mod_exp.controller('ListExperiment', [
+  '$scope', 'Experiment' ,'ModalService', 
+  function($scope, Experiment, ModalService){
     $scope.experiment = Experiment.get();
 
     $scope.showDlgAddExperiment = function(){
@@ -26,33 +28,45 @@ mod_exp.controller('ListExperiment', ['$scope', 'Experiment' ,'ModalService', fu
           if(result.type == null){
             bootbox.alert("Please choose type to create experiment !");
           } else {
-            //$scope.createEvent($numberCol, result.text, $date, result.type);
-            $scope.experiment.push(
-                {
-                    label: result.label,
-                    type: result.type
-                }
-            );
+            $scope.createExp(result.label, result.type);
+            $scope.experimentSave = '{ "objects" : ' + angular.toJson($scope.experiment.objects) + '}';
+            //$scope.experimentSave = angular.toJson($scope.experiment.objects);
+            Experiment.save($scope.experimentSave);
           }
         });
       });
+    };
+    $scope.createExp = function($label, $type){
+      var $date = new Date();
+
+      $scope.experiment.objects.push(
+        {
+          label: $label,
+          type: $type,
+          start: $date,
+          note: " ",
+          //end: $date,
+          setup: "/devices/setup/1",
+          researchers: ["/people/researcher/1"] // à corriger
+        }
+      );
     }
-
-
 }]);
 
 mod_exp.controller('AddExperimentController', [
   '$scope', '$element', 'title', 'close', 
   function($scope, $element, title, close) {
 
-  $scope.name = null;
+  $scope.label = null;
+  $scope.type = null;
   $scope.title = title;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
     close({
-      name: $scope.name
+      label: $scope.label,
+      type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -65,7 +79,8 @@ mod_exp.controller('AddExperimentController', [
     
     //  Now call close, returning control to the caller.
     close({
-      name: $scope.name
+      label: $scope.label,
+      type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);

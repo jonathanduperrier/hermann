@@ -28,6 +28,7 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
                 $rootScope.showLogout = true;
                 $rootScope.username = username;
                 $location.path( '/experiment' );
+                $scope.idUser = $rootScope.$id;
             }
         });
     };
