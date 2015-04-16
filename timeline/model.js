@@ -5,7 +5,8 @@ timeLineServices.factory('timeLine', ['$resource',
     //return $resource('http://helm1/notebooks/timeline/', {}, {
     return $resource( base_url + 'notebooks/timeline/', {}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
-      put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }}
+      put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
+      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
     });
   }]);
 

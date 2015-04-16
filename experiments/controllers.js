@@ -7,13 +7,15 @@ var mod_exp = angular.module( 'hermann.experiments', [
     'ngRoute',
     'hermann.people',
     'ui.bootstrap', 
-    'angularModalService'
+    'angularModalService',
+    'mod_tlv'
     ]);
 
 mod_exp.controller('ListExperiment', [
-  '$scope', 'Experiment' ,'ModalService', 
-  function($scope, Experiment, ModalService){
+  '$scope', 'Experiment' ,'ModalService', 'timeLine',
+  function($scope, Experiment, ModalService, timeLine){
     $scope.experiment = Experiment.get();
+    
 
     $scope.showDlgAddExperiment = function(){
       ModalService.showModal({
@@ -29,15 +31,39 @@ mod_exp.controller('ListExperiment', [
             bootbox.alert("Please choose type to create experiment !");
           } else {
             $scope.createExp(result.label, result.type);
-            $scope.experimentSave = '{ "objects" : ' + angular.toJson($scope.experiment.objects) + '}';
-            //$scope.experimentSave = angular.toJson($scope.experiment.objects);
-            Experiment.save($scope.experimentSave);
+            Experiment.save($scope.expSend, function(){
+              
+            });
           }
         });
       });
     };
     $scope.createExp = function($label, $type){
       var $date = new Date();
+      var $expSend = {
+          label: $label,
+          type: $type,
+          start: $date,
+          note: " ",
+          setup: "/devices/setup/1",
+          researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
+      };
+      $scope.expSend = $expSend;
+      //retrouver URI de l'experiment crée
+      //rediriger vers la page des timeline
+
+      //timeLine.addTimeline("Timeline 1", "1", $date, "#AAA222", 150);
+      //$scope.timeline = timeLine.get();
+      //$scope.timeline.objects = [];
+
+      var $timeLineObj = {
+        date : $date,
+        color : "#AAA222",
+        name : "Timeline 1",
+        height : 150,
+        experiment : "/experiment/5" // retrouver URI de l'experiment cré
+      };
+      timeLine.post($timeLineObj);
 
       $scope.experiment.objects.push(
         {
@@ -45,9 +71,8 @@ mod_exp.controller('ListExperiment', [
           type: $type,
           start: $date,
           note: " ",
-          //end: $date,
           setup: "/devices/setup/1",
-          researchers: ["/people/researcher/1"] // à corriger
+          researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
         }
       );
     }

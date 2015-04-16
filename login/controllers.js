@@ -28,7 +28,6 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
                 $rootScope.showLogout = true;
                 $rootScope.username = username;
                 $location.path( '/experiment' );
-                $scope.idUser = $rootScope.$id;
             }
         });
     };
@@ -54,6 +53,9 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
                             phone:    r.phone
                         };
                         $rootScope.users.push( resuser );
+                    }
+                    if(r.user.username == $scope.username){
+                        $rootScope.researcher_uri = r.resource_uri;
                     }
                 });
             });
