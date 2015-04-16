@@ -1,4 +1,5 @@
 var base_url = 'http://helm1/';
+var app_url = 'http://127.0.0.1:8080/';
 //var base_url = 'https://www.dbunic.cnrs-gif.fr/visiondb/';
 
 

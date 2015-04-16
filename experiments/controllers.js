@@ -31,8 +31,20 @@ mod_exp.controller('ListExperiment', [
             bootbox.alert("Please choose type to create experiment !");
           } else {
             $scope.createExp(result.label, result.type);
-            Experiment.save($scope.expSend, function(){
-              
+            Experiment.save($scope.expSend, function(value){
+              var $dateTL = new Date();
+              var $i=0;
+              for($i=0; $i<5; $i++){
+                var $timeLineObj = {
+                  date : $dateTL,
+                  color : "#AAA222",
+                  name : "Timeline "+($i+1),
+                  height : 150,
+                  experiment : value.resource_uri // retrouver URI de l'experiment cré
+                };
+                timeLine.post($timeLineObj);
+              }
+              window.location.replace(app_url + '#/timeline' + value.resource_uri);
             });
           }
         });
@@ -49,22 +61,6 @@ mod_exp.controller('ListExperiment', [
           researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
       };
       $scope.expSend = $expSend;
-      //retrouver URI de l'experiment crée
-      //rediriger vers la page des timeline
-
-      //timeLine.addTimeline("Timeline 1", "1", $date, "#AAA222", 150);
-      //$scope.timeline = timeLine.get();
-      //$scope.timeline.objects = [];
-
-      var $timeLineObj = {
-        date : $date,
-        color : "#AAA222",
-        name : "Timeline 1",
-        height : 150,
-        experiment : "/experiment/5" // retrouver URI de l'experiment cré
-      };
-      timeLine.post($timeLineObj);
-
       $scope.experiment.objects.push(
         {
           label: $label,
