@@ -1,4 +1,4 @@
-<div ng-repeat="timeLineObj in timeLineObj track by $index" ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
+<div ng-repeat="timeLineObj in timeLineObj track by $index | orderBy : 'name' " ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
 	<p>
 		<span class="timeline_name">{{timeLineObj.name}}</span><br />
 		<div class="btn-group btn-group-xs btnAddEvent">
