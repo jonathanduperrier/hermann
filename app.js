@@ -15,7 +15,7 @@ mainApp.factory('errorHttpInterceptor', ['$q', function ($q) {
         return {
             responseError: function responseError(rejection) {
                 if (rejection.status === 401 ) {
-                    alert("Authentication Failure");
+                    bootbox.alert("Authentication Failure");
                     angular.element(location).attr('href','/#/login');
                 }
                 return $q.reject(rejection);

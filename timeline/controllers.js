@@ -2,10 +2,6 @@
 var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('timeLineVisualController', function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
-    /*if(angular.isUndefined($scope.timeLineObj)){
-      $scope.timeLineObj = [];
-    }*/
-
     $scope.eventObj = [];
     $scope.$routeParams = $routeParams;
 
