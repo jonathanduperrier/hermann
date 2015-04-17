@@ -17,6 +17,7 @@ eventServices.factory('events', ['$resource',
     //return $resource('http://helm1/notebooks/event/', {}, {
     return $resource( base_url + 'notebooks/event/', {}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
-      put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }}
+      put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
+      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
     });
   }]);

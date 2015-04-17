@@ -15,7 +15,7 @@ mod_exp.controller('ListExperiment', [
   '$scope', 'Experiment' ,'ModalService', 'timeLine',
   function($scope, Experiment, ModalService, timeLine){
     $scope.timeLineObj = [];
-    var nb_timeline_a_creer = 5;
+    var nb_create_timeline = 5;
     $scope.experiment = Experiment.get();
     $scope.showDlgAddExperiment = function(){
       ModalService.showModal({
@@ -34,14 +34,13 @@ mod_exp.controller('ListExperiment', [
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
               var $i=0;
-              for($i=0; $i<nb_timeline_a_creer; $i++){
-                
+              for($i=0; $i<nb_create_timeline; $i++){
                 $scope.timeLineObj[$i] = {
                   date : $dateTL,
                   color : "#AAA222",
                   name : "Timeline "+($i+1),
                   height : 150,
-                  experiment : value.resource_uri // retrouver URI de l'experiment cré
+                  experiment : value.resource_uri // URI of created experiment
                 };
               }
             }).$promise.then(function(val) {
@@ -50,7 +49,7 @@ mod_exp.controller('ListExperiment', [
                 $scope.resource_uri = val.resource_uri;
                 timeLine.post($scope.timeLineObj[$i])
                 .$promise.then(function(val) {
-                  if($i==nb_timeline_a_creer){
+                  if($i==nb_create_timeline){
                     window.location.replace(app_url + '#/timeline' + $scope.resource_uri);
                   }
                 });

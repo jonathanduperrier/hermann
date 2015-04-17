@@ -107,14 +107,9 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0;
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
-        /*if($scope.px_sec>=1){
-            $vPlacement = ($vPl - vPlInit)/$scope.px_sec;
-        } else {*/
-            $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        //}
-        /*if($vPlacement < 0) {
-          $vPlacement = 0;
-        }*/
+
+        $vPlacement = (($vPl - $vPlInit)/60)+60; //1px = 60 secondes + margin 60 px
+
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement);
     };
 
@@ -175,11 +170,18 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     };
 
     $scope.toJSON = function() {
-        //$scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
+        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
-        //timeLine.put($scope.jsonContentTimeLine, function(){
+        /*timeLine.put($scope.jsonContentTimeLine, function(){}).$promise.then(function(val) {
           events.put($scope.jsonContentEvent, function(){});
-        //});
+        });*/
+      var $i=0;
+      angular.forEach($scope.timeLineObj, function(){
+        timeLine.post($scope.timeLineObj[$i]).$promise.then(function(val) {
+            events.put($scope.jsonContentEvent, function(){});
+          });
+          $i++;
+      });
     };
 
     $scope.fromJSON = function() {
