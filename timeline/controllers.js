@@ -111,6 +111,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         $vPlacement = (($vPl - $vPlInit)/60)+60; //1px = 60 secondes + margin 60 px
 
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement);
+        $scope.toJSON();
     };
 
     $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement){
