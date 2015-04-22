@@ -28,7 +28,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         var datetimeCol = new Date();
         var randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
         
-        $id=0;
+        $id = 0;
         
         if($scope.timeLineObj.length < 1) {
           $id = 1;
@@ -110,9 +110,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement);
-        //$scope.toJSON();
-
-
+        $scope.toJSON();
     };
 
     $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement){
@@ -170,29 +168,26 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             $scope.eventObj.splice($key, 1);
           }
         });
-        //$scope.toJSON();
+        $scope.toJSON();
     };
 
-    $scope.toJSON = function() {
+    $scope.toJSON = function() { //convert object to JSON and save it in database
+        var id_exp = $routeParams.eID;
+        var $prevJSONContentEvent = '';
+
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
-        /*timeLine.put($scope.jsonContentTimeLine, function(){}).$promise.then(function(val) {
-          events.put($scope.jsonContentEvent, function(){});
-        });*/
-      var $i=0;
-      angular.forEach($scope.timeLineObj, function(){
-        timeLine.post($scope.timeLineObj[$i]).$promise.then(function(val) {
-            if($i == $scope.timeLineObj.length){
-              //events.put($scope.jsonContentEvent, function(){});
-              var $j=0;
-              angular.forEach($scope.eventObj, function(){
-                events.post($scope.eventObj[$j], function(){});//à tester
-                $j++;
-              });
+        timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
+          var $j=0;
+          angular.forEach($scope.timeLineObj, function(){
+            var id_tl = $scope.timeLineObj[$j].id;
+            if($prevJSONContentEvent != $scope.jsonContentEvent){ //avoid duplicate entry
+              events.put({timeline__id:id_tl}, $scope.jsonContentEvent, function(){});
             }
+            $prevJSONContentEvent = $scope.jsonContentEvent;
+            $j++;
           });
-          $i++;
-      });
+        });
     };
 
     $scope.fromJSON = function() {
