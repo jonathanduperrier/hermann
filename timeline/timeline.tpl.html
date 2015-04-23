@@ -1,16 +1,22 @@
-<div ng-repeat="timeLineObj in timeLineObj track by $index | orderBy : 'name' " ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
-	<p>
-		<span class="timeline_name">{{timeLineObj.name}}</span><br />
-		<div class="btn-group btn-group-xs btnAddEvent">
-			<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn btn-default">
-				<span class="glyphicon glyphicon-plus-sign"></span>
-			</button>
-		</div>
-		<!--<button ng-click="showConfirmRemoveTimeline(timeLineObj.id)" class="btn btn-default">
-			<span class="glyphicon glyphicon-minus-sign"></span>
-		</button>-->
-	</p>
-	<div event-dir></div>
+
+<div style="display:block; width:850px;">
+	<div id="graduation" class='timeline-column'>
+		<span class="timeline_name" style="height:100%">&nbsp;</span><br />
+	</div>
+	<div ng-repeat="timeLineObj in timeLineObj | orderBy :'name'" ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
+		<p>
+			<span class="timeline_name">{{timeLineObj.name}}</span><br />
+			<div class="btn-group btn-group-xs btnAddEvent">
+				<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn btn-default">
+					<span class="glyphicon glyphicon-plus-sign"></span>
+				</button>
+			</div>
+			<!--<button ng-click="showConfirmRemoveTimeline(timeLineObj.id)" class="btn btn-default">
+				<span class="glyphicon glyphicon-minus-sign"></span>
+			</button>-->
+		</p>
+		<div event-dir></div>
+	</div>
 </div>
 
   <div class="form-group" id="error_val_type" style="display:none;">

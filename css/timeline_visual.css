@@ -15,11 +15,16 @@ pre#json_viewer {
 	float : left;
 	margin : 10px 0 10px 0;
 }
-
 .group_line {
 	margin-top:10px;
 }
-
+#graduation {
+	width: 50px;
+	background-image: url("../img/graduation.png");
+	min-height: 100%;
+	margin: 0;
+	padding: 0;
+}
 .timeline-column {
 	width : 150px;
 	height: 100%;
@@ -28,7 +33,6 @@ pre#json_viewer {
 	margin: 0 3px 0 3px;
 	font-size: 10px;
 }
-
 .timeline-column p {
     margin: 5px;
 }

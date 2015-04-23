@@ -45,7 +45,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     };
 
     $scope.addTimeline = function($name, $id, $date, $color, $height){
-        //création objet
+        //creation of object
         $scope.timeLineObj.push(
           {
             id : $id,
@@ -56,6 +56,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             experiment : "/experiment/" + $routeParams.eID
           }
         );
+        angular.element("#graduation").height($height);
     };
 
     $scope.showConfirmRemoveTimeline = function($numberCol) {
@@ -124,12 +125,14 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           });
           $idEvent++;
         }
+        var $i=0;
         angular.forEach($scope.timeLineObj, function($value, $key){
-          if($scope.timeLineObj.id == $numberCol){
+          //if($scope.timeLineObj[$i].id == $numberCol){
             if(($vPlacement+150) > $scope.timeLineObj[$key].height){
               $scope.timeLineObj[$key].height = $vPlacement+150;
             }
-          }
+          //}
+          $i++;
         });
 
         $scope.eventObj.push (
