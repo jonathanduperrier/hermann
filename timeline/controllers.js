@@ -56,7 +56,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             experiment : "/experiment/" + $routeParams.eID
           }
         );
-        angular.element("#graduation").height($height);
+        angular.element("#graduation").height($height-60);
     };
 
     $scope.showConfirmRemoveTimeline = function($numberCol) {
@@ -130,6 +130,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           //if($scope.timeLineObj[$i].id == $numberCol){
             if(($vPlacement+150) > $scope.timeLineObj[$key].height){
               $scope.timeLineObj[$key].height = $vPlacement+150;
+              angular.element("#graduation").height(($vPlacement+150)-60);
             }
           //}
           $i++;
@@ -180,16 +181,18 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
+        
         timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
-          var $j=0;
-          angular.forEach($scope.timeLineObj, function(){
-            var id_tl = $scope.timeLineObj[$j].id;
-            if($prevJSONContentEvent != $scope.jsonContentEvent){ //avoid duplicate entry
-              events.put({timeline__id:id_tl}, $scope.jsonContentEvent, function(){});
-            }
-            $prevJSONContentEvent = $scope.jsonContentEvent;
-            $j++;
-          });
+          //var $j=0;
+          //angular.forEach($scope.timeLineObj, function(){
+            //var id_tl = $scope.timeLineObj[$j].id;
+            //if($prevJSONContentEvent != $scope.jsonContentEvent){ //avoid duplicate entry
+              //events.put({timeline__id:id_tl}, $scope.jsonContentEvent, function(){});
+              events.put( $scope.jsonContentEvent, function(){});
+            //}
+            //$prevJSONContentEvent = $scope.jsonContentEvent;
+            //$j++;
+          //});
         });
     };
 
