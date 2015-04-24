@@ -34,10 +34,13 @@
             <ul class="nav navbar-nav" ng-show="showLogout">
                 <li><a ng-click="" href="#/experiment">Experiments</a></li>
             </ul>
-            <div ng-show="showLogout" class="nav navbar-form navbar-right">
-                <input type="search" class="form-control" placeholder="Filter" ng-model="query">
+            <div ng-show="showLogout" class="nav navbar-form navbar-right form-group">
+                <div class="input-group">
+                    <span class="input-group-addon glyphicon glyphicon-search" id="basic-addon1"></span>
+                    <input type="search" class="form-control" placeholder="Filter" ng-model="query">
+                </div>
             </div>
-            <div ng-show="showLogout" class="navbar-right">
+            <div ng-show="showLogout" class="nav navbar-right">
                 <button class="btn btn-primary navbar-btn" ng-click="removeAuthorization()"><span class="glyphicon glyphicon-log-out"></span> &nbsp; Logout {{username}}</button>
             </div>
         </div>
