@@ -1,5 +1,14 @@
-body {
-	overflow : scroll!important;
+@media (max-width: 769px) {
+	body {
+		overflow : scroll!important;
+		padding-top: 180px;
+	}
+}
+@media (min-width: 770px) {
+	body {
+		overflow : scroll!important;
+		padding-top: 70px;
+	}
 }
 
 @font-face {
