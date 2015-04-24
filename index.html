@@ -29,12 +29,15 @@
         <link rel="stylesheet" href="css/timeline_visual.css">
     </head>
     <body ng-app="mainApp">
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar navbar-inverse navbar-static-top">
             <span class="navbar-brand" href="#">Hermann</span>
             <ul class="nav navbar-nav" ng-show="showLogout">
                 <li><a ng-click="" href="#/experiment">Experiments</a></li>
             </ul>
-            <div ng-show="showLogout" class="pull-right">
+            <div ng-show="showLogout" class="nav navbar-form navbar-right">
+                <input type="search" class="form-control" placeholder="Filter" ng-model="query">
+            </div>
+            <div ng-show="showLogout" class="navbar-right">
                 <button class="btn btn-primary navbar-btn" ng-click="removeAuthorization()"><span class="glyphicon glyphicon-log-out"></span> &nbsp; Logout {{username}}</button>
             </div>
         </div>
