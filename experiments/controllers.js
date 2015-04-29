@@ -15,8 +15,9 @@ mod_exp.controller('ListExperiment', [
   '$scope', 'Experiment' ,'ModalService', 'timeLine',
   function($scope, Experiment, ModalService, timeLine){
     $scope.timeLineObj = [];
-    var nb_create_timeline = 5;
-    $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#FFAAAA'];
+    var nb_create_timeline = 7;
+    $scope.nameTimeLines = ['1 Alfaxan', '2 Esmeron', '3 phys', '4 Env', '5 Electrode', '6 Neuron', '7 Protocol'];
+    $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#FFAAAA','#D5E6FF', '#FFAADD'];
 
     $scope.experiment = Experiment.get();
     $scope.showDlgAddExperiment = function(){
@@ -40,7 +41,8 @@ mod_exp.controller('ListExperiment', [
                 $scope.timeLineObj[$i] = {
                   date : $dateTL,
                   color : $scope.colorTimeLine[$i],
-                  name : "Timeline "+($i+1),
+                  //name : "Timeline "+($i+1),
+                  name : $scope.nameTimeLines[$i],
                   height : 150,
                   experiment : value.resource_uri // URI of created experiment
                 };
