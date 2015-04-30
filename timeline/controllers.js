@@ -4,6 +4,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     $scope.timeLineObj = [];
     $scope.eventObj = [];
     $scope.$routeParams = $routeParams;
+    //$scope.dateTL = '';
 
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
@@ -45,6 +46,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     };
 
     $scope.addTimeline = function($name, $id, $date, $color, $height){
+        $scope.dateLastTimeLine = $date;
         //creation of object
         $scope.timeLineObj.push(
           {
@@ -104,17 +106,16 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.createEvent = function($numberCol, $text, $date, $type){
         var $dateEvent = new Date();
-        var $randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0;
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement);
+        $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement, $date);//$date = date timeLine
         $scope.toJSON();
     };
 
-    $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement){
+    $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement, $dateTL){
         if(angular.element.isEmptyObject($scope.eventObj)) {
           $idEvent = 1;
         } else {
@@ -127,15 +128,12 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         }
         var $i=0;
         angular.forEach($scope.timeLineObj, function($value, $key){
-          //if($scope.timeLineObj[$i].id == $numberCol){
             if(($vPlacement+150) > $scope.timeLineObj[$key].height){
               $scope.timeLineObj[$key].height = $vPlacement+150;
               angular.element("#graduation").height(($vPlacement+150)-60);
             }
-          //}
           $i++;
-        });
-
+        });        
         $scope.eventObj.push (
             {
                 id : $idEvent,
@@ -144,7 +142,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                 date : $dateEvent,
                 dateFormat : $dateFormat,
                 type : $type,
-                //color : $randColor,
                 color : "#FFFFFF",
                 vPlacement : $vPlacement
             }
@@ -202,13 +199,29 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                     }
                 }
             });
+          //$scope.dateTL = data.objects[0].date;
         });
-        
     };
     
     $scope.fromJsonEvent = function () {
         $scope.response = events.get({}, function(data){
         $jsonEvents = angular.fromJson(data.objects);
+        $i=0;
+        $timeStampEvtMax = 0;
+        $timeStampEvtMin = 0;
+
+        angular.forEach($jsonEvents, function(value, key) {
+          $dateEvt = new Date(value.date);
+          
+          if(($timeStampEvtMin > $dateEvt.valueOf()) || ( $timeStampEvtMin == 0)){
+            $timeStampEvtMin = $dateEvt.valueOf();
+          }
+
+          if($timeStampEvtMax < $dateEvt.valueOf()){
+            $timeStampEvtMax = $dateEvt.valueOf();
+          }
+          $i++;
+        });
         angular.forEach($jsonEvents, function(value, key) {
           if(value != null){
               $nCol = value.timeline.split('/');
@@ -216,10 +229,11 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
               $dateEvt = new Date(value.date);
               $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
-              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, value.color, value.vPlacement);
+              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, value.vPlacement, $scope.dateTL); //$scope.dateTL = date de la (dernière) timeline
           }
         });
       });
+
     };
 
     $scope.eventZIndex = function($event_id) {
