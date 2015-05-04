@@ -143,7 +143,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                 dateFormat : $dateFormat,
                 type : $type,
                 color : "#FFFFFF",
-                vPlacement : $vPlacement
+                //vPlacement : $vPlacement
             }
         );
     };
@@ -215,7 +215,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         $timeStampEvtMin = 0;
         $diffTSEvt = [];
         angular.forEach($jsonEvents, function(value, key) {
-          if(angular.element.inArray(value.timeline, $scope.TLExp)){
+          if($scope.TLExp.indexOf(value.timeline) != -1){
             $dateEvt = new Date(value.date);
             if(($timeStampEvtMin > $dateEvt.valueOf()) || ( $timeStampEvtMin == 0)){
               $timeStampEvtMin = $dateEvt.valueOf();
@@ -229,7 +229,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         });
         $j=0;
         angular.forEach($jsonEvents, function(value, key) {
-          if( (value != null) && angular.element.inArray(value.timeline, $scope.TLExp) ){
+          if( value != null ){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
