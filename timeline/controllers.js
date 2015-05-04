@@ -186,20 +186,24 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.fromJSON = function() {
       $scope.fromJsonTimeLine();
-      $scope.fromJsonEvent();
+      //$scope.fromJsonEvent();
     };
 
     $scope.fromJsonTimeLine = function () {
+        $scope.TLExp = [];
         $scope.response = timeLine.get({}, function(data){
           $jsonTimelines = angular.fromJson(data.objects);
+          $i=0;
           angular.forEach($jsonTimelines, function(value, key) {
                 if(value != null){
                     if(value.experiment == '/experiment/'+$routeParams.eID) {
                       $scope.addTimeline(value.name, value.id, value.date, value.color, value.height);
+                      $scope.TLExp[$i] = value.resource_uri;
+                      $i++;
                     }
                 }
             });
-          //$scope.dateTL = data.objects[0].date;
+          $scope.fromJsonEvent();
         });
     };
     
@@ -209,31 +213,33 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         $i=0;
         $timeStampEvtMax = 0;
         $timeStampEvtMin = 0;
-
+        $diffTSEvt = [];
         angular.forEach($jsonEvents, function(value, key) {
-          $dateEvt = new Date(value.date);
-          
-          if(($timeStampEvtMin > $dateEvt.valueOf()) || ( $timeStampEvtMin == 0)){
-            $timeStampEvtMin = $dateEvt.valueOf();
+          if(angular.element.inArray(value.timeline, $scope.TLExp)){
+            $dateEvt = new Date(value.date);
+            if(($timeStampEvtMin > $dateEvt.valueOf()) || ( $timeStampEvtMin == 0)){
+              $timeStampEvtMin = $dateEvt.valueOf();
+            }
+            if($timeStampEvtMax < $dateEvt.valueOf()){
+              $timeStampEvtMax = $dateEvt.valueOf();
+            }
+            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/60;
+            $i++;
           }
-
-          if($timeStampEvtMax < $dateEvt.valueOf()){
-            $timeStampEvtMax = $dateEvt.valueOf();
-          }
-          $i++;
         });
+        $j=0;
         angular.forEach($jsonEvents, function(value, key) {
-          if(value != null){
+          if( (value != null) && angular.element.inArray(value.timeline, $scope.TLExp) ){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
               $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
-              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, value.vPlacement, $scope.dateTL); //$scope.dateTL = date de la (dernière) timeline
+              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j], $scope.dateTL); //$scope.dateTL = date de la (dernière) timeline
           }
+          $j++;
         });
       });
-
     };
 
     $scope.eventZIndex = function($event_id) {
