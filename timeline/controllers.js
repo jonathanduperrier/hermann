@@ -111,11 +111,11 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement, $date);//$date = date timeLine
+        $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
         $scope.toJSON();
     };
 
-    $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement, $dateTL){
+    $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement){
         if(angular.element.isEmptyObject($scope.eventObj)) {
           $idEvent = 1;
         } else {
@@ -143,7 +143,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                 dateFormat : $dateFormat,
                 type : $type,
                 color : "#FFFFFF",
-                //vPlacement : $vPlacement
+                vPlacement : $vPlacement
             }
         );
     };
@@ -224,8 +224,10 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
               $timeStampEvtMax = $dateEvt.valueOf();
             }
             $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/60;
-            $i++;
+          } else {
+            $diffTSEvt[$i] = 0;
           }
+          $i++;
         });
         $j=0;
         angular.forEach($jsonEvents, function(value, key) {
@@ -235,7 +237,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
               $dateEvt = new Date(value.date);
               $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
-              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j], $scope.dateTL); //$scope.dateTL = date de la (dernière) timeline
+              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j]);
           }
           $j++;
         });
