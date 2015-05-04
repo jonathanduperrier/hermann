@@ -107,10 +107,10 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     $scope.createEvent = function($numberCol, $text, $date, $type){
         var $dateEvent = new Date();
         var $vPlInit = $date/1e3|0; //date of timeline
-        var $vPl = $dateEvent/1e3|0;
+        var $vPl = $dateEvent/1e3|0; 
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
 
-        $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
+        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
         $scope.toJSON();
     };
@@ -223,7 +223,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             if($timeStampEvtMax < $dateEvt.valueOf()){
               $timeStampEvtMax = $dateEvt.valueOf();
             }
-            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/60;
+            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/60; ///60
           } else {
             $diffTSEvt[$i] = 0;
           }
