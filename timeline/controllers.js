@@ -43,6 +43,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           $id++;
         }
         $scope.addTimeline($name, $id, datetimeCol, randColor, 150);
+        //$scope.displayZoomEvent(1);
     };
 
     $scope.addTimeline = function($name, $id, $date, $color, $height){
@@ -208,6 +209,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     };
     $scope.displayZoomEvent = function ($scale) {
       angular.element('.event').remove();
+      $scope.eventObj = [];
       $scope.fromJsonEvent($scale);
     };
     $scope.fromJsonEvent = function ($scale) {
@@ -218,13 +220,13 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         $diffTSEvt = [];
         switch($scale){
           case 0:
-            $scl = 1;
+            $scl_coef = 1;
             break;
           case 1:
-            $scl = 60;
+            $scl_coef = 60;
             break;
           case 2:
-            $scl = 3600;
+            $scl_coef = 3600;
             break;
         }
         $i=0;
@@ -237,7 +239,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             if($timeStampEvtMax < $dateEvt.valueOf()){
               $timeStampEvtMax = $dateEvt.valueOf();
             }
-            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl; ///60
+            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
           } else {
             $diffTSEvt[$i] = 0;
           }
@@ -261,9 +263,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     $scope.eventZIndex = function($event_id) {
         angular.element(".event").css("z-index", "0");
         angular.element(".event_" + $event_id).css("z-index", "10");
-    };
-    $scope.changeScaleEvents = function(){
-        $scope.px_sec = $scope.displayScaleEvents;
     };
 });
 
@@ -336,10 +335,8 @@ mod_tlv.controller('AddEventController', [
   //  This cancel function must use the bootstrap, 'modal' function because
   //  the doesn't have the 'data-dismiss' attribute.
   $scope.cancel = function() {
-
     //  Manually hide the modal.
     $element.modal('hide');
-    
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
