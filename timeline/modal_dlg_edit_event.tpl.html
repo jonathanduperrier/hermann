@@ -27,8 +27,31 @@
 						    </div>
 						  </div>
 						  <div class="form-group">
-
+						  	<label for="timestamp_1" class="col-sm-2 control-label">Timestamp : </label>
+						  	<label>
+								<input type="radio" id="timestamp_1" name="quality[21]" value="1" /> Auto : </label>
+						  	</label>
+						  	<label>
+								<input type="radio" id="timestamp_2" name="quality[21]" value="1" /> Datepicker : </label>
+						  	</label>
 						  </div>
+							<div class="row">
+						        <div class='col-sm-6'>
+						            <div class="form-group">
+						                <div class='input-group date' id='datetimepicker1'>
+						                    <input type='text' class="form-control" />
+						                    <span class="input-group-addon">
+						                        <span class="glyphicon glyphicon-calendar"></span>
+						                    </span>
+						                </div>
+						            </div>
+						        </div>
+						        <script type="text/javascript">
+						            $(function () {
+						                $('#datetimepicker1').datetimepicker();
+						            });
+						        </script>
+						    </div>
 						</form>
 				      </div>
 				      <div class="modal-footer">

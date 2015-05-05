@@ -174,10 +174,10 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         $scope.toJSON();
     };
 
-    $scope.showDlgEditEvent = function($nbEvent){
+    $scope.showDlgEditEvent = function($nbEvent, $date){
       $date = new Date($date);
       ModalService.showModal({
-        templateUrl: "timeline/modal_dlg_add_event.tpl.html",
+        templateUrl: "timeline/modal_dlg_edit_event.tpl.html",
         controller: "EditEventController",
         inputs: {
           title: "Edit Event information",
