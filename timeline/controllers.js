@@ -203,17 +203,31 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                     }
                 }
             });
-          $scope.fromJsonEvent();
+          $scope.fromJsonEvent(1);
         });
     };
-    
-    $scope.fromJsonEvent = function () {
+    $scope.displayZoomEvent = function ($scale) {
+      angular.element('.event').remove();
+      $scope.fromJsonEvent($scale);
+    };
+    $scope.fromJsonEvent = function ($scale) {
         $scope.response = events.get({}, function(data){
         $jsonEvents = angular.fromJson(data.objects);
-        $i=0;
         $timeStampEvtMax = 0;
         $timeStampEvtMin = 0;
         $diffTSEvt = [];
+        switch($scale){
+          case 0:
+            $scl = 1;
+            break;
+          case 1:
+            $scl = 60;
+            break;
+          case 2:
+            $scl = 3600;
+            break;
+        }
+        $i=0;
         angular.forEach($jsonEvents, function(value, key) {
           if($scope.TLExp.indexOf(value.timeline) != -1){
             $dateEvt = new Date(value.date);
@@ -223,7 +237,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             if($timeStampEvtMax < $dateEvt.valueOf()){
               $timeStampEvtMax = $dateEvt.valueOf();
             }
-            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/60; ///60
+            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl; ///60
           } else {
             $diffTSEvt[$i] = 0;
           }
