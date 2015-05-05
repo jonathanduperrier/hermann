@@ -176,11 +176,23 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.showDlgEditEvent = function($nbEvent, $date){
       $date = new Date($date);
+      //récupérer l'event correspondant ($nbEvent = id) dans $scope.eventObj
+      angular.forEach($scope.eventObj, function(value, key) {
+        if(value.id == $nbEvent){
+          $evt_text = value.text;
+          $evt_type = value.type;
+          $evt_date = value.date;
+        }
+      });
+
       ModalService.showModal({
         templateUrl: "timeline/modal_dlg_edit_event.tpl.html",
         controller: "EditEventController",
         inputs: {
           title: "Edit Event information",
+          evt_text: $evt_text,
+          evt_type: $evt_type,
+          evt_date: $evt_date,
         }
       }).then(function(modal) {
         modal.element.modal();
@@ -194,6 +206,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
       });
     };
     //add $scope.editEvent
+
     $scope.toJSON = function() { //convert object to JSON and save it in database
         var id_exp = $routeParams.eID;
         var $prevJSONContentEvent = '';
@@ -399,4 +412,8 @@ mod_tlv.controller('EditEventController', [
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
+
+  $scope.displayDatePicker = function() {
+    angular.element('#datetimepicker1').datetimepicker();
+  }
 }]);
