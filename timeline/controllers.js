@@ -109,7 +109,8 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         var $dateEvent = new Date();
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0; 
-        var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
+        //var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
+        var $dateFormat = $dateEvent.format('HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
@@ -173,6 +174,26 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         $scope.toJSON();
     };
 
+    $scope.showDlgEditEvent = function($nbEvent){
+      $date = new Date($date);
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_add_event.tpl.html",
+        controller: "EditEventController",
+        inputs: {
+          title: "Edit Event information",
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          if(result.type == null){
+            bootbox.alert("Please choose type to save event !");
+          } else {
+            $scope.createEvent($numberCol, result.text, $date, result.type);
+          }
+        });
+      });
+    };
+    //add $scope.editEvent
     $scope.toJSON = function() { //convert object to JSON and save it in database
         var id_exp = $routeParams.eID;
         var $prevJSONContentEvent = '';
@@ -251,7 +272,8 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
-              $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
+              //$dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
+              $dateFormat = $dateEvt.format('HH:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
               $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j]);
           }
@@ -314,6 +336,39 @@ mod_tlv.controller('AddTimeLineController', [
 }]);
 
 mod_tlv.controller('AddEventController', [
+  '$scope', '$element', 'title', 'close', 
+  function($scope, $element, title, close) {
+
+  $scope.text = null;
+  $scope.date = null;
+  $scope.type = null;
+  $scope.title = title;
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    close({
+      text: $scope.text,
+      date: $scope.date,
+      type: $scope.type
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+    close({
+      text: $scope.text,
+      date: $scope.date,
+      type: $scope.type
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+}]);
+
+mod_tlv.controller('EditEventController', [
   '$scope', '$element', 'title', 'close', 
   function($scope, $element, title, close) {
 
