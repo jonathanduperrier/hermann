@@ -200,9 +200,20 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           if(result.type == null){
             bootbox.alert("Please choose type to save event !");
           } else {
-            $scope.createEvent($numberCol, result.text, $date, result.type);
+            //$scope.createEvent($numberCol, result.text, $date, result.type);
+            $scope.editEvent($nbEvent, result.text, result.date, result.type);
+            $scope.toJSON();
           }
         });
+      });
+    };
+    $scope.editEvent = function($id, $text, $date, $type){
+      angular.forEach($scope.eventObj, function(value, key) {
+        if(value.id == $id){
+          $scope.eventObj[key].text = $text;
+          $scope.eventObj[key].date = $date;
+          $scope.eventObj[key].type = $type;
+        }
       });
     };
     //add $scope.editEvent
@@ -392,10 +403,11 @@ mod_tlv.controller('EditEventController', [
 
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
+  //$date = new Date($date);
   $scope.close = function() {
     close({
       text: $scope.text,
-      date: $scope.date,
+      date: new Date($scope.evt_date),
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
@@ -408,7 +420,7 @@ mod_tlv.controller('EditEventController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      date: $scope.date,
+      date: new Date($scope.evt_date),
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
