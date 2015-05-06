@@ -382,14 +382,14 @@ mod_tlv.controller('AddEventController', [
 }]);
 
 mod_tlv.controller('EditEventController', [
-  '$scope', '$element', 'title', 'close', 
-  function($scope, $element, title, close) {
+  '$scope', '$element', 'title', 'evt_text', 'evt_type', 'evt_date', 'close', 
+  function($scope, $element, title, evt_text, evt_type, evt_date, close) {
 
-  $scope.text = null;
-  $scope.date = null;
-  $scope.type = null;
+  $scope.text = evt_text;
+  $scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
+  $scope.type = evt_type;
   $scope.title = title;
-  
+
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
@@ -414,6 +414,8 @@ mod_tlv.controller('EditEventController', [
   };
 
   $scope.displayDatePicker = function() {
-    angular.element('#datetimepicker1').datetimepicker();
+    angular.element('.date').datetimepicker({
+        locale: 'fr'
+    });
   }
 }]);
