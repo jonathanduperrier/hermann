@@ -179,6 +179,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
       //récupérer l'event correspondant ($nbEvent = id) dans $scope.eventObj
       angular.forEach($scope.eventObj, function(value, key) {
         if(value.id == $nbEvent){
+          $evt_id = value.id,
           $evt_text = value.text;
           $evt_type = value.type;
           $evt_date = value.date;
@@ -190,6 +191,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         controller: "EditEventController",
         inputs: {
           title: "Edit Event information",
+          evt_id: $evt_id,
           evt_text: $evt_text,
           evt_type: $evt_type,
           evt_date: $evt_date,
@@ -393,10 +395,12 @@ mod_tlv.controller('AddEventController', [
 }]);
 
 mod_tlv.controller('EditEventController', [
-  '$scope', '$element', 'title', 'evt_text', 'evt_type', 'evt_date', 'close', 
-  function($scope, $element, title, evt_text, evt_type, evt_date, close) {
+  '$scope', '$element', 'title', 'evt_text', 'evt_type', 'evt_date', 'evt_id', 'close', 
+  function($scope, $element, title, evt_text, evt_type, evt_date, evt_id, close) {
 
   $scope.text = evt_text;
+  $scope.evt_id = evt_id;
+  //$scope.date = evt_date.format('dd/mm/yyyy HH:MM');
   $scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
   $scope.type = evt_type;
   $scope.title = title;
@@ -407,7 +411,7 @@ mod_tlv.controller('EditEventController', [
   $scope.close = function() {
     close({
       text: $scope.text,
-      date: new Date($scope.evt_date),
+      evt_date: new Date($scope.evt_date),
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
@@ -425,9 +429,10 @@ mod_tlv.controller('EditEventController', [
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
-  $scope.displayDatePicker = function() {
-    angular.element('.date').datetimepicker({
+  $scope.displayDatePicker = function($evt_id) {
+    angular.element('#datetimepicker_'+$evt_id).datetimepicker({
         locale: 'fr'
     });
+    //angular.element('.date').data("DateTimePicker");
   }
 }]);

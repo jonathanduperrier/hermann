@@ -34,12 +34,12 @@
 							<input for="timestamp_2" type="radio" id="timestamp_2" name="quality[21]" value="1" /> 
 						  </div>
 							<div class="form-group">
-								<label for="datetimepicker1" class="col-sm-2 control-label">Datepicker : </label>
+								<label for="datetimepicker_{{evt_id}}" class="col-sm-2 control-label">Datepicker : </label>
 						        <div class='col-sm-6'>
 						            <div class="form-group">
-						                <div class='input-group date' id='datetimepicker1'>
-						                    <input type="text" class="form-control" id="evt_date" name="evt_date" value="{{evt_date}}"/>
-						                    <span class="input-group-addon" ng-click="displayDatePicker()">
+						                <div class='input-group date' id='datetimepicker_{{evt_id}}'>
+						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="evt_date" name="evt_date" ng-model="evt_date" value="{{evt_date}}"/>
+						                    <span class="input-group-addon" ng-click="displayDatePicker(evt_id)">
 						                        <span class="glyphicon glyphicon-calendar"></span>
 						                    </span>
 						                </div>
