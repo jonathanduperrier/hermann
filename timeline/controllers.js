@@ -431,10 +431,17 @@ mod_tlv.controller('EditEventController', [
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
+  $scope.disableTimeStamp = function($evt_id) {
+    angular.element("#evt_date_"+$evt_id).prop('disabled', true);
+  };
+
+  $scope.enableTimeStamp = function($evt_id) {
+    angular.element("#evt_date_"+$evt_id).prop('disabled', false);
+  };
+
   $scope.displayDatePicker = function($evt_id) {
     angular.element('#datetimepicker_'+$evt_id).datetimepicker({
         locale: 'en-gb'
     });
-    //angular.element('.date').data("DateTimePicker");
-  }
+  };
 }]);

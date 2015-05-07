@@ -29,16 +29,16 @@
 						  <div class="form-group">
 						  	<label for="timestamp_1" class="col-sm-2 control-label">Timestamp : </label>
 						  	<label for="timestamp_1"> Auto </label>
-						  	<input type="radio" id="timestamp_1" name="quality[21]" value="1" />
+						  	<input type="radio" id="timestamp_1" name="timestamp[21]" value="1" ng-click="disableTimeStamp(evt_id)" checked="checked" />
 						  	<label> Datepicker </label>
-							<input for="timestamp_2" type="radio" id="timestamp_2" name="quality[21]" value="1" /> 
+							<input for="timestamp_2" type="radio" id="timestamp_2" name="timestamp[21]" value="1" ng-click="enableTimeStamp(evt_id)" /> 
 						  </div>
 							<div class="form-group">
 								<label for="datetimepicker_{{evt_id}}" class="col-sm-2 control-label">Datepicker : </label>
 						        <div class='col-sm-6'>
 						            <div class="form-group">
 						                <div class='input-group date' id='datetimepicker_{{evt_id}}'>
-						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="evt_date_{{evt_id}}" name="evt_date" ng-model="evt_date" value="{{evt_date}}"/>
+						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="evt_date_{{evt_id}}" name="evt_date" ng-model="evt_date" value="{{evt_date}}" disabled/>
 						                    <span class="input-group-addon" ng-click="displayDatePicker(evt_id)">
 						                        <span class="glyphicon glyphicon-calendar"></span>
 						                    </span>
