@@ -202,7 +202,9 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           if(result.type == null){
             bootbox.alert("Please choose type to save event !");
           } else {
-            $scope.editEvent($nbEvent, result.text, result.evt_date, result.type);
+            from_date = result.evt_date.split("/");
+            to_date = new Date(from_date[1]+"/"+from_date[0]+"/"+from_date[2]);
+            $scope.editEvent($nbEvent, result.text, to_date, result.type);
             $scope.toJSON();
           }
         });
@@ -400,7 +402,6 @@ mod_tlv.controller('EditEventController', [
 
   $scope.text = evt_text;
   $scope.evt_id = evt_id;
-  //$scope.date = evt_date.format('dd/mm/yyyy HH:MM');
   $scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
   $scope.type = evt_type;
   $scope.title = title;
@@ -411,7 +412,8 @@ mod_tlv.controller('EditEventController', [
   $scope.close = function() {
     close({
       text: $scope.text,
-      evt_date: new Date(angular.element('#evt_date').val()),
+
+      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
@@ -424,14 +426,14 @@ mod_tlv.controller('EditEventController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      date: new Date(angular.element('#evt_date').val()),
+      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
   $scope.displayDatePicker = function($evt_id) {
     angular.element('#datetimepicker_'+$evt_id).datetimepicker({
-        locale: 'fr'
+        locale: 'en-gb'
     });
     //angular.element('.date').data("DateTimePicker");
   }
