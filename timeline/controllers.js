@@ -202,7 +202,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           if(result.type == null){
             bootbox.alert("Please choose type to save event !");
           } else {
-            //$scope.createEvent($numberCol, result.text, $date, result.type);
             $scope.editEvent($nbEvent, result.text, result.evt_date, result.type);
             $scope.toJSON();
           }
@@ -214,7 +213,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         if(value.id == $id){
           $scope.eventObj[key].text = $text;
           $scope.eventObj[key].date = $date;
-          //$dateFormat = $dateEvt.format('HH:MM');
           $scope.eventObj[key].dateFormat = $date.format('HH:MM');
           $scope.eventObj[key].type = $type;
         }
