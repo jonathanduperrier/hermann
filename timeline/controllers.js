@@ -203,7 +203,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             bootbox.alert("Please choose type to save event !");
           } else {
             //$scope.createEvent($numberCol, result.text, $date, result.type);
-            $scope.editEvent($nbEvent, result.text, result.date, result.type);
+            $scope.editEvent($nbEvent, result.text, result.evt_date, result.type);
             $scope.toJSON();
           }
         });
@@ -214,6 +214,8 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         if(value.id == $id){
           $scope.eventObj[key].text = $text;
           $scope.eventObj[key].date = $date;
+          //$dateFormat = $dateEvt.format('HH:MM');
+          $scope.eventObj[key].dateFormat = $date.format('HH:MM');
           $scope.eventObj[key].type = $type;
         }
       });
@@ -411,7 +413,7 @@ mod_tlv.controller('EditEventController', [
   $scope.close = function() {
     close({
       text: $scope.text,
-      evt_date: new Date($scope.evt_date),
+      evt_date: new Date(angular.element('#evt_date').val()),
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
@@ -424,7 +426,7 @@ mod_tlv.controller('EditEventController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      date: new Date($scope.evt_date),
+      date: new Date(angular.element('#evt_date').val()),
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
