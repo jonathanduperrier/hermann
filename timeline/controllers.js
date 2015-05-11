@@ -417,6 +417,13 @@ mod_tlv.controller('EditEventController', [
       type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
+  $scope.remove = function() {
+    close({
+      text: $scope.text,
+      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
+      type: $scope.type
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
 
   //  This cancel function must use the bootstrap, 'modal' function because
   //  the doesn't have the 'data-dismiss' attribute.
