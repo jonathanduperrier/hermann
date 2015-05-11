@@ -199,13 +199,17 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
-          if(result.type == null){
-            bootbox.alert("Please choose type to save event !");
+          if(result.del_evt == true){
+            $scope.showConfirmRemoveEvent($evt_id);
           } else {
-            from_date = result.evt_date.split("/");
-            to_date = new Date(from_date[1]+"/"+from_date[0]+"/"+from_date[2]);
-            $scope.editEvent($nbEvent, result.text, to_date, result.type);
-            $scope.toJSON();
+            if(result.type == null){
+              bootbox.alert("Please choose type to save event !");
+            } else {
+              from_date = result.evt_date.split("/");
+              to_date = new Date(from_date[1]+"/"+from_date[0]+"/"+from_date[2]);
+              $scope.editEvent($nbEvent, result.text, to_date, result.type);
+              $scope.toJSON();
+            }
           }
         });
       });
@@ -405,6 +409,7 @@ mod_tlv.controller('EditEventController', [
   $scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
   $scope.type = evt_type;
   $scope.title = title;
+  $scope.del_evt = false;
 
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
@@ -412,16 +417,9 @@ mod_tlv.controller('EditEventController', [
   $scope.close = function() {
     close({
       text: $scope.text,
-
       evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
-      type: $scope.type
-    }, 100); // close, but give 500ms for bootstrap to animate
-  };
-  $scope.remove = function() {
-    close({
-      text: $scope.text,
-      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
-      type: $scope.type
+      type: $scope.type,
+      del_evt: $scope.del_evt,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -434,8 +432,13 @@ mod_tlv.controller('EditEventController', [
     close({
       text: $scope.text,
       evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
-      type: $scope.type
+      type: $scope.type,
     }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  $scope.delete = function(){
+    $scope.del_evt = true;
+    $scope.close();
   };
 
   $scope.disableTimeStamp = function($evt_id) {
