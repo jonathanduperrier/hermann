@@ -48,6 +48,14 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.addTimeline = function($name, $id, $date, $color, $height){
         $scope.dateLastTimeLine = $date;
+        //reading display_epoch_btn.json to determine to display add epoch button
+        angular.element.getScript( "timeline/dict/display_epoch_btn.js");
+        angular.forEach(display_epoch_btn, function(value, key) {
+          if(display_epoch_btn[key].name == $name){
+            $displayEpoch = display_epoch_btn[key].displayEpoch;
+          }
+        });
+
         //creation of object
         $scope.timeLineObj.push(
           {
@@ -56,7 +64,8 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
             color : $color,
             name : $name,
             height : $height,
-            experiment : "/experiment/" + $routeParams.eID
+            experiment : "/experiment/" + $routeParams.eID,
+            displayEpoch : $displayEpoch,
           }
         );
         angular.element("#graduation").height($height-60);

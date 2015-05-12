@@ -49,6 +49,10 @@ pre#json_viewer {
 .timeline-column .btnAddEvent {
 	margin: 5px;
 }
+.btnRemEvent {
+	float:right;
+	margin: 5px;
+}
 .timeline_name {
 	font-weight: bold;
 	font-size:11px;

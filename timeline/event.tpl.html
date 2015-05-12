@@ -1,5 +1,5 @@
 	<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{200+eventObj.vPlacement}}px; background-color:{{eventObj.color}}; border:1px solid black;" ng-if="eventObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
-		<div class="btn-group btn-group-sm btnDelEvent">
+		<div class="btn-group btn-group-xs btnDelEvent">
 			<!--<button ng-click="showConfirmRemoveEvent(eventObj.id)" class="btn btn-default">
 				<span class="glyphicon glyphicon-minus-sign"></span>
 			</button>-->
