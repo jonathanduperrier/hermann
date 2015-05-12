@@ -26,14 +26,14 @@ pre#json_viewer {
 	margin-top:10px;
 }
 #graduation {
-	width: 50px;
-	background-image: url("../img/graduation.png");
+	width: 150px;
+	/*background-image: url("../img/graduation.png");*/
 	min-height: 100%;
 	margin: 0;
 	padding: 0;
 	border-radius: 0px;
 	position: relative;
-    top: 57px;
+    /*top: 57px;*/
 }
 .timeline-column {
 	width : 150px;
@@ -77,4 +77,9 @@ pre#json_viewer {
 .textEvent {
 	float:left;
 	min-width: 139px;
+}
+.textEventLeft {
+	float:left;
+	min-width: 139px;
+	display: none;
 }

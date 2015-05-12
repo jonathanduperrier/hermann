@@ -4,7 +4,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     $scope.timeLineObj = [];
     $scope.eventObj = [];
     $scope.$routeParams = $routeParams;
-    //$scope.dateTL = '';
 
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
@@ -48,6 +47,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.addTimeline = function($name, $id, $date, $color, $height){
         $scope.dateLastTimeLine = $date;
+        $displayEpoch = 0;
         //reading display_epoch_btn.json to determine to display add epoch button
         angular.element.getScript( "timeline/dict/display_epoch_btn.js");
         angular.forEach(display_epoch_btn, function(value, key) {
@@ -119,7 +119,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0; 
         //var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
-        var $dateFormat = $dateEvent.format('HH:MM');
+        var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
@@ -141,7 +141,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         angular.forEach($scope.timeLineObj, function($value, $key){
             if(($vPlacement+150) > $scope.timeLineObj[$key].height){
               $scope.timeLineObj[$key].height = $vPlacement+150;
-              angular.element("#graduation").height(($vPlacement+150)-60);
+              angular.element("#graduation").height($vPlacement+150);
             }
           $i++;
         });        
@@ -314,7 +314,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
               //$dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
-              $dateFormat = $dateEvt.format('HH:MM');
+              $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
               $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j]);
           }
@@ -326,6 +326,10 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
     $scope.eventZIndex = function($event_id) {
         angular.element(".event").css("z-index", "0");
         angular.element(".event_" + $event_id).css("z-index", "10");
+    };
+
+    $scope.toogleEvtLeft = function() {
+      angular.element(".textEventLeft").slideToggle(500);
     };
 });
 

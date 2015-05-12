@@ -1,7 +1,16 @@
 
-<div style="display:block; width:1200px;">
+<div style="display:block; width:1300px;">
 	<div id="graduation" class='timeline-column'>
 		<span class="timeline_name" style="height:100%">&nbsp;</span><br />
+		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{57+eventObj.vPlacement}}px; background-color:{{eventObj.color}}; border:1px solid black;">
+			<div ng-click="toogleEvtLeft()">
+				{{eventObj.dateFormat}}
+			</div>
+			<div class="textEventLeft">
+				{{eventObj.type}}<br />
+				{{eventObj.text}}
+			</div>
+		</div>
 	</div>
 	<div ng-repeat="timeLineObj in timeLineObj | orderBy :'name'" ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
 		<p>
