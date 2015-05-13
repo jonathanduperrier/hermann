@@ -71,12 +71,13 @@ pre#json_viewer {
 .dateTypeEvent {
 	float:left;
 	margin-left:5px;
-	min-height: 30px;
 	font-weight: bold;
 }
 .textEvent {
 	float:left;
-	min-width: 139px;
+	width: 109px;
+	margin-left:30px;
+	margin-top:-10px;
 }
 .textEventLeft {
 	float:left;

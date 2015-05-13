@@ -1,10 +1,11 @@
 
 <div style="display:block; width:1300px;">
 	<div id="graduation" class='timeline-column'>
+		<div class="dateTypeEvent">Begining of experiment : </div>
 		<span class="timeline_name" style="height:100%">&nbsp;</span><br />
 		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{57+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if=" eventObj.TimeLineExp == eventObj.UrlExp">
-			<div ng-click="toogleEvtLeft()">
-				<strong>{{eventObj.dateFormat}}</strong>
+			<div ng-click="toogleEvtLeft()" class="dateTypeEvent">
+				{{eventObj.dateFormat}}
 			</div>
 			<div class="textEventLeft">
 				{{eventObj.type}}<br />
