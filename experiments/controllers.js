@@ -168,6 +168,4 @@ mod_exp.controller('EditExperiment', ['$scope', '$http', '$routeParams', 'Experi
     $scope.delete = function( exp ){
         //$scope.experiment.$delete();
     };
-
 }]);
-

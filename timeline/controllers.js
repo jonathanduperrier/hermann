@@ -118,7 +118,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         var $dateEvent = new Date();
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $dateEvent/1e3|0; 
-        //var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
@@ -237,7 +236,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         if(value.id == $id){
           $scope.eventObj[key].text = $text;
           $scope.eventObj[key].date = $date;
-          $scope.eventObj[key].dateFormat = $date.format('HH:MM');
+          $scope.eventObj[key].dateFormat = $date.format('dd/mm/yyyy - HH:MM');
           $scope.eventObj[key].type = $type;
         }
       });
@@ -322,7 +321,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
-              //$dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
               $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
               //$numberCol, $text, $dateEvent, $dateFormat, $type, $randColor, $vPlacement
               $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j]);
