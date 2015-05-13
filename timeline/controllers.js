@@ -138,11 +138,17 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           $idEvent++;
         }
         var $i=0;
+        var $TLexp = "";
+        var $TLcolor = "";
         angular.forEach($scope.timeLineObj, function($value, $key){
-            if(($vPlacement+150) > $scope.timeLineObj[$key].height){
-              $scope.timeLineObj[$key].height = $vPlacement+150;
-              angular.element("#graduation").height($vPlacement+150);
-            }
+          if($numberCol == $scope.timeLineObj[$key].id){
+            $TLexp = $scope.timeLineObj[$key].experiment;
+            $TLcolor = $scope.timeLineObj[$key].color;
+          }
+          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
+            $scope.timeLineObj[$key].height = $vPlacement+150;
+            angular.element("#graduation").height($vPlacement+150);
+          }
           $i++;
         });        
         $scope.eventObj.push (
@@ -154,7 +160,9 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                 dateFormat : $dateFormat,
                 type : $type,
                 color : "#FFFFFF",
-                vPlacement : $vPlacement
+                vPlacement : $vPlacement,
+                TimeLineExp : $TLexp,
+                TimeLineColor : $TLcolor,
             }
         );
     };

@@ -2,7 +2,7 @@
 <div style="display:block; width:1300px;">
 	<div id="graduation" class='timeline-column'>
 		<span class="timeline_name" style="height:100%">&nbsp;</span><br />
-		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{57+eventObj.vPlacement}}px; background-color:{{eventObj.color}}; border:1px solid black;">
+		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{57+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if="'/#/timeline' + eventObj.TimeLineExp == window.location.hash">
 			<div ng-click="toogleEvtLeft()">
 				{{eventObj.dateFormat}}
 			</div>
