@@ -41,7 +41,6 @@ mod_exp.controller('ListExperiment', [
                 $scope.timeLineObj[$i] = {
                   date : $dateTL,
                   color : $scope.colorTimeLine[$i],
-                  //name : "Timeline "+($i+1),
                   name : $scope.nameTimeLines[$i],
                   height : 150,
                   experiment : value.resource_uri // URI of created experiment

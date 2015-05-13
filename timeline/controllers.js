@@ -1,9 +1,27 @@
 
-var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 'timeLineServices', 'eventServices']).controller('timeLineVisualController', function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams) {
+var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 
+                                         'angularModalService', 
+                                         'timeLineServices', 
+                                         'eventServices',
+                                         'hermann.experiments'
+                                         ]);
+mod_tlv.controller('timeLineVisualController', 
+function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams, Experiment) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
     $scope.$routeParams = $routeParams;
+
+    $scope.idExp = 0;
+    $scope.experiment = Experiment.get({id: $routeParams.eId}, function(data){
+      //data.object
+      angular.forEach(data.object, function($value){
+        if($value.id.toString() == $routeParams.eId){
+          $scope.idExp = value.id;
+        }
+      });
+    });
+
 
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
@@ -42,7 +60,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
           $id++;
         }
         $scope.addTimeline($name, $id, datetimeCol, randColor, 150);
-        //$scope.displayZoomEvent(1);
     };
 
     $scope.addTimeline = function($name, $id, $date, $color, $height){
@@ -241,7 +258,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
         }
       });
     };
-    //add $scope.editEvent
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
         var id_exp = $routeParams.eID;
@@ -257,7 +273,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
 
     $scope.fromJSON = function() {
       $scope.fromJsonTimeLine();
-      //$scope.fromJsonEvent();
     };
 
     $scope.fromJsonTimeLine = function () {
