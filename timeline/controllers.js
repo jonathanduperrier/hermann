@@ -161,7 +161,8 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 'angularModalService', 
                 type : $type,
                 color : "#FFFFFF",
                 vPlacement : $vPlacement,
-                TimeLineExp : $TLexp,
+                TimeLineExp : '#/timeline' + $TLexp,
+                UrlExp : window.location.hash,
                 TimeLineColor : $TLcolor,
             }
         );
