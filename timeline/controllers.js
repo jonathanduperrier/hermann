@@ -13,11 +13,14 @@ function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams,
     $scope.$routeParams = $routeParams;
 
     $scope.idExp = 0;
-    $scope.experiment = Experiment.get({id: $routeParams.eId}, function(data){
+    $scope.dateStartExt = "";
+    $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
       //data.object
-      angular.forEach(data.object, function($value){
-        if($value.id.toString() == $routeParams.eId){
-          $scope.idExp = value.id;
+      angular.forEach(data.objects, function($value){
+        if($value.id.toString() == $routeParams.eID){
+          $scope.idExp = $value.id;
+          $dateStartExt = new Date($value.start);
+          $scope.dateStartExt = $dateStartExt.format('mm/dd/yyyy - HH:MM');
         }
       });
     });
@@ -352,6 +355,22 @@ function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams,
 
     $scope.toogleEvtLeft = function() {
       angular.element(".textEventLeft").slideToggle(500);
+    };
+
+    $scope.stopExperiment = function() {
+      $scope.experiment = Experiment.get(function(data){
+        //data.object
+        angular.forEach(data.objects, function($value){
+          if($value.id == $routeParams.eID){
+            var $dateEnd = new Date();
+            $value.end = $dateEnd;
+          }
+        });
+        $scope.jsonContentExp = angular.toJson(data);
+        Experiment.put({id:$routeParams.eID}, $scope.jsonContentExp, function(){}).$promise.then(function(val) {
+          $scope.toJSON();
+        });
+      });
     };
 });
 
