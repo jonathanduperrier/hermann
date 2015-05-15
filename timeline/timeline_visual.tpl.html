@@ -9,7 +9,8 @@
             <button ng-click="displayZoomEvent(0)" class="btn btn-default">Min</button>
             <button ng-click="displayZoomEvent(1)" class="btn btn-default">Hour</button>
             <button ng-click="displayZoomEvent(2)" class="btn btn-default">Day</button>
-            <button ng-click="stopExperiment()" class="btn btn-default">Stop Experiment</button>
+            <button ng-click="stopExperiment()" class="btn btn-default" ng-if='dateEndExp == ""'>Stop Experiment</button>
+            <span ng-if='dateEndExp != ""'>End of experiment : {{dateEndExp}}</span>
             <div>&nbsp;</div>
             <div id="placeholder">
                 <div class="group_line" time-line-dir></div>

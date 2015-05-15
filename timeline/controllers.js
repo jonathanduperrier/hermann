@@ -13,14 +13,21 @@ function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams,
     $scope.$routeParams = $routeParams;
 
     $scope.idExp = 0;
-    $scope.dateStartExt = "";
+    $scope.dateStartExp = "";
+    $scope.dateEndExp = "";
+
     $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
       //data.object
       angular.forEach(data.objects, function($value){
         if($value.id.toString() == $routeParams.eID){
           $scope.idExp = $value.id;
-          $dateStartExt = new Date($value.start);
-          $scope.dateStartExt = $dateStartExt.format('mm/dd/yyyy - HH:MM');
+          $dateStartExp = new Date($value.start);
+          $scope.dateStartExp = $dateStartExp.format('mm/dd/yyyy - HH:MM');
+
+          $dateEndExp = new Date($value.end);
+          if($value.end!=null){
+            $scope.dateEndExp = $dateEndExp.format('mm/dd/yyyy - HH:MM');
+          }
         }
       });
     });

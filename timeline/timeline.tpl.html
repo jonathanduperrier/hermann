@@ -1,9 +1,9 @@
 
 <div style="display:block; width:1300px;">
 	<div id="graduation" class='timeline-column'>
-		<div class="dateTypeEvent">Begining of experiment : {{dateStartExt}}</div>
+		<div class="dateTypeEvent">Begining of experiment : {{dateStartExp}}</div>
 		<span class="timeline_name" style="height:100%">&nbsp;</span><br />
-		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{57+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if=" eventObj.TimeLineExp == eventObj.UrlExp">
+		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{57+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if="eventObj.TimeLineExp == eventObj.UrlExp">
 			<div ng-click="toogleEvtLeft()" class="dateTypeEvent">
 				{{eventObj.dateFormat}}
 			</div>
@@ -17,14 +17,14 @@
 		<p>
 			<span class="timeline_name">{{timeLineObj.name}}</span><br />
 			<div class="btn-group btn-group-xs btnAddEvent">
-				<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn btn-default">
+				<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn btn-default" ng-if='dateEndExp == ""'>
 					<span class="glyphicon glyphicon-plus-sign"></span>
 				</button>
 			</div>
 			<!--<button ng-click="showConfirmRemoveTimeline(timeLineObj.id)" class="btn btn-default">
 				<span class="glyphicon glyphicon-minus-sign"></span>
 			</button>-->
-			<div class="btn-group btn-group-xs btnRemEvent" ng-if="timeLineObj.displayEpoch == 1">
+			<div class="btn-group btn-group-xs btnRemEvent" ng-if="timeLineObj.displayEpoch == 1 && dateEndExp == ''">
 				<button ng-click="" class="btn btn-default">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
