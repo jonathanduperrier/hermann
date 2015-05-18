@@ -21,11 +21,8 @@
 					<span class="glyphicon glyphicon-plus-sign"></span>
 				</button>
 			</div>
-			<!--<button ng-click="showConfirmRemoveTimeline(timeLineObj.id)" class="btn btn-default">
-				<span class="glyphicon glyphicon-minus-sign"></span>
-			</button>-->
 			<div class="btn-group btn-group-xs btnRemEvent" ng-if="timeLineObj.displayEpoch == 1 && dateEndExp == ''">
-				<button ng-click="" class="btn btn-default">
+				<button ng-click="showDlgAddEpoch(timeLineObj.id)" class="btn btn-default">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
 			</div>

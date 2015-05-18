@@ -269,6 +269,30 @@ function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams,
       });
     };
 
+    $scope.showDlgAddEpoch = function($numberCol, $date){
+      $date = new Date($date);
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_add_epoch.tpl.html",
+        controller: "AddEpochController",
+        inputs: {
+          title: "Epoch information",
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          if(result.type == null){
+            bootbox.alert("Please choose type to create event !");
+          } else {
+            //$scope.createEvent($numberCol, result.text, $date, result.type);
+          }
+        });
+      });
+
+    };
+
+    $scope.showDlgEditEpoch = function(){};
+    $scope.addEpoch = function(){};
+
     $scope.toJSON = function() { //convert object to JSON and save it in database
         var id_exp = $routeParams.eID;
         var $prevJSONContentEvent = '';
@@ -514,5 +538,38 @@ mod_tlv.controller('EditEventController', [
     angular.element('#datetimepicker_'+$evt_id).datetimepicker({
         locale: 'en-gb'
     });
+  };
+}]);
+
+mod_tlv.controller('AddEpochController', [
+  '$scope', '$element', 'title', 'close', 
+  function($scope, $element, title, close) {
+
+  $scope.text = null;
+  $scope.date = null;
+  //$scope.type = null;
+  $scope.title = title;
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    close({
+      text: $scope.text,
+      date: $scope.date,
+      //type: $scope.type
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+    close({
+      text: $scope.text,
+      date: $scope.date,
+      //type: $scope.type
+    }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
