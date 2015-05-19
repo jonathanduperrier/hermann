@@ -22,7 +22,7 @@ eventServices.factory('events', ['$resource',
 
 var epochServices = angular.module('epochServices', ['ngResource']);
 
-eventServices.factory('epoch', ['$resource',
+epochServices.factory('epoch', ['$resource',
   function($resource){
     return $resource( base_url + 'notebooks/epoch/', {}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
