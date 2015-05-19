@@ -10,6 +10,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams,
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
+    $scope.epochObj = [];
     $scope.$routeParams = $routeParams;
 
     $scope.idExp = 0;
@@ -283,7 +284,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams,
           if(result.type == null){
             bootbox.alert("Please choose type to create event !");
           } else {
-            //$scope.createEvent($numberCol, result.text, $date, result.type);
+            $scope.createEpoch($numberCol, result.text, $date, result.type);
           }
         });
       });
@@ -291,7 +292,58 @@ function ($scope, $compile, ModalService, $http, timeLine, events, $routeParams,
     };
 
     $scope.showDlgEditEpoch = function(){};
-    $scope.addEpoch = function(){};
+    $scope.createEpoch = function($numberCol, $text, $date, $type){
+        var $dateEpoch = new Date();
+        var $vPlInit = $date/1e3|0; //date of timeline
+        var $vPl = $dateEvent/1e3|0; 
+        var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
+
+        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
+        $scope.addEpoch($numberCol, $text, $dateEpoch, $dateFormat, $type, $vPlacement);
+        $scope.toJSON();
+    };
+    
+    $scope.addEpoch = function($numberCol, $text, $dateEpoch, $dateFormat, $type, $vPlacement){
+        if(angular.element.isEmptyObject($scope.epochObj)) {
+          $idEpoch = 1;
+        } else {
+          angular.forEach($scope.epochObj, function(value){
+            if($scope.epochObj.id > $idEpoch){
+              $idEpoch = $scope.epochObj.id;
+            }
+          });
+          $idEpoch++;
+        }
+        var $i=0;
+        var $TLexp = "";
+        var $TLcolor = "";
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          if($numberCol == $scope.timeLineObj[$key].id){
+            $TLexp = $scope.timeLineObj[$key].experiment;
+            $TLcolor = $scope.timeLineObj[$key].color;
+          }
+          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
+            $scope.timeLineObj[$key].height = $vPlacement+150;
+            angular.element("#graduation").height($vPlacement+150);
+          }
+          $i++;
+        });        
+        $scope.epochObj.push (
+            {
+                id : $idEpoch,
+                timeline : "/notebooks/timeline/" + $numberCol,
+                text : $text,
+                date : $dateEpoch,
+                dateFormat : $dateFormat,
+                type : $type,
+                color : "#FFFFFF",
+                vPlacement : $vPlacement,
+                TimeLineExp : '#/timeline' + $TLexp,
+                UrlExp : window.location.hash,
+                TimeLineColor : $TLcolor,
+            }
+        );
+    };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
         var id_exp = $routeParams.eID;
