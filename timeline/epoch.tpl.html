@@ -1,0 +1,13 @@
+	<div ng-repeat="epochObj in epochObj track by $index" ng-click="eventZIndex(epochObj.id)" class="event event_{{epochObj.id}}" id="event_{{epochObj.id}}" style="top:{{190+epochObj.vPlacement}}px; background-color:{{epochObj.color}}; border:1px solid black;" ng-if="epochObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
+		<div class="btn-group btn-group-xs btnDelEvent">
+			<button ng-click="showDlgEditEvent(epochObj.id)" class="btn btn-default">
+				<span class="glyphicon glyphicon glyphicon-edit"></span>
+			</button>
+		</div>
+		<div class="dateTypeEvent">
+			{{epochObj.type}}
+		</div>
+		<div class="textEvent">
+			{{epochObj.text}}
+		</div>
+	</div>

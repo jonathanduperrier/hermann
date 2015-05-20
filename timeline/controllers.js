@@ -283,7 +283,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         modal.element.modal();
         modal.close.then(function(result) {
           if(result.type == null){
-            bootbox.alert("Please choose type to create event !");
+            bootbox.alert("Please choose type to create epoch !");
           } else {
             $scope.createEpoch($numberCol, result.text, $date, result.type);
           }
@@ -296,11 +296,11 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
     $scope.createEpoch = function($numberCol, $text, $date, $type){
         var $startEpoch = new Date();
         var $vPlInit = $date/1e3|0; //date of timeline
-        var $vPl = $dateEvent/1e3|0; 
+        var $vPl = $startEpoch/1e3|0; 
         var $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
-        $scope.addEpoch($numberCol, $text, $startEpoch, $dateFormat, $type, $vPlacement);
+        $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement);
         $scope.toJSON();
     };
     
@@ -335,7 +335,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
                 timeline : "/notebooks/timeline/" + $numberCol,
                 text : $text,
                 start : $startEpoch,
-                startFormat : $dateFormat,
+                startFormat : $startFormat,
                 type : $type,
                 color : "#FFE500",
                 vPlacement : $vPlacement,
@@ -473,8 +473,8 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
-              $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
-              $scope.addEpoch($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j]);
+              $startFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
+              $scope.addEpoch($numberCol, value.text, $dateEvt, $startFormat, value.type, $diffTSEvt[$j]);
           }
           $j++;
         });
@@ -522,6 +522,12 @@ mod_tlv.directive('timeLineDir', function(){
 mod_tlv.directive('eventDir', function(){
   return {
     templateUrl: 'timeline/event.tpl.html'
+  };
+});
+
+mod_tlv.directive('epochDir', function(){
+  return {
+    templateUrl: 'timeline/epoch.tpl.html'
   };
 });
 
@@ -648,8 +654,8 @@ mod_tlv.controller('AddEpochController', [
   function($scope, $element, title, close) {
 
   $scope.text = null;
-  $scope.date = null;
-  //$scope.type = null;
+  //$scope.date = null;
+  $scope.type = null;
   $scope.title = title;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
@@ -657,8 +663,8 @@ mod_tlv.controller('AddEpochController', [
   $scope.close = function() {
     close({
       text: $scope.text,
-      date: $scope.date,
-      //type: $scope.type
+      //date: $scope.date,
+      type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -670,8 +676,8 @@ mod_tlv.controller('AddEpochController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      date: $scope.date,
-      //type: $scope.type
+      //date: $scope.date,
+      type: $scope.type
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
