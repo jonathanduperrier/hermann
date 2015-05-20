@@ -57,7 +57,7 @@ pre#json_viewer {
 	font-weight: bold;
 	font-size:11px;
 }
-.event {
+.event, .epoch {
     margin-left: 5px;
     margin-right: 5px;
 	width : 140px;

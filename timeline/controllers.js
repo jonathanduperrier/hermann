@@ -379,13 +379,16 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
                 }
             });
           $scope.fromJsonEvent(1);
+          $scope.fromJsonEpoch(1);
         });
     };
 
     $scope.displayZoomEvent = function ($scale) {
       angular.element('.event').remove();
       $scope.eventObj = [];
+      $scope.epochObj = [];
       $scope.fromJsonEvent($scale);
+      $scope.fromJsonEpoch($scale);
     };
     $scope.fromJsonEvent = function ($scale) {
         $scope.response = events.get({}, function(data){
@@ -454,12 +457,12 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         $i=0;
         angular.forEach($jsonEpoch, function(value, key) {
           if($scope.TLExp.indexOf(value.timeline) != -1){
-            $dateEvt = new Date(value.date);
-            if(($timeStampEvtMin > $dateEvt.valueOf()) || ( $timeStampEvtMin == 0)){
-              $timeStampEvtMin = $dateEvt.valueOf();
+            $startEpoch = new Date(value.start);
+            if(($timeStampEvtMin > $startEpoch.valueOf()) || ( $timeStampEvtMin == 0)){
+              $timeStampEvtMin = $startEpoch.valueOf();
             }
-            if($timeStampEvtMax < $dateEvt.valueOf()){
-              $timeStampEvtMax = $dateEvt.valueOf();
+            if($timeStampEvtMax < $startEpoch.valueOf()){
+              $timeStampEvtMax = $startEpoch.valueOf();
             }
             $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
           } else {
@@ -472,9 +475,9 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
           if( value != null ){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
-              $dateEvt = new Date(value.date);
-              $startFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
-              $scope.addEpoch($numberCol, value.text, $dateEvt, $startFormat, value.type, $diffTSEvt[$j]);
+              $startEpoch = new Date(value.start);
+              $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
+              $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j]);
           }
           $j++;
         });
@@ -483,7 +486,14 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
 
     $scope.eventZIndex = function($event_id) {
         angular.element(".event").css("z-index", "0");
+        angular.element(".epoch").css("z-index", "0");
         angular.element(".event_" + $event_id).css("z-index", "10");
+    };
+
+    $scope.epochZIndex = function($epoch_id) {
+        angular.element(".event").css("z-index", "0");
+        angular.element(".epoch").css("z-index", "0");
+        angular.element(".epoch_" + $epoch_id).css("z-index", "10");
     };
 
     $scope.toogleEvtLeft = function() {
