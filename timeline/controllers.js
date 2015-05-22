@@ -289,11 +289,10 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
           }
         });
       });
-
     };
 
     $scope.showDlgEditEpoch = function($nbEpoch){
-      //récupérer l'epoch correspondant ($nbEvent = id) dans $scope.eventObj
+      //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
       angular.forEach($scope.epochObj, function(value, key) {
         if(value.id == $nbEpoch){
           $epoch_id = value.id;
@@ -303,8 +302,6 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
           $epoch_end = value.end;
         }
       });
-
-
       ModalService.showModal({
         templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
         controller: "EditEpochController",
@@ -319,21 +316,31 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
-          if(result.del_evt == true){
-            //$scope.showConfirmRemoveEvent($epoch_id);
+          if(result.del_epoch == true){
+            $scope.showConfirmRemoveEpoch($epoch_id);
           } else {
             if(result.type == null){
               bootbox.alert("Please choose type to save epoch !");
             } else {
-              from_date = result.evt_date.split("/");
-              to_date = new Date(from_date[1]+"/"+from_date[0]+"/"+from_date[2]);
-              $scope.editEvent($nbEvent, result.text, to_date, result.type);
+              from_end = result.epoch_end.split("/");
+              to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
+
+              $scope.editEpoch($nbEpoch, result.text, to_end, result.type);
               $scope.toJSON();
             }
           }
         });
       });
-
+    };
+    $scope.editEpoch = function($id, $text, $end, $type){
+      angular.forEach($scope.epochObj, function(value, key) {
+        if(value.id == $id){
+          $scope.epochObj[key].text = $text;
+          $scope.epochObj[key].end = $end;
+          $scope.epochObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          $scope.epochObj[key].type = $type;
+        }
+      });
     };
     $scope.createEpoch = function($numberCol, $text, $date, $type){
         var $startEpoch = new Date();
@@ -387,6 +394,30 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
             }
         );
     };
+    $scope.showConfirmRemoveEpoch = function($nbEpoch) {
+        ModalService.showModal({
+            templateUrl: 'timeline/modal_confirm_remove_epoch.tpl.html',
+            controller: "ModalController"
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {
+                if (result=="Yes") {
+                    $scope.removeEpoch($nbEpoch);
+                }
+            });
+        });
+    };
+
+    $scope.removeEpoch = function($nbEpoch){
+        angular.element('#epoch_' + $nbEpoch).remove();        
+        angular.forEach($scope.epochObj, function($value, $key) {
+          if($value.id == $nbEpoch){
+            $scope.epochObj.splice($key, 1);
+          }
+        });
+        $scope.toJSON();
+    };
+
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
         var id_exp = $routeParams.eID;
@@ -735,27 +766,27 @@ mod_tlv.controller('AddEpochController', [
 }]);
 
 mod_tlv.controller('EditEpochController', [
-  //'$scope', '$element', 'title', 'evt_text', 'evt_type', 'evt_date', 'evt_id', 'close', 
-  '$scope', '$element', 'title', 'close', 
-  //function($scope, $element, title, evt_text, evt_type, evt_date, evt_id, close) {
-  function($scope, $element, title, close) {
-
-  //$scope.text = evt_text;
-  //$scope.evt_id = evt_id;
-  //$scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
-  //$scope.type = evt_type;
+  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'close', 
+  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, close) {
+  if(epoch_end == null){
+    epoch_end = new Date();
+  }
+  $scope.text = epoch_text;
+  $scope.epoch_id = epoch_id;
+  $scope.epoch_start = epoch_start.format('dd/mm/yyyy HH:MM');
+  $scope.epoch_end = epoch_end.format('dd/mm/yyyy HH:MM');
+  $scope.type = epoch_type;
   $scope.title = title;
-  $scope.del_evt = false;
+  $scope.del_epoch = false;
 
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
-  //$date = new Date($date);
   $scope.close = function() {
     close({
       text: $scope.text,
-      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
+      epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
       type: $scope.type,
-      del_evt: $scope.del_evt,
+      del_epoch: $scope.del_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -767,26 +798,26 @@ mod_tlv.controller('EditEpochController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
+      epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
       type: $scope.type,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
   $scope.delete = function(){
-    $scope.del_evt = true;
+    $scope.del_epoch = true;
     $scope.close();
   };
 
-  $scope.disableTimeStamp = function($evt_id) {
-    angular.element("#evt_date_"+$evt_id).prop('disabled', true);
+  $scope.disableTimeStamp = function($epoch_id) {
+    angular.element("#epoch_end_"+$epoch_id).prop('disabled', true);
   };
 
-  $scope.enableTimeStamp = function($evt_id) {
-    angular.element("#evt_date_"+$evt_id).prop('disabled', false);
+  $scope.enableTimeStamp = function($epoch_id) {
+    angular.element("#epoch_end_"+$epoch_id).prop('disabled', false);
   };
 
-  $scope.displayDatePicker = function($evt_id) {
-    angular.element('#datetimepicker_'+$evt_id).datetimepicker({
+  $scope.displayDatePicker = function($epoch_id) {
+    angular.element('#datetimepicker_'+$epoch_id).datetimepicker({
         locale: 'en-gb'
     });
   };
