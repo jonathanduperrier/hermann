@@ -2,7 +2,7 @@
 <div style="display:block; width:1300px;">
 	<div id="graduation" class='timeline-column'>
 		<!--<div class="dateTypeEvent" id="date_beginning_exp">Begining of experiment : {{dateStartExp}}</div>-->
-		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{57+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if="eventObj.TimeLineExp == eventObj.UrlExp">
+		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{30+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if="eventObj.TimeLineExp == eventObj.UrlExp">
 			<div ng-click="toogleEvtLeft()" class="dateTypeEvent">
 				{{eventObj.dateFormat}}
 			</div>
@@ -13,19 +13,19 @@
 		</div>
 	</div>
 	<div ng-repeat="timeLineObj in timeLineObj | orderBy :'name'" ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
-		<div class="TL_top_bar" style="background-color:{{timeLineObj.color}};">
+		<!--<div class="TL_top_bar" style="background-color:{{timeLineObj.color}};">-->
 			<div class="btn-group btn-group-xs btnAddEvent">
 				<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn btn-default" ng-if='dateEndExp == ""'>
 					<span class="glyphicon glyphicon-plus-sign"></span>
 				</button>
 			</div>
 			<span class="timeline_name">{{timeLineObj.name}}</span>
-			<div class="btn-group btn-group-xs btnRemEvent" ng-if="timeLineObj.displayEpoch == 1 && dateEndExp == ''">
+			<div class="btn-group btn-group-xs" ng-if="timeLineObj.displayEpoch == 1 && dateEndExp == ''">
 				<button ng-click="showDlgAddEpoch(timeLineObj.id, timeLineObj.date)" class="btn btn-default">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
 			</div>
-		</div>
+		<!--</div>-->
 		<div event-dir></div>
 		<div epoch-dir></div>
 	</div>
