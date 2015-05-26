@@ -353,7 +353,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         $scope.toJSON();
     };
     
-    $scope.addEpoch = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement){
+    $scope.addEpoch = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $endEpoch, $endFormat){
         if(angular.element.isEmptyObject($scope.epochObj)) {
           $idEpoch = 1;
         } else {
@@ -377,7 +377,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
             angular.element("#graduation").height($vPlacement+150);
           }
           $i++;
-        });        
+        });
         $scope.epochObj.push (
             {
                 id : $idEpoch,
@@ -391,6 +391,8 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
                 TimeLineExp : '#/timeline' + $TLexp,
                 UrlExp : window.location.hash,
                 TimeLineColor : $TLcolor,
+                end : $endEpoch, 
+                endFormat : $endFormat,
             }
         );
     };
@@ -550,7 +552,13 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
               $numberCol = $nCol[3];
               $startEpoch = new Date(value.start);
               $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
-              $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j]);
+              if(value.end != null){
+                $endEpoch = new Date(value.end);
+                $endFormat = $endEpoch.format('mm/dd/yyyy - HH:MM');
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j], $endEpoch, $endFormat);
+              } else {
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j]);
+              }
           }
           $j++;
         });
