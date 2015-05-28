@@ -421,9 +421,13 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
                 TimeLineName : $TLName,
                 end : $endEpoch, 
                 endFormat : $endFormat,
-                id_epoch : $id_epoch_link,
+                id_epoch_link : $id_epoch_link,
             }
         );
+        if($endEpoch != null){
+          $startEpochTS = $startEpoch.valueOf();
+          $endEpochTS = $endEpoch.valueOf();
+        }
     };
     $scope.showConfirmRemoveEpoch = function($nbEpoch) {
         ModalService.showModal({
