@@ -20,7 +20,7 @@
 			</div>
 			<span class="timeline_name">{{timeLineObj.name}}</span>
 			<div class="btn-group btn-group-xs" ng-if="timeLineObj.displayEpoch == 1 && dateEndExp == ''">
-				<button ng-click="showDlgAddEpoch(timeLineObj.id, timeLineObj.date)" class="btn btn-default">
+				<button ng-click="showDlgAddEpoch(timeLineObj.id, timeLineObj.date, timeLineObj.name)" class="btn btn-default">
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
 			</div>

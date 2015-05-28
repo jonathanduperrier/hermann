@@ -84,7 +84,6 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
             $displayEpoch = display_epoch_btn[key].displayEpoch;
           }
         });
-
         //creation of object
         $scope.timeLineObj.push(
           {
@@ -271,13 +270,34 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
       });
     };
 
-    $scope.showDlgAddEpoch = function($numberCol, $date){
+    $scope.showDlgAddEpoch = function($numberCol, $date, $timeline_name){
       $date = new Date($date);
+      $restriction = "";
+      $dependency = "";
+
+      angular.element.getScript( "timeline/dict/display_epoch_btn.js");
+      angular.forEach(display_epoch_btn, function(value, key) {
+        if((display_epoch_btn[key].name == $timeline_name) && (display_epoch_btn[key].dependency != 0)){
+          switch(display_epoch_btn[key].dependency){
+            case "5 Electrode":
+              $restriction = "A neuron must be linked to an electrode";
+            break;
+            case "6 Neuron":
+              $restriction = "A protocole must be linked to a neuron";
+            break;
+          }
+          $dependency = display_epoch_btn[key].dependency;
+        }
+      });
+
       ModalService.showModal({
         templateUrl: "timeline/modal_dlg_add_epoch.tpl.html",
         controller: "AddEpochController",
         inputs: {
           title: "Epoch information",
+          restriction: $restriction,
+          dependency: $dependency,
+          epochObj: $scope.epochObj,
         }
       }).then(function(modal) {
         modal.element.modal();
@@ -285,7 +305,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
           if(result.type == null){
             bootbox.alert("Please choose type to create epoch !");
           } else {
-            $scope.createEpoch($numberCol, result.text, $date, result.type);
+            $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch);
           }
         });
       });
@@ -342,18 +362,18 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         }
       });
     };
-    $scope.createEpoch = function($numberCol, $text, $date, $type){
+    $scope.createEpoch = function($numberCol, $text, $date, $type, $link_epoch){
         var $startEpoch = new Date();
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $startEpoch/1e3|0; 
         var $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
-        $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement);
+        $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, null, null, $link_epoch);
         $scope.toJSON();
     };
     
-    $scope.addEpoch = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $endEpoch, $endFormat){
+    $scope.addEpoch = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $endEpoch, $endFormat, $link_epoch){
         if(angular.element.isEmptyObject($scope.epochObj)) {
           $idEpoch = 1;
         } else {
@@ -367,10 +387,12 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         var $i=0;
         var $TLexp = "";
         var $TLcolor = "";
+        var $TLName = "";
         angular.forEach($scope.timeLineObj, function($value, $key){
           if($numberCol == $scope.timeLineObj[$key].id){
             $TLexp = $scope.timeLineObj[$key].experiment;
             $TLcolor = $scope.timeLineObj[$key].color;
+            $TLName =  $scope.timeLineObj[$key].name;
           }
           if(($vPlacement+150) > $scope.timeLineObj[$key].height){
             $scope.timeLineObj[$key].height = $vPlacement+150;
@@ -378,6 +400,11 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
           }
           $i++;
         });
+        if($link_epoch === undefined){
+          $id_epoch_link = "";
+        } else {
+          $id_epoch_link = '/notebooks/epoch/'+$link_epoch;
+        }
         $scope.epochObj.push (
             {
                 id : $idEpoch,
@@ -391,8 +418,10 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
                 TimeLineExp : '#/timeline' + $TLexp,
                 UrlExp : window.location.hash,
                 TimeLineColor : $TLcolor,
+                TimeLineName : $TLName,
                 end : $endEpoch, 
                 endFormat : $endFormat,
+                id_epoch : $id_epoch_link,
             }
         );
     };
@@ -741,13 +770,17 @@ mod_tlv.controller('EditEventController', [
 }]);
 
 mod_tlv.controller('AddEpochController', [
-  '$scope', '$element', 'title', 'close', 
-  function($scope, $element, title, close) {
+  '$scope', '$element', 'title', 'restriction', 'dependency', 'epochObj', 'close', 
+  function($scope, $element, title, restriction, dependency, epochObj, close) {
 
   $scope.text = null;
   //$scope.date = null;
   $scope.type = null;
+  $scope.link_epoch = null;
   $scope.title = title;
+  $scope.restriction = restriction;
+  $scope.dependency = dependency;
+  $scope.epochObj = epochObj;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
@@ -755,7 +788,8 @@ mod_tlv.controller('AddEpochController', [
     close({
       text: $scope.text,
       //date: $scope.date,
-      type: $scope.type
+      type: $scope.type,
+      link_epoch: angular.element('#link_epoch').val(), //$scope.link_epoch
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -768,7 +802,8 @@ mod_tlv.controller('AddEpochController', [
     close({
       text: $scope.text,
       //date: $scope.date,
-      type: $scope.type
+      type: $scope.type,
+      link_epoch:  angular.element('#link_epoch').val(),
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
