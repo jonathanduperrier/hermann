@@ -405,6 +405,14 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         } else {
           $id_epoch_link = '/notebooks/epoch/'+$link_epoch;
         }
+
+        if($endEpoch != null){
+          $startEpochTS = $startEpoch.valueOf();
+          $endEpochTS = $endEpoch.valueOf();
+          $diffTSEpoch = (($endEpochTS/1e3|0) - ($startEpochTS/1e3|0))
+        } else {
+          $diffTSEpoch = 42;
+        }
         $scope.epochObj.push (
             {
                 id : $idEpoch,
@@ -422,12 +430,9 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
                 end : $endEpoch, 
                 endFormat : $endFormat,
                 id_epoch_link : $id_epoch_link,
+                epoch_height : $diffTSEpoch,
             }
         );
-        if($endEpoch != null){
-          $startEpochTS = $startEpoch.valueOf();
-          $endEpochTS = $endEpoch.valueOf();
-        }
     };
     $scope.showConfirmRemoveEpoch = function($nbEpoch) {
         ModalService.showModal({

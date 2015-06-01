@@ -1,4 +1,4 @@
-	<div ng-repeat="epochObj in epochObj track by $index" ng-click="epochZIndex(epochObj.id)" class="epoch epoch_{{epochObj.id}}" id="epoch_{{epochObj.id}}" style="top:{{30+epochObj.vPlacement}}px; background-color:{{epochObj.color}}; border:1px solid black;" ng-if="epochObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
+	<div ng-repeat="epochObj in epochObj track by $index" ng-click="epochZIndex(epochObj.id)" class="epoch epoch_{{epochObj.id}}" id="epoch_{{epochObj.id}}" style="top:{{30+epochObj.vPlacement}}px; background-color:{{epochObj.color}}; border:1px solid black; height:{{epochObj.epoch_height}}px;" ng-if="epochObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
 		<div class="btn-group btn-group-xs btnDelEvent">
 			<button ng-click="showDlgEditEpoch(epochObj.id)" class="btn btn-default">
 				<span class="glyphicon glyphicon glyphicon-edit"></span>
