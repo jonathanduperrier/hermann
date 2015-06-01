@@ -1,17 +1,17 @@
-	<div ng-repeat="epochObj in epochObj track by $index" ng-click="epochZIndex(epochObj.id)" class="epoch epoch_{{epochObj.id}}" id="epoch_{{epochObj.id}}" style="top:{{30+epochObj.vPlacement}}px; background-color:{{epochObj.color}}; border:1px solid black; height:{{epochObj.epoch_height}}px;" ng-if="epochObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
+	<div ng-repeat="protocolObj in protocolObj track by $index" ng-click="epochZIndex(protocolObj.id)" class="epoch epoch_{{protocolObj.id}}" id="epoch_{{protocolObj.id}}" style="top:{{30+protocolObj.vPlacement}}px; background-color:{{protocolObj.color}}; border:1px solid black; height:{{protocolObj.epoch_height}}px;" ng-if="protocolObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
 		<div class="btn-group btn-group-xs btnDelEvent">
-			<button ng-click="showDlgEditEpoch(epochObj.id)" class="btn btn-default">
+			<button ng-click="showDlgEditEpoch(protocolObj.id)" class="btn btn-default">
 				<span class="glyphicon glyphicon glyphicon-edit"></span>
 			</button>
 		</div>
 		<div class="dateTypeEvent">
-			{{epochObj.type}}
+			{{protocolObj.type}}
 		</div>
 		<div class="textEvent">
-			{{epochObj.text}}
+			{{protocolObj.text}}
 		</div>
 		<div style="float:ledt; width:130px">
-			{{epochObj.startFormat}}<br />
-			{{epochObj.endFormat}}
+			{{protocolObj.startFormat}}<br />
+			{{protocolObj.endFormat}}
 		</div>
 	</div>
