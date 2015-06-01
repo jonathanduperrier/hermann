@@ -447,6 +447,19 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
                 type_epoch : $type_epoch,
             }
         );
+        angular.forEach($scope.epochObj, function(value, key){
+          switch($scope.epochObj[key].type_epoch){
+            case "electrode":
+              $scope.electrodeObj.push ($scope.epochObj[key]);
+            break;
+            case "neuron":
+              $scope.neuronObj.push ($scope.epochObj[key]);
+            break;
+            case "protocol":
+              $scope.protocolObj.push ($scope.epochObj[key]);
+            break;
+          }
+        });
     };
     $scope.showConfirmRemoveEpoch = function($nbEpoch) {
         ModalService.showModal({
@@ -624,9 +637,9 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
               if(value.end != null){
                 $endEpoch = new Date(value.end);
                 $endFormat = $endEpoch.format('mm/dd/yyyy - HH:MM');
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j], $endEpoch, $endFormat);
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j], $endEpoch, $endFormat, null, "electrode");
               } else {
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j]);
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j], null, null, null, "electrode");
               }
           }
           $j++;
