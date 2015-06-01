@@ -12,6 +12,9 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
     $scope.timeLineObj = [];
     $scope.eventObj = [];
     $scope.epochObj = [];
+    $scope.electrodeObj = [];
+    $scope.neuronObj = [];
+    $scope.protocolObj = [];
     $scope.$routeParams = $routeParams;
 
     $scope.idExp = 0;
@@ -274,6 +277,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
       $date = new Date($date);
       $restriction = "";
       $dependency = "";
+      $type_epoch = "";
 
       angular.element.getScript( "timeline/dict/display_epoch_btn.js");
       angular.forEach(display_epoch_btn, function(value, key) {
@@ -281,10 +285,14 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
           switch(display_epoch_btn[key].dependency){
             case "5 Electrode":
               $restriction = "A neuron must be linked to an electrode";
+              $type_epoch = "neuron";
             break;
             case "6 Neuron":
               $restriction = "A protocole must be linked to a neuron";
+              $type_epoch = "protocol";
             break;
+            default:
+              $type_epoch = "electrode";
           }
           $dependency = display_epoch_btn[key].dependency;
         }
@@ -305,7 +313,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
           if(result.type == null){
             bootbox.alert("Please choose type to create epoch !");
           } else {
-            $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch);
+            $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch, $type_epoch);
           }
         });
       });
@@ -362,18 +370,18 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         }
       });
     };
-    $scope.createEpoch = function($numberCol, $text, $date, $type, $link_epoch){
+    $scope.createEpoch = function($numberCol, $text, $date, $type, $link_epoch, $type_epoch){
         var $startEpoch = new Date();
         var $vPlInit = $date/1e3|0; //date of timeline
         var $vPl = $startEpoch/1e3|0; 
         var $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
-        $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, null, null, $link_epoch);
+        $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, null, null, $link_epoch, $type_epoch);
         $scope.toJSON();
     };
     
-    $scope.addEpoch = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $endEpoch, $endFormat, $link_epoch){
+    $scope.addEpoch = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $endEpoch, $endFormat, $link_epoch, $type_epoch){
         if(angular.element.isEmptyObject($scope.epochObj)) {
           $idEpoch = 1;
         } else {
@@ -431,6 +439,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
                 endFormat : $endFormat,
                 id_epoch_link : $id_epoch_link,
                 epoch_height : $diffTSEpoch,
+                type_epoch : $type_epoch,
             }
         );
     };
@@ -458,18 +467,33 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, $route
         $scope.toJSON();
     };
 
-
     $scope.toJSON = function() { //convert object to JSON and save it in database
         var id_exp = $routeParams.eID;
         var $prevJSONContentEvent = '';
 
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
-        $scope.jsonContentEpoch = '{ "objects" : ' + angular.toJson($scope.epochObj) + '}';
         
+        angular.forEach($scope.epochObj, function(value, key){
+          switch($scope.epochObj[key].type_epoch){
+            case "electrode":
+              
+            break;
+            case "neuron":
+
+            break;
+            case "protocol":
+
+            break;
+          }
+        });
+        //$scope.jsonContentEpoch = '{ "objects" : ' + angular.toJson($scope.epochObj) + '}';
+
         timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
           events.put( $scope.jsonContentEvent, function(){});
+
           epoch.put( $scope.jsonContentEpoch, function(){});
+
         });
     };
 
