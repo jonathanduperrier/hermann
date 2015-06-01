@@ -33,11 +33,13 @@
 								<select class="form-control" ng-repeat="epochObj in epochObj track by $index" id="link_epoch" name="link_epoch" ng-model="link_epoch" ng-if="dependency == '5 Electrode' && epochObj.TimeLineName == '5 Electrode'">
 									<option value="{{epochObj.id}}">{{epochObj.text}} - {{epochObj.startFormat}}</option>
 								</select>
+
 								<select class="form-control" ng-repeat="epochObj in epochObj track by $index" id="link_epoch" name="link_epoch" ng-model="link_epoch" ng-if="dependency == '6 Neuron' && epochObj.TimeLineName == '6 Neuron'">
 									<option value="{{epochObj.id}}">{{epochObj.text}} - {{epochObj.startFormat}}</option>
 								</select>
 							</div>
 						  </div>
+						  <p>{{restriction}}</p>
 						</div>
 
 				      <div class="modal-footer">

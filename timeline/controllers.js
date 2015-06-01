@@ -582,7 +582,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
     };
 
     $scope.fromJsonEpoch = function($scale){
-        $scope.response = epoch.get({}, function(data){
+        $scope.response = electrode.get({}, function(data){
         $jsonEpoch = angular.fromJson(data.objects);
         $timeStampEvtMax = 0;
         $timeStampEvtMin = 0;
@@ -685,9 +685,21 @@ mod_tlv.directive('eventDir', function(){
   };
 });
 
-mod_tlv.directive('epochDir', function(){
+mod_tlv.directive('electrodeDir', function(){
   return {
-    templateUrl: 'timeline/epoch.tpl.html'
+    templateUrl: 'timeline/electrode.tpl.html'
+  };
+});
+
+mod_tlv.directive('neuronDir', function(){
+  return {
+    templateUrl: 'timeline/neuron.tpl.html'
+  };
+});
+
+mod_tlv.directive('protocolDir', function(){
+  return {
+    templateUrl: 'timeline/protocol.tpl.html'
   };
 });
 
