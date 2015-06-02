@@ -582,7 +582,18 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
     };
 
     $scope.fromJsonEpoch = function($scale){
-        $scope.response = electrode.get({}, function(data){
+      $scope.response = electrode.get({}, function(data){
+        $scope.functionFromJsonEpoch(data);
+      });
+      $scope.response = neuron.get({}, function(data){
+        $scope.functionFromJsonEpoch(data);
+      });
+      $scope.response = protocol.get({}, function(data){
+        $scope.functionFromJsonEpoch(data);
+      });
+    };
+
+    $scope.functionFromJsonEpoch = function(data){
         $jsonEpoch = angular.fromJson(data.objects);
         $timeStampEvtMax = 0;
         $timeStampEvtMin = 0;
@@ -627,9 +638,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
           }
           $i++;
         });
-      });
     };
-
 
     $scope.eventZIndex = function($event_id) {
         angular.element(".event").css("z-index", "0");
