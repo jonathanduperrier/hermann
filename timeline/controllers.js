@@ -842,11 +842,12 @@ mod_tlv.controller('AddEpochController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
+    $link_epoch = angular.element('#link_epoch').val();
     close({
       text: $scope.text,
       //date: $scope.date,
       type: $scope.type,
-      link_epoch: angular.element('#link_epoch').val(), //$scope.link_epoch
+      link_epoch: $link_epoch, //$scope.link_epoch
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -856,11 +857,12 @@ mod_tlv.controller('AddEpochController', [
     //  Manually hide the modal.
     $element.modal('hide');
     //  Now call close, returning control to the caller.
+    $link_epoch = angular.element('#link_epoch').val();
     close({
       text: $scope.text,
       //date: $scope.date,
       type: $scope.type,
-      link_epoch:  angular.element('#link_epoch').val(),
+      link_epoch:  $link_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
