@@ -30,15 +30,21 @@
 						  <div class="form-group">
 						  	<label for="link_epoch" class="col-sm-2 control-label">Link epoch : </label>
 						  	<div class="col-sm-10">
-								<select class="form-control" ng-repeat="epochObj in epochObj track by $index" id="link_epoch" name="link_epoch" ng-model="link_epoch" ng-if="dependency == '5 Electrode' && epochObj.TimeLineName == '5 Electrode'">
-									<option value="{{epochObj.id}}">{{epochObj.text}} - {{epochObj.startFormat}}</option>
-								</select>
+						  		<div ng-if="type_epoch == 'neuron'">
+							  		<select class="form-control" id="link_epoch" name="link_epoch" ng-model="link_epoch">
+							  			<option ng-repeat="epochObj in epochObj" ng-if="epochObj.id != null && epochObj.type_epoch == 'electrode'" value="{{epochObj.id}}">{{epochObj.text}} - {{epochObj.startFormat}}</option>
+							  		</select>
+							  	</div>
 
-								<select class="form-control" ng-repeat="epochObj in epochObj track by $index" id="link_epoch" name="link_epoch" ng-model="link_epoch" ng-if="dependency == '6 Neuron' && epochObj.TimeLineName == '6 Neuron'">
-									<option value="{{epochObj.id}}">{{epochObj.text}} - {{epochObj.startFormat}}</option>
-								</select>
+						  		<div ng-if="type_epoch == 'protocol'">
+							  		<select class="form-control" id="link_epoch" name="link_epoch" ng-model="link_epoch">
+							  			<option ng-repeat="epochObj in epochObj" ng-if="epochObj.id != null && epochObj.type_epoch == 'neuron'" value="{{epochObj.id}}">{{epochObj.text}} - {{epochObj.startFormat}}</option>
+							  		</select>
+							  	</div>
+
 							</div>
 						  </div>
+						  <p>{{type_epoch}}</p>
 						  <p>{{restriction}}</p>
 						</div>
 

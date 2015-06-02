@@ -279,27 +279,26 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
     $scope.showDlgAddEpoch = function($numberCol, $date, $timeline_name){
       $date = new Date($date);
       $restriction = "";
-      $dependency = "";
       $type_epoch = "";
 
       angular.element.getScript( "timeline/dict/display_epoch_btn.js");
       angular.forEach(display_epoch_btn, function(value, key) {
-        if((display_epoch_btn[key].name == $timeline_name) && (display_epoch_btn[key].dependency != 0)){
-          switch(display_epoch_btn[key].dependency){
+        if(display_epoch_btn[key].name == $timeline_name){
+          switch(display_epoch_btn[key].name){
             case "5 Electrode":
+              $type_epoch = "electrode";
+            break;
+            case "6 Neuron":
               $restriction = "A neuron must be linked to an electrode";
               $type_epoch = "neuron";
             break;
-            case "6 Neuron":
+            case "7 Protocol":
               $restriction = "A protocole must be linked to a neuron";
               $type_epoch = "protocol";
             break;
             default:
               $type_epoch = "electrode";
           }
-          $dependency = display_epoch_btn[key].dependency;
-        } else {
-          $type_epoch = "electrode";
         }
       });
 
@@ -309,7 +308,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
         inputs: {
           title: "Epoch information",
           restriction: $restriction,
-          dependency: $dependency,
+          type_epoch: $type_epoch,
           epochObj: $scope.epochObj,
         }
       }).then(function(modal) {
@@ -495,7 +494,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
 
         $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
         $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';        
-        $scope.loopEpochObj();
+        //$scope.loopEpochObj();
         $scope.jsonContentElectrode = '{ "objects" : ' + angular.toJson($scope.electrodeObj) + '}';
         $scope.jsonContentNeuron = '{ "objects" : ' + angular.toJson($scope.neuronObj) + '}';
         $scope.jsonContentProtocol = '{ "objects" : ' + angular.toJson($scope.protocolObj) + '}';        
@@ -583,17 +582,17 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
 
     $scope.fromJsonEpoch = function($scale){
       $scope.response = electrode.get({}, function(data){
-        $scope.functionFromJsonEpoch(data);
+        $scope.functionFromJsonEpoch(data, $scale, "electrode");
       });
       $scope.response = neuron.get({}, function(data){
-        $scope.functionFromJsonEpoch(data);
+        $scope.functionFromJsonEpoch(data, $scale, "neuron");
       });
       $scope.response = protocol.get({}, function(data){
-        $scope.functionFromJsonEpoch(data);
+        $scope.functionFromJsonEpoch(data, $scale, "protocol");
       });
     };
 
-    $scope.functionFromJsonEpoch = function(data){
+    $scope.functionFromJsonEpoch = function(data, $scale, $type_epoch){
         $jsonEpoch = angular.fromJson(data.objects);
         $timeStampEvtMax = 0;
         $timeStampEvtMin = 0;
@@ -631,9 +630,9 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
               if(value.end != null){
                 $endEpoch = new Date(value.end);
                 $endFormat = $endEpoch.format('mm/dd/yyyy - HH:MM');
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $endEpoch, $endFormat, null, "electrode");
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $endEpoch, $endFormat, null, $type_epoch);
               } else {
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, null, null, null, "electrode");
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, null, null, null, $type_epoch);
               }
           }
           $i++;
@@ -828,16 +827,16 @@ mod_tlv.controller('EditEventController', [
 }]);
 
 mod_tlv.controller('AddEpochController', [
-  '$scope', '$element', 'title', 'restriction', 'dependency', 'epochObj', 'close', 
-  function($scope, $element, title, restriction, dependency, epochObj, close) {
+  '$scope', '$element', 'title', 'restriction', 'epochObj', 'type_epoch', 'close', 
+  function($scope, $element, title, restriction, epochObj, type_epoch, close) {
 
   $scope.text = null;
   //$scope.date = null;
   $scope.type = null;
+  $scope.type_epoch = type_epoch;
   $scope.link_epoch = null;
   $scope.title = title;
   $scope.restriction = restriction;
-  $scope.dependency = dependency;
   $scope.epochObj = epochObj;
   
   //  This close function doesn't need to use jQuery or bootstrap, because

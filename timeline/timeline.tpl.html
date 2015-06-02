@@ -12,7 +12,6 @@
 		</div>
 	</div>
 	<div ng-repeat="timeLineObj in timeLineObj | orderBy :'name'" ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
-		<!--<div class="TL_top_bar" style="background-color:{{timeLineObj.color}};">-->
 			<div class="btn-group btn-group-xs btnAddEvent">
 				<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn btn-default" ng-if='dateEndExp == ""'>
 					<span class="glyphicon glyphicon-plus-sign"></span>
@@ -24,7 +23,6 @@
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
 			</div>
-		<!--</div>-->
 		<div event-dir></div>
 		<div electrode-dir></div>
 		<div neuron-dir></div>
