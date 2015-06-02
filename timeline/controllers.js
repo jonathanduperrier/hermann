@@ -447,19 +447,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
                 type_epoch : $type_epoch,
             }
         );
-        angular.forEach($scope.epochObj, function(value, key){
-          switch($scope.epochObj[key].type_epoch){
-            case "electrode":
-              $scope.electrodeObj.push ($scope.epochObj[key]);
-            break;
-            case "neuron":
-              $scope.neuronObj.push ($scope.epochObj[key]);
-            break;
-            case "protocol":
-              $scope.protocolObj.push ($scope.epochObj[key]);
-            break;
-          }
-        });
+        $scope.loopEpochObj();
     };
     $scope.showConfirmRemoveEpoch = function($nbEpoch) {
         ModalService.showModal({
@@ -485,13 +473,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
         $scope.toJSON();
     };
 
-    $scope.toJSON = function() { //convert object to JSON and save it in database
-        var id_exp = $routeParams.eID;
-        var $prevJSONContentEvent = '';
-
-        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
-        $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';
-        
+    $scope.loopEpochObj = function() {
         angular.forEach($scope.epochObj, function(value, key){
           switch($scope.epochObj[key].type_epoch){
             case "electrode":
@@ -505,6 +487,15 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
             break;
           }
         });
+    };
+
+    $scope.toJSON = function() { //convert object to JSON and save it in database
+        var id_exp = $routeParams.eID;
+        var $prevJSONContentEvent = '';
+
+        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
+        $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';        
+        $scope.loopEpochObj();
         $scope.jsonContentElectrode = '{ "objects" : ' + angular.toJson($scope.electrodeObj) + '}';
         $scope.jsonContentNeuron = '{ "objects" : ' + angular.toJson($scope.neuronObj) + '}';
         $scope.jsonContentProtocol = '{ "objects" : ' + angular.toJson($scope.protocolObj) + '}';        
