@@ -574,22 +574,18 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
             if($timeStampEvtMax < $dateEvt.valueOf()){
               $timeStampEvtMax = $dateEvt.valueOf();
             }
-            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
+            $diffTSEvt = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
           } else {
-            $diffTSEvt[$i] = 0;
+            $diffTSEvt = 0;
           }
-          $i++;
-        });
-        $j=0;
-        angular.forEach($jsonEvents, function(value, key) {
           if( value != null ){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
               $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
-              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt[$j]);
+              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt);
           }
-          $j++;
+          $i++;
         });
       });
     };
@@ -599,7 +595,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
         $jsonEpoch = angular.fromJson(data.objects);
         $timeStampEvtMax = 0;
         $timeStampEvtMin = 0;
-        $diffTSEvt = [];
+        $diffTSEpoch = 0;
         switch($scale){
           case 0:
             $scl_coef = 1;
@@ -621,14 +617,10 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
             if($timeStampEvtMax < $startEpoch.valueOf()){
               $timeStampEvtMax = $startEpoch.valueOf();
             }
-            $diffTSEvt[$i] = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
+            $diffTSEpoch = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
           } else {
-            $diffTSEvt[$i] = 0;
+            $diffTSEpoch = 0;
           }
-          $i++;
-        });
-        $j=0;
-        angular.forEach($jsonEpoch, function(value, key) {
           if( value != null ){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
@@ -637,15 +629,16 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
               if(value.end != null){
                 $endEpoch = new Date(value.end);
                 $endFormat = $endEpoch.format('mm/dd/yyyy - HH:MM');
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j], $endEpoch, $endFormat, null, "electrode");
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $endEpoch, $endFormat, null, "electrode");
               } else {
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEvt[$j], null, null, null, "electrode");
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, null, null, null, "electrode");
               }
           }
-          $j++;
+          $i++;
         });
       });
     };
+
 
     $scope.eventZIndex = function($event_id) {
         angular.element(".event").css("z-index", "0");
