@@ -412,11 +412,6 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
           }
           $i++;
         });
-        if($link_epoch === undefined){
-          $id_epoch_link = "";
-        } else {
-          $id_epoch_link = '/notebooks/epoch/'+$link_epoch;
-        }
 
         if($endEpoch != null){
           $startEpochTS = $startEpoch.valueOf();
@@ -441,9 +436,9 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
                 TimeLineName : $TLName,
                 end : $endEpoch, 
                 endFormat : $endFormat,
-                id_epoch_link : $id_epoch_link,
                 epoch_height : $diffTSEpoch,
                 type_epoch : $type_epoch,
+                link_epoch : $link_epoch,
             }
         );
         $scope.loopEpochObj();
@@ -473,19 +468,27 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
     };
 
     $scope.loopEpochObj = function() {
-        angular.forEach($scope.epochObj, function(value, key){
-          switch($scope.epochObj[key].type_epoch){
-            case "electrode":
-              $scope.electrodeObj.push ($scope.epochObj[key]);
-            break;
-            case "neuron":
-              $scope.neuronObj.push ($scope.epochObj[key]);
-            break;
-            case "protocol":
-              $scope.protocolObj.push ($scope.epochObj[key]);
-            break;
-          }
-        });
+      //vidage des tableaux
+      $scope.electrodeObj = [];
+      $scope.neuronObj = [];
+      $scope.protocolObj = [];
+
+      angular.forEach($scope.epochObj, function(value, key){
+
+        if($scope.epochObj[key].type_epoch == "electrode"){
+          $scope.electrodeObj.push ($scope.epochObj[key]);
+        }
+
+        if($scope.epochObj[key].type_epoch == "neuron" ){
+          $scope.epochObj[key].electrode = $scope.epochObj[key].link_epoch;
+          $scope.neuronObj.push ($scope.epochObj[key]);
+        }
+
+        if($scope.epochObj[key].type_epoch == "protocol"){
+          $scope.epochObj[key].neuron = $scope.epochObj[key].link_epoch;
+          $scope.protocolObj.push ($scope.epochObj[key]);
+        }
+      });
     };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
