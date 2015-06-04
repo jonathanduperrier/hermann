@@ -311,6 +311,11 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
         }
       });
       if($show_modal == 1){
+        /*$scope.electrodeObj = [];
+        $scope.neuronObj = [];
+        $scope.protocolObj = [];
+        $scope.fromJsonEpoch(1);*/
+
         ModalService.showModal({
           templateUrl: "timeline/modal_dlg_add_epoch.tpl.html",
           controller: "AddEpochController",
