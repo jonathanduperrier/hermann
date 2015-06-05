@@ -284,6 +284,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
       var $electrodeObjExp = [];
       var $neuronObjExp = [];
       var $exp = "";
+      $scope.epochObjList = [];
 
       angular.element.getScript( "timeline/dict/display_epoch_btn.js");
       angular.forEach(display_epoch_btn, function(value, key) {
@@ -306,10 +307,22 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
                   $i++;
                 }
               });
+
+              $j = 0;
+              angular.forEach($scope.epochObj, function($value, $key) {
+                $strTL = ($scope.epochObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $scope.epochObjList[$j] = $scope.epochObj[$key];
+                  $j++;
+                }
+              });
+
               if($electrodeObjExp.length == 0){
                 bootbox.alert($restriction);
                 $show_modal = 0;
               }
+
             break;
             case "7 Protocol":
               $restriction = "A protocole must be linked to a neuron";
@@ -324,6 +337,17 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
                   $i++;
                 }
               });
+
+              $j = 0;
+              angular.forEach($scope.epochObj, function($value, $key) {
+                $strTL = ($scope.electrodeObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $scope.epochObjList[$j] = $scope.epochObj[$key];
+                  $j++;
+                }
+              });
+
               if($neuronObjExp.length == 0){
                 bootbox.alert($restriction);
                 $show_modal = 0;
@@ -348,13 +372,14 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
             restriction: $restriction,
             type_epoch: $type_epoch,
             epochObj: $scope.epochObj,
+            epochObjList: $scope.epochObjList,
           }
         }).then(function(modal) {
           modal.element.modal();
           modal.close.then(function(result) {
             if(result.type == null){
               bootbox.alert("Please choose type to create epoch !");
-            } else if((result.link_epoch == null) | (result.link_epoch == "? object:null ?")) {
+            } else if(((result.link_epoch == null) | (result.link_epoch == "? object:null ?")) & ($type_epoch != "electrode")) {
               bootbox.alert($restriction);
             } else {
               $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch, $type_epoch);
@@ -922,8 +947,8 @@ mod_tlv.controller('EditEventController', [
 }]);
 
 mod_tlv.controller('AddEpochController', [
-  '$scope', '$element', 'title', 'restriction', 'epochObj', 'type_epoch', 'close', 
-  function($scope, $element, title, restriction, epochObj, type_epoch, close) {
+  '$scope', '$element', 'title', 'restriction', 'epochObj', 'epochObjList', 'type_epoch', 'close', 
+  function($scope, $element, title, restriction, epochObj, epochObjList , type_epoch, close) {
 
   $scope.text = null;
   //$scope.date = null;
@@ -933,6 +958,7 @@ mod_tlv.controller('AddEpochController', [
   $scope.title = title;
   $scope.restriction = restriction;
   $scope.epochObj = epochObj;
+  $scope.epochObjList = epochObjList;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
