@@ -281,10 +281,13 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
       var $restriction = "";
       var $type_epoch = "";
       var $show_modal = 1;
+      var $electrodeObjExp = [];
+      var $neuronObjExp = [];
+      var $exp = "";
 
       angular.element.getScript( "timeline/dict/display_epoch_btn.js");
       angular.forEach(display_epoch_btn, function(value, key) {
-        if(display_epoch_btn[key].name == $timeline_name){
+        if(display_epoch_btn[key].name == $timeline_name){          
           switch(display_epoch_btn[key].name){
             case "5 Electrode":
               $type_epoch = "electrode";
@@ -292,7 +295,18 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
             case "6 Neuron":
               $restriction = "A neuron must be linked to an electrode";
               $type_epoch = "neuron";
-              if($scope.electrodeObj.length == 0){
+              $exp = $scope.getExpFromTimeline($numberCol);
+              //récupérer l'expériment de la timeline en cours
+              $i = 0;
+              angular.forEach($scope.electrodeObj, function($value, $key) {
+                $strTL = ($scope.electrodeObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $electrodeObjExp[$i] = $scope.electrodeObj[$key];
+                  $i++;
+                }
+              });
+              if($electrodeObjExp.length == 0){
                 bootbox.alert($restriction);
                 $show_modal = 0;
               }
@@ -300,7 +314,18 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
             case "7 Protocol":
               $restriction = "A protocole must be linked to a neuron";
               $type_epoch = "protocol";
-              if($scope.neuronObj.length == 0){
+              $exp = $scope.getExpFromTimeline($numberCol);
+              $i = 0;
+
+              angular.forEach($scope.neuronObj, function($value, $key) {
+                $strTL = ($scope.neuronObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $neuronObjExp[$i] = $scope.neuronObj[$key];
+                  $i++;
+                }
+              });
+              if($neuronObjExp.length == 0){
                 bootbox.alert($restriction);
                 $show_modal = 0;
               }
@@ -337,7 +362,15 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
         });
       }
     };
-
+    $scope.getExpFromTimeline = function($numberCol){
+      var $experiment = "";
+      angular.forEach($scope.timeLineObj, function($value, $key) {
+        if($scope.timeLineObj[$key].id == $numberCol){
+          $experiment = $scope.timeLineObj[$key].experiment;
+        }
+      });
+      return $experiment;
+    };
     $scope.showDlgEditEpoch = function($nbEpoch){
       //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
       angular.forEach($scope.epochObj, function(value, key) {
