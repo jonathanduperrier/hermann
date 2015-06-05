@@ -316,7 +316,6 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
               $type_epoch = "protocol";
               $exp = $scope.getExpFromTimeline($numberCol);
               $i = 0;
-
               angular.forEach($scope.neuronObj, function($value, $key) {
                 $strTL = ($scope.neuronObj[$key].timeline).split("/");
                 $expEl = $scope.getExpFromTimeline($strTL[3]);
@@ -355,6 +354,8 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
           modal.close.then(function(result) {
             if(result.type == null){
               bootbox.alert("Please choose type to create epoch !");
+            } else if((result.link_epoch == null) | (result.link_epoch == "? object:null ?")) {
+              bootbox.alert($restriction);
             } else {
               $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch, $type_epoch);
             }
