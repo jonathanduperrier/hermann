@@ -639,9 +639,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         electrode.put( $scope.jsonContentElectrode, function(){} ).$promise.then(function(val) {
           $rootScope.electrodeObj = val.objects;
           neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
-            $rootScope.neuronObj = val.objects;
+            $rootScope.neuronObj = val2.objects;
             protocol.put( $scope.jsonContentProtocol, function(val3){
-              $rootScope.protocolObj = val.objects;
+              $rootScope.protocolObj = val3.objects;
             });
           });
         });
