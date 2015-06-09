@@ -10,7 +10,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'hermann.experiments'
                                          ]);
 mod_tlv.controller('timeLineVisualController', 
-function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electrode, neuron, protocol, $routeParams, Experiment) {
+function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, epoch, electrode, neuron, protocol, $routeParams, Experiment) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
@@ -18,11 +18,16 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
     $scope.electrodeObj = [];
     $scope.neuronObj = [];
     $scope.protocolObj = [];
+    $rootScope.electrodeObj = [];
+    $rootScope.neuronObj = [];
+    $rootScope.protocolObj = [];
+
     $scope.$routeParams = $routeParams;
 
     $scope.idExp = 0;
     $scope.dateStartExp = "";
     $scope.dateEndExp = "";
+
 
     $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
       //data.object
@@ -277,6 +282,17 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
     };
 
     $scope.showDlgAddEpoch = function($numberCol, $date, $timeline_name){
+      //console.log("toto 3 : "+$rootScope.toto);
+      if($rootScope.electrodeObj.length > 0){
+        $scope.electrodeObj = $rootScope.electrodeObj;
+      }
+      if($rootScope.neuronObj.length > 0){
+        $scope.neuronObj = $rootScope.neuronObj;
+      }
+      if($rootScope.protocolObj.length > 0){
+        $scope.protocolObj = $rootScope.protocolObj;
+      }
+
       var $date = new Date($date);
       var $restriction = "";
       var $type_epoch = "";
@@ -340,7 +356,7 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
 
               $j = 0;
               angular.forEach($scope.epochObj, function($value, $key) {
-                $strTL = ($scope.electrodeObj[$key].timeline).split("/");
+                $strTL = ($scope.epochObj[$key].timeline).split("/");
                 $expEl = $scope.getExpFromTimeline($strTL[3]);
                 if($expEl == $exp){
                   $scope.epochObjList[$j] = $scope.epochObj[$key];
@@ -607,24 +623,30 @@ function ($scope, $compile, ModalService, $http, timeLine, events, epoch, electr
     };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
-        var id_exp = $routeParams.eID;
-        var $prevJSONContentEvent = '';
+      var id_exp = $routeParams.eID;
+      var $prevJSONContentEvent = '';
 
-        $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
-        $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';        
-        //$scope.loopEpochObj();
-        $scope.jsonContentElectrode = '{ "objects" : ' + angular.toJson($scope.electrodeObj) + '}';
-        $scope.jsonContentNeuron = '{ "objects" : ' + angular.toJson($scope.neuronObj) + '}';
-        $scope.jsonContentProtocol = '{ "objects" : ' + angular.toJson($scope.protocolObj) + '}';        
+      $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
+      $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';        
+      $scope.jsonContentElectrode = '{ "objects" : ' + angular.toJson($scope.electrodeObj) + '}';
+      $scope.jsonContentNeuron = '{ "objects" : ' + angular.toJson($scope.neuronObj) + '}';
+      $scope.jsonContentProtocol = '{ "objects" : ' + angular.toJson($scope.protocolObj) + '}';        
 
-        timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
-          events.put( $scope.jsonContentEvent, function(){} );
-          electrode.put( $scope.jsonContentElectrode, function(){}).$promise.then(function(val) {
-            neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val) {
-              protocol.put( $scope.jsonContentProtocol, function(){} );
+
+      //clear tabs of epoch
+      timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
+        events.put( $scope.jsonContentEvent, function(){} );
+        electrode.put( $scope.jsonContentElectrode, function(){} ).$promise.then(function(val) {
+          $rootScope.toto = val.objects;
+          console.log("toto 1 : "+$rootScope.toto);
+          neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
+            $neuronObj = val.objects;
+            protocol.put( $scope.jsonContentProtocol, function(val3){
+              $protocolObj = val.objects;
             });
           });
         });
+      });
     };
 
     $scope.fromJSON = function() {
