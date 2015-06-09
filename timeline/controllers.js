@@ -282,7 +282,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
     };
 
     $scope.showDlgAddEpoch = function($numberCol, $date, $timeline_name){
-      //console.log("toto 3 : "+$rootScope.toto);
       if($rootScope.electrodeObj.length > 0){
         $scope.electrodeObj = $rootScope.electrodeObj;
       }
@@ -292,6 +291,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       if($rootScope.protocolObj.length > 0){
         $scope.protocolObj = $rootScope.protocolObj;
       }
+      $scope.epochObj = [];
+      $scope.epochObj = angular.element.merge($scope.electrodeObj, $scope.neuronObj, $scope.protocolObj);
 
       var $date = new Date($date);
       var $restriction = "";
@@ -323,7 +324,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
                   $i++;
                 }
               });
-
               $j = 0;
               angular.forEach($scope.epochObj, function($value, $key) {
                 $strTL = ($scope.epochObj[$key].timeline).split("/");
