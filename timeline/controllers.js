@@ -637,12 +637,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
         events.put( $scope.jsonContentEvent, function(){} );
         electrode.put( $scope.jsonContentElectrode, function(){} ).$promise.then(function(val) {
-          $rootScope.toto = val.objects;
-          console.log("toto 1 : "+$rootScope.toto);
+          $rootScope.electrodeObj = val.objects;
           neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
-            $neuronObj = val.objects;
+            $rootScope.neuronObj = val.objects;
             protocol.put( $scope.jsonContentProtocol, function(val3){
-              $protocolObj = val.objects;
+              $rootScope.protocolObj = val.objects;
             });
           });
         });
