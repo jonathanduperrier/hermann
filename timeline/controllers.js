@@ -159,7 +159,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         var $vPl = $dateEvent/1e3|0; 
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
 
-        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
+        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
         $scope.toJSON();
     };
@@ -333,7 +333,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
                   $j++;
                 }
               });
-
               if($electrodeObjExp.length == 0){
                 bootbox.alert($restriction);
                 $show_modal = 0;
@@ -395,7 +394,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           modal.close.then(function(result) {
             if(result.type == null){
               bootbox.alert("Please choose type to create epoch !");
-            } else if(((result.link_epoch == null) | (result.link_epoch == "? object:null ?")) & ($type_epoch != "electrode")) {
+            } else if(($type_epoch != "neuron") & (result.link_epoch == "null")) {
+              bootbox.alert($restriction);
+            } else if(($type_epoch != "protocol") & (result.link_epoch == "null")) {
               bootbox.alert($restriction);
             } else {
               $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch, $type_epoch);
@@ -495,7 +496,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         var $vPl = $startEpoch/1e3|0; 
         var $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
 
-        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2?
+        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2
         $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, null, null, $link_epoch, $type_epoch);
         $scope.toJSON();
     };
