@@ -29,19 +29,15 @@
 						  <div class="form-group">
 						  	<label for="link_epoch" class="col-sm-2 control-label">Link epoch : </label>
 						  	<div class="col-sm-10">
-						  		<script type="text/javascript">
-						  			$("#link_epoch option[value='? object:null ?']").remove();
-						  		</script>
-
 						  		<div ng-if="type_epoch == 'neuron'">
 							  		<select class="form-control" id="link_epoch" name="link_epoch" ng-model="link_epoch">
-							  			<option value="null" selected=selected>Choose Electrode</option>
+							  			<option value="null">Choose Electrode</option>
 							  			<option ng-repeat="epochObjList in epochObjList track by $index" ng-if="epochObjList.type_epoch == 'electrode'" value="{{epochObjList.resource_uri}}">{{epochObjList.text}} - {{epochObjList.startFormat}}</option>
 							  		</select>
 							  	</div>
 						  		<div ng-if="type_epoch == 'protocol'">
 							  		<select class="form-control" id="link_epoch" name="link_epoch" ng-model="link_epoch">
-							  			<option value="null" selected=selected>Choose Neuron</option>
+							  			<option value="null">Choose Neuron</option>
 							  			<option ng-repeat="epochObjList in epochObjList track by $index" ng-if="epochObjList.type_epoch == 'neuron'" value="{{epochObjList.resource_uri}}">{{epochObjList.text}} - {{epochObjList.startFormat}}</option>
 							  		</select>
 							  	</div>

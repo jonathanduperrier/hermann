@@ -340,7 +340,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
 
             break;
             case "7 Protocol":
-              $restriction = "A protocole must be linked to a neuron";
+              $restriction = "A protocol must be linked to a neuron";
               $type_epoch = "protocol";
               $exp = $scope.getExpFromTimeline($numberCol);
               $i = 0;
@@ -374,11 +374,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         }
       });
       if($show_modal == 1){
-        /*$scope.electrodeObj = [];
-        $scope.neuronObj = [];
-        $scope.protocolObj = [];
-        $scope.fromJsonEpoch(1);*/
-
         ModalService.showModal({
           templateUrl: "timeline/modal_dlg_add_epoch.tpl.html",
           controller: "AddEpochController",
@@ -394,9 +389,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           modal.close.then(function(result) {
             if(result.type == null){
               bootbox.alert("Please choose type to create epoch !");
-            } else if(($type_epoch != "neuron") & (result.link_epoch == "null")) {
+            } else if(($type_epoch != "neuron") & (result.link_epoch == null)) {
               bootbox.alert($restriction);
-            } else if(($type_epoch != "protocol") & (result.link_epoch == "null")) {
+            } else if(($type_epoch != "protocol") & (result.link_epoch == null)) {
               bootbox.alert($restriction);
             } else {
               $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch, $type_epoch);
@@ -414,7 +409,84 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       });
       return $experiment;
     };
-    $scope.showDlgEditEpoch = function($nbEpoch){
+    $scope.showDlgEditEpoch = function($nbEpoch, $timeline_name){
+      
+      var $type_epoch = "";
+      var $electrodeObjExp = [];
+      var $neuronObjExp = [];
+      var $exp = "";
+      $scope.epochObjList = [];
+
+      angular.element.getScript( "timeline/dict/display_epoch_btn.js");
+      angular.forEach(display_epoch_btn, function(value, key) {
+        if(display_epoch_btn[key].name == $timeline_name){
+          switch(display_epoch_btn[key].name){
+            case "5 Electrode":
+              $type_epoch = "electrode";
+            break;
+            case "6 Neuron":
+              $restriction = "A neuron must be linked to an electrode";
+              $type_epoch = "neuron";
+              $exp = $scope.getExpFromTimeline($numberCol);
+              //récupérer l'expériment de la timeline en cours
+              $i = 0;
+              angular.forEach($scope.electrodeObj, function($value, $key) {
+                $strTL = ($scope.electrodeObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $electrodeObjExp[$i] = $scope.electrodeObj[$key];
+                  $i++;
+                }
+              });
+              $j = 0;
+              angular.forEach($scope.epochObj, function($value, $key) {
+                $strTL = ($scope.epochObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $scope.epochObjList[$j] = $scope.epochObj[$key];
+                  $j++;
+                }
+              });
+              if($electrodeObjExp.length == 0){
+                bootbox.alert($restriction);
+                $show_modal = 0;
+              }
+
+            break;
+            case "7 Protocol":
+              $restriction = "A protocole must be linked to a neuron";
+              $type_epoch = "protocol";
+              $exp = $scope.getExpFromTimeline($numberCol);
+              $i = 0;
+              angular.forEach($scope.neuronObj, function($value, $key) {
+                $strTL = ($scope.neuronObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $neuronObjExp[$i] = $scope.neuronObj[$key];
+                  $i++;
+                }
+              });
+
+              $j = 0;
+              angular.forEach($scope.epochObj, function($value, $key) {
+                $strTL = ($scope.epochObj[$key].timeline).split("/");
+                $expEl = $scope.getExpFromTimeline($strTL[3]);
+                if($expEl == $exp){
+                  $scope.epochObjList[$j] = $scope.epochObj[$key];
+                  $j++;
+                }
+              });
+              if($neuronObjExp.length == 0){
+                bootbox.alert($restriction);
+                $show_modal = 0;
+              }
+            break;
+            default:
+              $type_epoch = "electrode";
+          }
+        }
+      });
+
       //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
       angular.forEach($scope.epochObj, function(value, key) {
         if(value.id == $nbEpoch){
@@ -423,6 +495,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           $epoch_type = value.type;
           $epoch_start = value.start;
           $epoch_end = value.end;
+          $link_epoch = value.link_epoch;
         }
       });
       ModalService.showModal({
@@ -435,6 +508,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           epoch_type: $epoch_type,
           epoch_start: $epoch_start,
           epoch_end: $epoch_end,
+          type_epoch: $type_epoch,
+          link_epoch: $link_epoch,
+          epochObj: $scope.epochObj,
+          epochObjList: $scope.epochObjList,
         }
       }).then(function(modal) {
         modal.element.modal();
@@ -750,8 +827,18 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
             $scl_coef = 3600;
             break;
         }
+
         $i=0;
         angular.forEach($jsonEpoch, function(value, key) {
+          var $link_epoch = "";
+          switch($type_epoch){
+            case "neuron":
+              $link_epoch = value.electrode;
+            break;
+            case "protocol":
+              $link_epoch = value.neuron;
+            break;
+          }
           if($scope.TLExp.indexOf(value.timeline) != -1){
             $startEpoch = new Date(value.start);
             if(($timeStampEvtMin > $startEpoch.valueOf()) || ( $timeStampEvtMin == 0)){
@@ -772,9 +859,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
               if(value.end != null){
                 $endEpoch = new Date(value.end);
                 $endFormat = $endEpoch.format('mm/dd/yyyy - HH:MM');
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $endEpoch, $endFormat, null, $type_epoch, value.resource_uri);
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $endEpoch, $endFormat, $link_epoch, $type_epoch, value.resource_uri);
               } else {
-                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, null, null, null, $type_epoch, value.resource_uri);
+                $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, null, null, $link_epoch, $type_epoch, value.resource_uri);
               }
           }
           $i++;
@@ -990,7 +1077,7 @@ mod_tlv.controller('AddEpochController', [
       text: $scope.text,
       //date: $scope.date,
       type: $scope.type,
-      link_epoch: $link_epoch, //$scope.link_epoch
+      link_epoch: $link_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1011,8 +1098,8 @@ mod_tlv.controller('AddEpochController', [
 }]);
 
 mod_tlv.controller('EditEpochController', [
-  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'close', 
-  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, close) {
+  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
+  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
   if(epoch_end == null){
     epoch_end = new Date();
   }
@@ -1023,6 +1110,10 @@ mod_tlv.controller('EditEpochController', [
   $scope.type = epoch_type;
   $scope.title = title;
   $scope.del_epoch = false;
+  $scope.link_epoch = link_epoch;
+  $scope.type_epoch = type_epoch;
+  $scope.epochObj = epochObj;
+  $scope.epochObjList = epochObjList;
 
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
@@ -1031,6 +1122,7 @@ mod_tlv.controller('EditEpochController', [
       text: $scope.text,
       epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
       type: $scope.type,
+      link_epoch: $link_epoch,
       del_epoch: $scope.del_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
@@ -1045,6 +1137,7 @@ mod_tlv.controller('EditEpochController', [
       text: $scope.text,
       epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
       type: $scope.type,
+      link_epoch: $link_epoch,
       type_epoch: $scope.type_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };

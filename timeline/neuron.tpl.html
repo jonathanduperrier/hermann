@@ -1,6 +1,6 @@
 	<div ng-repeat="neuronObj in neuronObj track by $index" ng-click="epochZIndex(neuronObj.id)" class="epoch epoch_{{neuronObj.id}}" id="epoch_{{neuronObj.id}}" style="top:{{30+neuronObj.vPlacement}}px; background-color:{{neuronObj.color}}; border:1px solid black; height:{{neuronObj.epoch_height}}px;" ng-if="neuronObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
 		<div class="btn-group btn-group-xs btnDelEvent">
-			<button ng-click="showDlgEditEpoch(neuronObj.id)" class="btn btn-default">
+			<button ng-click="showDlgEditEpoch(neuronObj.id, timeLineObj.name)" class="btn btn-default">
 				<span class="glyphicon glyphicon glyphicon-edit"></span>
 			</button>
 		</div>
