@@ -389,9 +389,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           modal.close.then(function(result) {
             if(result.type == null){
               bootbox.alert("Please choose type to create epoch !");
-            } else if(($type_epoch != "neuron") & (result.link_epoch == null)) {
+            } else if(($type_epoch == "neuron") & (result.link_epoch == "null")) {
               bootbox.alert($restriction);
-            } else if(($type_epoch != "protocol") & (result.link_epoch == null)) {
+            } else if(($type_epoch == "protocol") & (result.link_epoch == "null")) {
               bootbox.alert($restriction);
             } else {
               $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch, $type_epoch);
@@ -637,6 +637,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         );
         $scope.loopEpochObj();
     };
+
     $scope.showConfirmRemoveEpoch = function($nbEpoch) {
         ModalService.showModal({
             templateUrl: 'timeline/modal_confirm_remove_epoch.tpl.html',
