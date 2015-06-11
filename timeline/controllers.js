@@ -35,6 +35,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         if($value.id.toString() == $routeParams.eID){
           $scope.idExp = $value.id;
           $dateStartExp = new Date($value.start);
+          $scope.dateStartExp0 = $dateStartExp;
           $scope.dateStartExp = $dateStartExp.format('mm/dd/yyyy - HH:MM');
 
           $dateEndExp = new Date($value.end);
@@ -778,9 +779,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         angular.forEach($jsonEvents, function(value, key) {
           if($scope.TLExp.indexOf(value.timeline) != -1){
             $dateEvt = new Date(value.date);
-            if(($timeStampEvtMin > $dateEvt.valueOf()) || ( $timeStampEvtMin == 0)){
-              $timeStampEvtMin = $dateEvt.valueOf();
-            }
+            $timeStampEvtMin = $scope.dateStartExp0.valueOf();
             if($timeStampEvtMax < $dateEvt.valueOf()){
               $timeStampEvtMax = $dateEvt.valueOf();
             }
@@ -842,9 +841,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           }
           if($scope.TLExp.indexOf(value.timeline) != -1){
             $startEpoch = new Date(value.start);
-            if(($timeStampEvtMin > $startEpoch.valueOf()) || ( $timeStampEvtMin == 0)){
-              $timeStampEvtMin = $startEpoch.valueOf();
-            }
+            $timeStampEvtMin = $scope.dateStartExp0.valueOf();
+
             if($timeStampEvtMax < $startEpoch.valueOf()){
               $timeStampEvtMax = $startEpoch.valueOf();
             }
@@ -883,13 +881,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
 
     $scope.toogleEvtLeft = function() {
       angular.element(".textEventLeft").slideToggle(500);
-    };
-
-    $scope.getDateStart = function() {
-      $scope.experiment = Experiment.get(function(data){
-        
-      });
-      return $date;
     };
 
     $scope.stopExperiment = function() {
