@@ -148,19 +148,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           if(result.type == null){
             bootbox.alert("Please choose type to create event !");
           } else {
-            $scope.createEvent($numberCol, result.text, $date, result.type);
+            $scope.createEvent($numberCol, result.text, result.type);
           }
         });
       });
     };
 
-    $scope.createEvent = function($numberCol, $text, $date, $type){
+    $scope.createEvent = function($numberCol, $text, $type){
         var $dateEvent = new Date();
-        var $vPlInit = $date/1e3|0; //date of timeline
+        var $vPlInit = $scope.dateStartExp0/1e3|0; 
         var $vPl = $dateEvent/1e3|0; 
         var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
 
-        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2
+        $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
         $scope.toJSON();
     };
@@ -272,12 +272,16 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       });
     };
     $scope.editEvent = function($id, $text, $date, $type){
+        var $vPlInit = $scope.dateStartExp0/1e3|0; 
+        var $vPl = $date/1e3|0; 
+        $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
       angular.forEach($scope.eventObj, function(value, key) {
         if(value.id == $id){
           $scope.eventObj[key].text = $text;
           $scope.eventObj[key].date = $date;
           $scope.eventObj[key].dateFormat = $date.format('dd/mm/yyyy - HH:MM');
           $scope.eventObj[key].type = $type;
+          $scope.eventObj[key].vPlacement = $vPlacement;
         }
       });
     };
@@ -395,7 +399,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
             } else if(($type_epoch == "protocol") & (result.link_epoch == "null")) {
               bootbox.alert($restriction);
             } else {
-              $scope.createEpoch($numberCol, result.text, $date, result.type, result.link_epoch, $type_epoch);
+              $scope.createEpoch($numberCol, result.text, result.type, result.link_epoch, $type_epoch);
             }
           });
         });
@@ -533,6 +537,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       });
     };
     $scope.editEpoch = function($id, $text, $end, $type){
+
       angular.forEach($scope.epochObj, function(value, key) {
         if(value.id == $id){
           $scope.epochObj[key].text = $text;
@@ -559,22 +564,22 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       });
       angular.forEach($scope.protocolObj, function(value, key) {
         if(value.id == $id){
-          $scope.neuronObj[key].text = $text;
-          $scope.neuronObj[key].end = $end;
-          $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
-          $scope.neuronObj[key].type = $type;
+          $scope.protocolObj[key].text = $text;
+          $scope.protocolObj[key].end = $end;
+          $scope.protocolObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          $scope.protocolObj[key].type = $type;
         }
       });
 
 
     };
-    $scope.createEpoch = function($numberCol, $text, $date, $type, $link_epoch, $type_epoch){
+    $scope.createEpoch = function($numberCol, $text, $type, $link_epoch, $type_epoch){
         var $startEpoch = new Date();
-        var $vPlInit = $date/1e3|0; //date of timeline
+        var $vPlInit = $scope.dateStartExp0/1e3|0;
         var $vPl = $startEpoch/1e3|0; 
         var $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
 
-        $vPlacement = (($vPl - $vPlInit)/120); //1px = 60 secondes /2
+        $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
         $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, null, null, $link_epoch, $type_epoch);
         $scope.toJSON();
     };
