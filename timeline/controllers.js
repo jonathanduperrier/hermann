@@ -885,6 +885,13 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       angular.element(".textEventLeft").slideToggle(500);
     };
 
+    $scope.getDateStart = function() {
+      $scope.experiment = Experiment.get(function(data){
+        
+      });
+      return $date;
+    };
+
     $scope.stopExperiment = function() {
       $scope.experiment = Experiment.get(function(data){
         //data.object

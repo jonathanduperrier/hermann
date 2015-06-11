@@ -11,7 +11,7 @@
 			{{protocolObj.text}}
 		</div>
 		<div style="float:left; width:130px">
-			{{protocolObj.startFormat}}<br />
-			{{protocolObj.endFormat}}
+			Start : {{protocolObj.startFormat}}<br />
+			<div ng-if="protocolObj.endFormat != null">End :{{protocolObj.endFormat}}</div>
 		</div>
 	</div>

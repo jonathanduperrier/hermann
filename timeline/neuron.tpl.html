@@ -11,7 +11,7 @@
 			{{neuronObj.text}}
 		</div>
 		<div style="float:left; width:130px">
-			{{neuronObj.startFormat}}<br />
-			{{neuronObj.endFormat}}
+			Start : {{neuronObj.startFormat}}<br />
+			<div ng-if="neuronObj.endFormat != null">End : {{neuronObj.endFormat}}</div>
 		</div>
 	</div>
