@@ -7,10 +7,10 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'electrodeServices',
                                          'neuronServices',
                                          'protocolServices',
-                                         'hermann.experiments'
+                                         'hermann.experiments',
                                          ]);
 mod_tlv.controller('timeLineVisualController', 
-function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, epoch, electrode, neuron, protocol, $routeParams, Experiment) {
+function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epoch, electrode, neuron, protocol, $routeParams, Experiment) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
@@ -27,6 +27,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
     $scope.idExp = 0;
     $scope.dateStartExp = "";
     $scope.dateEndExp = "";
+    $scope.heightMinEpoch = 42;
 
 
     $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
@@ -287,6 +288,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
     };
 
     $scope.showDlgAddEpoch = function($numberCol, $date, $timeline_name){
+
+      /*bootbox.confirm("This operation will close previous Epoch. Do you want to continue?", function(result){
+        console.log("response : "+result);
+      });*/
+
       if($rootScope.electrodeObj.length > 0){
         $scope.electrodeObj = $rootScope.electrodeObj;
       }
@@ -537,12 +543,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
       });
     };
     $scope.editEpoch = function($id, $text, $start, $end, $type){
-
+      
       $startEpochTS = $start.valueOf();
       $endEpochTS = $end.valueOf();
       $diffTSEpoch = (($endEpochTS/1e3|0) - ($startEpochTS/1e3|0)) / $scl_coef;
-      if($diffTSEpoch < 43){
-        $diffTSEpoch = 42;
+      if($diffTSEpoch < ($scope.heightMinEpoch+1)){
+        $diffTSEpoch = $scope.heightMinEpoch;
       }
 
       angular.forEach($scope.epochObj, function(value, key) {
@@ -560,7 +566,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           $scope.electrodeObj[key].end = $end;
           $scope.electrodeObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           $scope.electrodeObj[key].type = $type;
-          $scope.epochObj[key].epoch_height = $diffTSEpoch;
+          $scope.electrodeObj[key].epoch_height = $diffTSEpoch;
         }
       });
       angular.forEach($scope.neuronObj, function(value, key) {
@@ -569,7 +575,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           $scope.neuronObj[key].end = $end;
           $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           $scope.neuronObj[key].type = $type;
-          $scope.epochObj[key].epoch_height = $diffTSEpoch;
+          $scope.neuronObj[key].epoch_height = $diffTSEpoch;
         }
       });
       angular.forEach($scope.protocolObj, function(value, key) {
@@ -578,12 +584,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           $scope.protocolObj[key].end = $end;
           $scope.protocolObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           $scope.protocolObj[key].type = $type;
-          $scope.epochObj[key].epoch_height = $diffTSEpoch;
+          $scope.protocolObj[key].epoch_height = $diffTSEpoch;
         }
       });
-
-
     };
+
     $scope.createEpoch = function($numberCol, $text, $type, $link_epoch, $type_epoch){
         var $startEpoch = new Date();
         var $vPlInit = $scope.dateStartExp0/1e3|0;
@@ -627,11 +632,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
           $startEpochTS = $startEpoch.valueOf();
           $endEpochTS = $endEpoch.valueOf();
           $diffTSEpoch = (($endEpochTS/1e3|0) - ($startEpochTS/1e3|0)) / $scl_coef;
-          if($diffTSEpoch < 43){
-            $diffTSEpoch = 42;
+          if($diffTSEpoch < ($scope.heightMinEpoch+1)){
+            $diffTSEpoch = $scope.heightMinEpoch;
           }
         } else {
-          $diffTSEpoch = 42;
+          $diffTSEpoch = $scope.heightMinEpoch;
         }
 
         $scope.epochObj.push (
@@ -855,12 +860,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
             case "neuron":
               $link_epoch = value.electrode;
               // récupérer nom de l'electrode
-              //$scope.getNameElectrode(value.electrode);
+              $scope.getNameElectrode(value.electrode, $q);
             break;
             case "protocol":
               $link_epoch = value.neuron;
               //récupérer nom neuron
-              //$scope.getNameNeuron(value.neuron);
+              $scope.getNameNeuron(value.neuron, $q);
             break;
           }
           if($scope.TLExp.indexOf(value.timeline) != -1){
@@ -892,23 +897,35 @@ function ($scope, $rootScope, $compile, ModalService, $http, timeLine, events, e
         });
     };
 
-    $scope.getNameElectrode = function($resource_uri){
+    $scope.getNameElectrode = function($resource_uri, $q){
+      var defered = $q.defer();
+
       electrode.get(function(){}).$promise.then(function($data){
         angular.forEach($data.objects, function($value){
           if($value.resource_uri == $resource_uri){
-            $rootScope.electrode_text = $value.text;
+            defered.resolve($value.text);
           }
         });
+      });
+      var promise = defered.promise;
+      promise.then(function(result) {
+        $rootScope.electrode_text = result;
       });
     };
 
     $scope.getNameNeuron = function($resource_uri){
+      var defered = $q.defer();
+
       neuron.get(function(){}).$promise.then(function($data){
         angular.forEach($data.objects, function($value){
           if($value.resource_uri == $resource_uri){
-            $rootScope.neuron_text = $value.text;
+            defered.resolve($value.text);
           }
         });
+      });
+      var promise = defered.promise;
+      promise.then(function(result) {
+        $rootScope.neuron_text = result;
       });
     };
 
