@@ -46,7 +46,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     });
 
-
     $scope.showDlgAddTimeLine = function(){
       ModalService.showModal({
         templateUrl: "timeline/modal_dlg_add_timeline.tpl.html",
@@ -621,9 +620,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           electrode.get(function(){}).$promise.then(function($data){
             angular.forEach($data.objects, function($value){
               $resource_uri_splitted = $value.resource_uri.split('/');
+              $date_start = new Date($value.start);
               $id = $resource_uri_splitted[3];
               if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
-                $scope.editEpoch($id, $value.text, $value.start, $date_end, $value.type);
+                $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
+                $scope.toJSON();
                 $scope.nbEpoch++;
               }
             });
@@ -633,9 +634,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           neuron.get(function(){}).$promise.then(function($data){
             angular.forEach($data.objects, function($value){
               $resource_uri_splitted = $value.resource_uri.split('/');
+              $date_start = new Date($value.start);
               $id = $resource_uri_splitted[3];
               if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
-                $scope.editEpoch($id, $value.text, $value.start, $date_end, $value.type);
+                $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
+                $scope.toJSON();
                 $scope.nbEpoch++;
               }
             });
@@ -645,9 +648,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           protocol.get(function(){}).$promise.then(function($data){
             angular.forEach($data.objects, function($value){
               $resource_uri_splitted = $value.resource_uri.split('/');
+              $date_start = new Date($value.start);
               $id = $resource_uri_splitted[3];
               if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
-                $scope.editEpoch($id, $value.text, $value.start, $date_end, $value.type);
+                $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
+                $scope.toJSON();
                 $scope.nbEpoch++;
               }
             });
