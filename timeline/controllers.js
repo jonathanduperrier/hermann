@@ -36,11 +36,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.idExp = $value.id;
           $dateStartExp = new Date($value.start);
           $scope.dateStartExp0 = $dateStartExp;
-          $scope.dateStartExp = $dateStartExp.format('mm/dd/yyyy - HH:MM');
+          $scope.dateStartExp = $dateStartExp.format('dd/mm/yyyy - HH:MM');
 
           $dateEndExp = new Date($value.end);
           if($value.end!=null){
-            $scope.dateEndExp = $dateEndExp.format('mm/dd/yyyy - HH:MM');
+            $scope.dateEndExp = $dateEndExp.format('dd/mm/yyyy - HH:MM');
           }
         }
       });
@@ -157,7 +157,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         var $dateEvent = new Date();
         var $vPlInit = $scope.dateStartExp0/1e3|0; 
         var $vPl = $dateEvent/1e3|0; 
-        var $dateFormat = $dateEvent.format('mm/dd/yyyy - HH:MM');
+        var $dateFormat = $dateEvent.format('dd/mm/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
@@ -557,6 +557,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       angular.forEach($scope.epochObj, function(value, key) {
         if(value.id == $id){
           $scope.epochObj[key].text = $text;
+          $scope.epochObj[key].start = $start;
+          $scope.epochObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
           $scope.epochObj[key].end = $end;
           $scope.epochObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           $scope.epochObj[key].type = $type;
@@ -566,6 +568,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       angular.forEach($scope.electrodeObj, function(value, key) {
         if((value.id == $id)){
           $scope.electrodeObj[key].text = $text;
+          $scope.electrodeObj[key].start = $start;
+          $scope.electrodeObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
           $scope.electrodeObj[key].end = $end;
           $scope.electrodeObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           $scope.electrodeObj[key].type = $type;
@@ -575,6 +579,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       angular.forEach($scope.neuronObj, function(value, key) {
         if(value.id == $id){
           $scope.neuronObj[key].text = $text;
+          $scope.neuronObj[key].start = $start;
+          $scope.neuronObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
           $scope.neuronObj[key].end = $end;
           $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           $scope.neuronObj[key].type = $type;
@@ -584,6 +590,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       angular.forEach($scope.protocolObj, function(value, key) {
         if(value.id == $id){
           $scope.protocolObj[key].text = $text;
+          $scope.protocolObj[key].start = $start;
+          $scope.protocolObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
           $scope.protocolObj[key].end = $end;
           $scope.protocolObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           $scope.protocolObj[key].type = $type;
@@ -596,7 +604,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         var $startEpoch = new Date();
         var $vPlInit = $scope.dateStartExp0/1e3|0;
         var $vPl = $startEpoch/1e3|0; 
-        var $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
+        var $startFormat = $startEpoch.format('dd/mm/yyyy - HH:MM');
 
         //search existing epoch on the same timeline
         $scope.defered = $q.defer();
@@ -877,7 +885,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
-              $dateFormat = $dateEvt.format('mm/dd/yyyy - HH:MM');
+              $dateFormat = $dateEvt.format('dd/mm/yyyy - HH:MM');
               $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt);
           }
           $i++;
@@ -945,10 +953,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $startEpoch = new Date(value.start);
-              $startFormat = $startEpoch.format('mm/dd/yyyy - HH:MM');
+              $startFormat = $startEpoch.format('dd/mm/yyyy - HH:MM');
               if(value.end != null){
                 $endEpoch = new Date(value.end);
-                $endFormat = $endEpoch.format('mm/dd/yyyy - HH:MM');
+                $endFormat = $endEpoch.format('dd/mm/yyyy - HH:MM');
                 $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, value.resource_uri);
               } else {
                 $scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch, $type_epoch, value.resource_uri);
@@ -1234,6 +1242,7 @@ mod_tlv.controller('EditEpochController', [
   $scope.close = function() {
     close({
       text: $scope.text,
+      epoch_start: angular.element('#epoch_start_'+$scope.epoch_id).val(),
       epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
       type: $scope.type,
       link_epoch: $link_epoch,
@@ -1249,6 +1258,7 @@ mod_tlv.controller('EditEpochController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
+      epoch_start: angular.element('#epoch_start_'+$scope.epoch_id).val(),
       epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
       type: $scope.type,
       link_epoch: $link_epoch,
@@ -1261,7 +1271,7 @@ mod_tlv.controller('EditEpochController', [
     $scope.close();
   };
   $scope.displayDatePicker = function($epoch_id) {
-    angular.element('#datetimepicker_'+$epoch_id).datetimepicker({
+    angular.element('#datetimepicker_end_'+$epoch_id).datetimepicker({
         locale: 'en-gb'
     });
   };
