@@ -27,7 +27,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.idExp = 0;
     $scope.dateStartExp = "";
     $scope.dateEndExp = "";
-    $scope.heightMinEpoch = 68;
+    $scope.heightMinEpoch = 35;
 
     $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
       //data.object
@@ -536,9 +536,15 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             if(result.type == null){
               bootbox.alert("Please choose type to save epoch !");
             } else {
-              from_end = result.epoch_end.split("/");
-              to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
-              $scope.editEpoch($nbEpoch, result.text, $epoch_start, to_end, result.type);
+              from_start = result.epoch_start.split("/");
+              to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
+              if(result.epoch_end != ""){
+                from_end = result.epoch_end.split("/");
+                to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
+              } else {
+                to_end = "";
+              }
+              $scope.editEpoch($nbEpoch, result.text, to_start, to_end, result.type);
               $scope.toJSON();
             }
           }
@@ -559,8 +565,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.epochObj[key].text = $text;
           $scope.epochObj[key].start = $start;
           $scope.epochObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
-          $scope.epochObj[key].end = $end;
-          $scope.epochObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          if($end != ""){
+            $scope.epochObj[key].end = $end;
+            $scope.epochObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          }
           $scope.epochObj[key].type = $type;
           $scope.epochObj[key].epoch_height = $diffTSEpoch;
         }
@@ -570,8 +578,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.electrodeObj[key].text = $text;
           $scope.electrodeObj[key].start = $start;
           $scope.electrodeObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
-          $scope.electrodeObj[key].end = $end;
-          $scope.electrodeObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          if($end != ""){
+            $scope.electrodeObj[key].end = $end;
+            $scope.electrodeObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          }
           $scope.electrodeObj[key].type = $type;
           $scope.electrodeObj[key].epoch_height = $diffTSEpoch;
         }
@@ -581,8 +591,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.neuronObj[key].text = $text;
           $scope.neuronObj[key].start = $start;
           $scope.neuronObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
-          $scope.neuronObj[key].end = $end;
-          $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          if($end != ""){
+            $scope.neuronObj[key].end = $end;
+            $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          }
           $scope.neuronObj[key].type = $type;
           $scope.neuronObj[key].epoch_height = $diffTSEpoch;
         }
@@ -592,8 +604,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.protocolObj[key].text = $text;
           $scope.protocolObj[key].start = $start;
           $scope.protocolObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
-          $scope.protocolObj[key].end = $end;
-          $scope.protocolObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          if($end != ""){
+            $scope.protocolObj[key].end = $end;
+            $scope.protocolObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+          }
           $scope.protocolObj[key].type = $type;
           $scope.protocolObj[key].epoch_height = $diffTSEpoch;
         }
@@ -1223,12 +1237,14 @@ mod_tlv.controller('EditEpochController', [
   '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
   function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
   if(epoch_end == null){
-    epoch_end = new Date();
+    //epoch_end = new Date();
   }
   $scope.text = epoch_text;
   $scope.epoch_id = epoch_id;
   $scope.epoch_start = epoch_start.format('dd/mm/yyyy HH:MM');
-  $scope.epoch_end = epoch_end.format('dd/mm/yyyy HH:MM');
+  if(epoch_end != null){
+    $scope.epoch_end = epoch_end.format('dd/mm/yyyy HH:MM');
+  }
   $scope.type = epoch_type;
   $scope.title = title;
   $scope.del_epoch = false;
@@ -1270,9 +1286,15 @@ mod_tlv.controller('EditEpochController', [
     $scope.del_epoch = true;
     $scope.close();
   };
-  $scope.displayDatePicker = function($epoch_id) {
-    angular.element('#datetimepicker_end_'+$epoch_id).datetimepicker({
-        locale: 'en-gb'
-    });
+  $scope.displayDatePicker = function($epoch_id, $start_end) {
+    if($start_end == "start"){
+      angular.element('#datetimepicker_start_'+$epoch_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    } else if ($start_end == "end"){
+      angular.element('#datetimepicker_end_'+$epoch_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    }
   };
 }]);

@@ -32,7 +32,7 @@
 						            <div class="form-group">
 						                <div class='input-group date' id='datetimepicker_start_{{epoch_id}}'>
 						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="epoch_start_{{epoch_id}}" name="epoch_start" ng-model="epoch_start" value="{{epoch_start}}"/>
-						                    <span class="input-group-addon" ng-click="displayDatePicker(epoch_id)">
+						                    <span class="input-group-addon" ng-click="displayDatePicker(epoch_id, 'start')">
 						                        <span class="glyphicon glyphicon-calendar"></span>
 						                    </span>
 						                </div>
@@ -45,7 +45,7 @@
 						            <div class="form-group">
 						                <div class='input-group date' id='datetimepicker_end_{{epoch_id}}'>
 						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="epoch_end_{{epoch_id}}" name="epoch_end" ng-model="epoch_end" value="{{epoch_end}}"/>
-						                    <span class="input-group-addon" ng-click="displayDatePicker(epoch_id)">
+						                    <span class="input-group-addon" ng-click="displayDatePicker(epoch_id, 'end')">
 						                        <span class="glyphicon glyphicon-calendar"></span>
 						                    </span>
 						                </div>
@@ -72,6 +72,7 @@
 						</form>
 				      </div>
 				      <div class="modal-footer">
+				        <button type="button" ng-click="stop()" class="btn btn-danger" data-dismiss="modal">Stop</button>
 				        <button type="button" ng-click="close()" class="btn btn-primary" data-dismiss="modal">OK</button>
 				        <button type="button" ng-click="delete()" class="btn">Delete</button>
 				      </div>
