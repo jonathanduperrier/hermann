@@ -17,7 +17,7 @@ mod_exp.controller('ListExperiment', [
     $scope.timeLineObj = [];
     var nb_create_timeline = 7;
     $scope.nameTimeLines = ['1 Alfaxan', '2 Esmeron', '3 phys', '4 Env', '5 Electrode', '6 Neuron', '7 Protocol'];
-    $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#FFAAAA','#D5E6FF', '#FFAADD'];
+    $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#f2f7ff','#f2f7ff', '#f2f7ff'];
 
     $scope.experiment = Experiment.get();
     $scope.showDlgAddExperiment = function(){

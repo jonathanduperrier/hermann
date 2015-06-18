@@ -26,19 +26,12 @@
 								</select>
 						    </div>
 						  </div>
-						  <div class="form-group">
-						  	<label for="timestamp_1" class="col-sm-2 control-label">End of Epoch : </label>
-						  	<label for="timestamp_1"> Auto </label>
-						  	<input type="radio" id="timestamp_1" name="timestamp[21]" value="1" ng-click="disableTimeStamp(epoch_id)" checked="checked" />
-						  	<label> Datepicker </label>
-							<input for="timestamp_2" type="radio" id="timestamp_2" name="timestamp[21]" value="1" ng-click="enableTimeStamp(epoch_id)" /> 
-						  </div>
 							<div class="form-group">
-								<label for="datetimepicker_{{epoch_id}}" class="col-sm-2 control-label">Datepicker : </label>
+								<label for="datetimepicker_{{epoch_id}}" class="col-sm-2 control-label">End : </label>
 						        <div class='col-sm-6'>
 						            <div class="form-group">
 						                <div class='input-group date' id='datetimepicker_{{epoch_id}}'>
-						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="epoch_end_{{epoch_id}}" name="epoch_end" ng-model="epoch_end" value="{{epoch_end}}" disabled/>
+						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="epoch_end_{{epoch_id}}" name="epoch_end" ng-model="epoch_end" value="{{epoch_end}}"/>
 						                    <span class="input-group-addon" ng-click="displayDatePicker(epoch_id)">
 						                        <span class="glyphicon glyphicon-calendar"></span>
 						                    </span>

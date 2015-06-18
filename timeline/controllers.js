@@ -1162,14 +1162,6 @@ mod_tlv.controller('EditEventController', [
     $scope.close();
   };
 
-  $scope.disableTimeStamp = function($evt_id) {
-    angular.element("#evt_date_"+$evt_id).prop('disabled', true);
-  };
-
-  $scope.enableTimeStamp = function($evt_id) {
-    angular.element("#evt_date_"+$evt_id).prop('disabled', false);
-  };
-
   $scope.displayDatePicker = function($evt_id) {
     angular.element('#datetimepicker_'+$evt_id).datetimepicker({
         locale: 'en-gb'
@@ -1268,15 +1260,6 @@ mod_tlv.controller('EditEpochController', [
     $scope.del_epoch = true;
     $scope.close();
   };
-
-  $scope.disableTimeStamp = function($epoch_id) {
-    angular.element("#epoch_end_"+$epoch_id).prop('disabled', true);
-  };
-
-  $scope.enableTimeStamp = function($epoch_id) {
-    angular.element("#epoch_end_"+$epoch_id).prop('disabled', false);
-  };
-
   $scope.displayDatePicker = function($epoch_id) {
     angular.element('#datetimepicker_'+$epoch_id).datetimepicker({
         locale: 'en-gb'
