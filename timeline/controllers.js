@@ -233,11 +233,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.showDlgAddEpoch = function($numberCol, $date, $timeline_name){
-
-      /*bootbox.confirm("This operation will close previous Epoch. Do you want to continue?", function(result){
-        console.log("response : "+result);
-      });*/
-
       if($rootScope.electrodeObj.length > 0){
         $scope.electrodeObj = $rootScope.electrodeObj;
       }
@@ -581,7 +576,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.getExistingEpochOnTimeLine($type_epoch, $numberCol);
         promise.then(function(result) {
           $scope.nbEpoch = result;
-          console.log("toto 2 : "+$scope.nbEpoch);
+          //console.log("toto 2 : "+$scope.nbEpoch);
         });
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
@@ -772,7 +767,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $scope.jsonContentElectrode = '{ "objects" : ' + angular.toJson($scope.electrodeObj) + '}';
       $scope.jsonContentNeuron = '{ "objects" : ' + angular.toJson($scope.neuronObj) + '}';
       $scope.jsonContentProtocol = '{ "objects" : ' + angular.toJson($scope.protocolObj) + '}';        
-
 
       //clear tabs of epoch
       timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
@@ -1045,6 +1039,15 @@ mod_tlv.controller('AddEventController', [
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
+
+  $scope.beforeClose = function() {
+    if($scope.type == null){
+      $scope.msgAlert = "Please choose type to create event !";
+    } else {
+      $scope.close();
+    }
+  };
+
   $scope.close = function() {
     close({
       text: $scope.text,
@@ -1131,6 +1134,19 @@ mod_tlv.controller('AddEpochController', [
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
+  $scope.beforeClose = function() {
+    $link_epoch = angular.element('#link_epoch').val();
+    if($scope.type == null){
+      $scope.msgAlert = "Please choose type to create epoch !";
+    } else if(($scope.type_epoch == "neuron") && ($link_epoch == "null")){
+      $scope.msgAlert = $scope.restriction;
+    } else if(($scope.type_epoch == "protocol") && ($link_epoch == "null")){
+      $scope.msgAlert = $scope.restriction;
+    } else {
+      $scope.close();
+    }
+  };
+
   $scope.close = function() {
     $link_epoch = angular.element('#link_epoch').val();
     close({

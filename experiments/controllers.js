@@ -13,14 +13,16 @@ var mod_exp = angular.module( 'hermann.experiments', [
 
 mod_exp.controller('ListExperiment', [
   '$scope', 'Experiment' ,'ModalService', 'timeLine',
-  function($scope, Experiment, ModalService, timeLine){
+  function($scope, Experiment, ModalService, timeLine, $q){
     $scope.timeLineObj = [];
     var nb_create_timeline = 7;
     $scope.nameTimeLines = ['1 Alfaxan', '2 Esmeron', '3 phys', '4 Env', '5 Electrode', '6 Neuron', '7 Protocol'];
     $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#f2f7ff','#f2f7ff', '#f2f7ff'];
 
+    //var defered = $q.defer();
+
     $scope.experiment = Experiment.get();
-    $scope.showDlgAddExperiment = function(){
+    $scope.showDlgAddExperiment = function($http, $q){
       ModalService.showModal({
         templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
         controller: "AddExperimentController",
@@ -34,6 +36,8 @@ mod_exp.controller('ListExperiment', [
             bootbox.alert("Please choose type to create experiment !");
           } else {
             $scope.createExp(result.label, result.type);
+            //var defered = $q.defer();
+
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
               var $i=0;
@@ -48,15 +52,25 @@ mod_exp.controller('ListExperiment', [
               }
             }).$promise.then(function(val) {
               var $i=0;
+              var injector = angular.injector(["ng"]);
+              var $q = injector.get("$q");
+              var deferedA = $q.defer();
               angular.forEach($scope.timeLineObj, function(){
                 $scope.resource_uri = val.resource_uri;
+
                 timeLine.post($scope.timeLineObj[$i])
                 .$promise.then(function(val) {
                   if($i==nb_create_timeline){
-                    window.location.replace(app_url + '#/timeline' + $scope.resource_uri);
+                    deferedA.resolve(app_url + '#/timeline' + $scope.resource_uri);
+                    //window.location.replace(app_url + '#/timeline' + $scope.resource_uri);
                   }
                 });
                 $i++;
+              });
+              var promise = deferedA.promise;
+              promise.then(function(result) {
+                //$rootScope.neuron_text = result;
+                window.location.replace(result);
               });
             });
           }
