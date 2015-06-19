@@ -91,11 +91,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
-          if(result.type == null){
-            bootbox.alert("Please choose type to create event !");
-          } else {
-            $scope.createEvent($numberCol, result.text, result.type);
-          }
+          $scope.createEvent($numberCol, result.text, result.type);
         });
       });
     };
@@ -338,19 +334,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }).then(function(modal) {
           modal.element.modal();
           modal.close.then(function(result) {
-            if(result.type == null){
-              bootbox.alert("Please choose type to create epoch !");
-            } else if(($type_epoch == "neuron") & (result.link_epoch == "null")) {
-              bootbox.alert($restriction);
-            } else if(($type_epoch == "protocol") & (result.link_epoch == "null")) {
-              bootbox.alert($restriction);
-            } else {
-              $scope.createEpoch($numberCol, result.text, result.type, result.link_epoch, $type_epoch);
-              if($type_epoch == "neuron"){
-                $scope.getNameElectrode(result.text, $q);
-              } else if ($type_epoch == "protocol"){
-                $scope.getNameNeuron(result.text, $q);
-              }
+            $scope.createEpoch($numberCol, result.text, result.type, result.link_epoch, $type_epoch);
+            if($type_epoch == "neuron"){
+              $scope.getNameElectrode(result.text, $q);
+            } else if ($type_epoch == "protocol"){
+              $scope.getNameNeuron(result.text, $q);
             }
           });
         });
