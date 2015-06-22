@@ -36,7 +36,6 @@ mod_exp.controller('ListExperiment', [
             bootbox.alert("Please choose type to create experiment !");
           } else {
             $scope.createExp(result.label, result.type);
-            //var defered = $q.defer();
 
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
@@ -52,25 +51,16 @@ mod_exp.controller('ListExperiment', [
               }
             }).$promise.then(function(val) {
               var $i=0;
-              var injector = angular.injector(["ng"]);
-              var $q = injector.get("$q");
-              var deferedA = $q.defer();
               angular.forEach($scope.timeLineObj, function(){
                 $scope.resource_uri = val.resource_uri;
 
                 timeLine.post($scope.timeLineObj[$i])
                 .$promise.then(function(val) {
                   if($i==nb_create_timeline){
-                    deferedA.resolve(app_url + '#/timeline' + $scope.resource_uri);
-                    //window.location.replace(app_url + '#/timeline' + $scope.resource_uri);
+                    angular.element('a[href$="#/timeline"]:first').attr("href", app_url + '#/timeline' + $scope.resource_uri)
                   }
                 });
                 $i++;
-              });
-              var promise = deferedA.promise;
-              promise.then(function(result) {
-                //$rootScope.neuron_text = result;
-                window.location.replace(result);
               });
             });
           }

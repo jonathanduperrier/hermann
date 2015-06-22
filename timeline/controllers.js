@@ -1064,11 +1064,25 @@ mod_tlv.controller('EditEventController', [
 
   $scope.text = evt_text;
   $scope.evt_id = evt_id;
-  $scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
+  //$scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
+  //$date = evt_date.format('dd/mm/yyyy HH:MM');
+  $scope.selectDayOpt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
+  $scope.selectMonthOpt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+  $scope.selectYearOpt = ['2014', '2015', '2016', '2016', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031'];
+  $scope.selectHourOpt = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
+  $scope.selectMinOpt = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
+
+  $scope.evt_day = (evt_date.getDate()).toString();
+  $scope.evt_month = (evt_date.getMonth()).toString();
+  $scope.evt_year = (evt_date.getFullYear()).toString();
+  $scope.evt_hour = (evt_date.getHours()).toString();
+  $scope.evt_min = (evt_date.getMinutes()).toString();
   $scope.type = evt_type;
   $scope.title = title;
   $scope.del_evt = false;
 
+  //angular.element('#datetimepicker_day_'+$scope.evt_id+' option[value='+$scope.evt_day+']').attr('selected','selected');
+  
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   //$date = new Date($date);
