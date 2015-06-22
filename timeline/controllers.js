@@ -1073,23 +1073,28 @@ mod_tlv.controller('EditEventController', [
   $scope.selectMinOpt = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
 
   $scope.evt_day = (evt_date.getDate()).toString();
-  $scope.evt_month = (evt_date.getMonth()).toString();
+  $scope.evt_month = (evt_date.getMonth() + 1).toString();
   $scope.evt_year = (evt_date.getFullYear()).toString();
   $scope.evt_hour = (evt_date.getHours()).toString();
   $scope.evt_min = (evt_date.getMinutes()).toString();
   $scope.type = evt_type;
   $scope.title = title;
   $scope.del_evt = false;
-
-  //angular.element('#datetimepicker_day_'+$scope.evt_id+' option[value='+$scope.evt_day+']').attr('selected','selected');
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   //$date = new Date($date);
   $scope.close = function() {
+    $day = angular.element('#datetimepicker_day_'+$scope.evt_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_month_'+$scope.evt_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_year_'+$scope.evt_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_hour_'+$scope.evt_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_min_'+$scope.evt_id+' option:selected').text();
+    $evt_date = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+
     close({
       text: $scope.text,
-      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
+      //evt_date: $evt_date,
       type: $scope.type,
       del_evt: $scope.del_evt,
     }, 100); // close, but give 500ms for bootstrap to animate
@@ -1100,10 +1105,16 @@ mod_tlv.controller('EditEventController', [
   $scope.cancel = function() {
     //  Manually hide the modal.
     $element.modal('hide');
+    $day = angular.element('#datetimepicker_day_'+$scope.evt_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_month_'+$scope.evt_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_year_'+$scope.evt_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_hour_'+$scope.evt_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_min_'+$scope.evt_id+' option:selected').text();
+    $evt_date = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      evt_date: angular.element('#evt_date_'+$scope.evt_id).val(),
+      //evt_date: $evt_date,
       type: $scope.type,
     }, 100); // close, but give 500ms for bootstrap to animate
   };

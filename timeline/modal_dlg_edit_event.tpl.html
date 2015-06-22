@@ -33,17 +33,13 @@
 						                <div class='input-group date' id='datetimepicker_{{evt_id}}'>
 						                	<select ng-model="evt_day" id="datetimepicker_day_{{evt_id}}" ng-options="o for o in selectDayOpt"></select>
 						                	&nbsp;/&nbsp;
-						                	<select ng-model="evt_month" ng-options="o for o in selectMonthOpt" ng-selected="evt_month"></select>
+						                	<select ng-model="evt_month" id="datetimepicker_month_{{evt_id}}" ng-options="o for o in selectMonthOpt" ng-selected="evt_month"></select>
 						                	&nbsp;/&nbsp;
-						                	<select ng-model="evt_year" ng-options="o for o in selectYearOpt" ng-selected="evt_year"></select>
+						                	<select ng-model="evt_year" id="datetimepicker_year_{{evt_id}}" ng-options="o for o in selectYearOpt" ng-selected="evt_year"></select>
 						                	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						                	<select ng-model="evt_hour" ng-options="o for o in selectHourOpt" ng-selected="evt_hour"></select>
+						                	<select ng-model="evt_hour" id="datetimepicker_hour_{{evt_id}}" ng-options="o for o in selectHourOpt" ng-selected="evt_hour"></select>
 						                	&nbsp;:&nbsp;
-						                	<select ng-model="evt_min" ng-options="o for o in selectMinOpt" ng-selected="evt_min"></select>
-						                    <!--<input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="evt_date_{{evt_id}}" name="evt_date" ng-model="evt_date" value="{{evt_date}}"/>
-						                    <span class="input-group-addon" ng-click="displayDatePicker(evt_id)">
-						                        <span class="glyphicon glyphicon-calendar"></span>
-						                    </span>-->
+						                	<select ng-model="evt_min" id="datetimepicker_min_{{evt_id}}" ng-options="o for o in selectMinOpt" ng-selected="evt_min"></select>
 						                </div>
 						            </div>
 						        </div>
