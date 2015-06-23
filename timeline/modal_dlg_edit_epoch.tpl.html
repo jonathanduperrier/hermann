@@ -43,13 +43,14 @@
 						                </div>
 						            </div>
 						        </div>
-						      </div>
-						      <div class="form-group">
+						    </div>
+						    <div class="form-group">
 								<label for="datetimepicker_end_{{epoch_id}}" class="col-sm-2 control-label">End : </label>
 						        <div class='col-sm-6'>
 						            <div class="form-group">
 						                <div class='input-group date' id='datetimepicker_end_{{epoch_id}}'>
-						                	<select ng-model="end_day" id="datetimepicker_end_day_{{epoch_id}}" ng-options="o for o in selectDayOpt"></select>
+						                	<select ng-model="end_day" id="datetimepicker_end_day_{{epoch_id}}" ng-options="o for o in selectDayOpt">
+						                	</select>
 						                	&nbsp;/&nbsp;
 						                	<select ng-model="end_month" id="datetimepicker_end_month_{{epoch_id}}" ng-options="o for o in selectMonthOpt"></select>
 						                	&nbsp;/&nbsp;

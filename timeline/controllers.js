@@ -823,9 +823,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           if($scope.TLExp.indexOf(value.timeline) != -1){
             $dateEvt = new Date(value.date);
             $timeStampEvtMin = $scope.dateStartExp0.valueOf();
-            if($timeStampEvtMax < $dateEvt.valueOf()){
+            //if($timeStampEvtMax < $dateEvt.valueOf()){
               $timeStampEvtMax = $dateEvt.valueOf();
-            }
+            //}
             $diffTSEvt = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
           } else {
             $diffTSEvt = 0;
@@ -1090,16 +1090,10 @@ mod_tlv.controller('EditEventController', [
   //  the button has the 'data-dismiss' attribute.
   //$date = new Date($date);
   $scope.close = function() {
-    $day = angular.element('#datetimepicker_day_'+$scope.evt_id+' option:selected').text();
-    $month = angular.element('#datetimepicker_month_'+$scope.evt_id+' option:selected').text();
-    $year = angular.element('#datetimepicker_year_'+$scope.evt_id+' option:selected').text();
-    $hour = angular.element('#datetimepicker_hour_'+$scope.evt_id+' option:selected').text();
-    $min = angular.element('#datetimepicker_min_'+$scope.evt_id+' option:selected').text();
-    $evt_date = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
-
+    $scope.getDateData();
     close({
       text: $scope.text,
-      evt_date: $evt_date,
+      evt_date: $scope.evt_date,
       type: $scope.type,
       del_evt: $scope.del_evt,
     }, 100); // close, but give 500ms for bootstrap to animate
@@ -1110,18 +1104,22 @@ mod_tlv.controller('EditEventController', [
   $scope.cancel = function() {
     //  Manually hide the modal.
     $element.modal('hide');
+    $scope.getDateData();
+    //  Now call close, returning control to the caller.
+    close({
+      text: $scope.text,
+      evt_date: $scope.evt_date,
+      type: $scope.type,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  $scope.getDateData = function() {
     $day = angular.element('#datetimepicker_day_'+$scope.evt_id+' option:selected').text();
     $month = angular.element('#datetimepicker_month_'+$scope.evt_id+' option:selected').text();
     $year = angular.element('#datetimepicker_year_'+$scope.evt_id+' option:selected').text();
     $hour = angular.element('#datetimepicker_hour_'+$scope.evt_id+' option:selected').text();
     $min = angular.element('#datetimepicker_min_'+$scope.evt_id+' option:selected').text();
-    $evt_date = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
-    //  Now call close, returning control to the caller.
-    close({
-      text: $scope.text,
-      evt_date: $evt_date,
-      type: $scope.type,
-    }, 100); // close, but give 500ms for bootstrap to animate
+    $scope.evt_date = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
   };
 
   $scope.delete = function(){
@@ -1238,24 +1236,11 @@ mod_tlv.controller('EditEpochController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
-    $day = angular.element('#datetimepicker_start_day_'+$scope.epoch_id+' option:selected').text();
-    $month = angular.element('#datetimepicker_start_month_'+$scope.epoch_id+' option:selected').text();
-    $year = angular.element('#datetimepicker_start_year_'+$scope.epoch_id+' option:selected').text();
-    $hour = angular.element('#datetimepicker_start_hour_'+$scope.epoch_id+' option:selected').text();
-    $min = angular.element('#datetimepicker_start_min_'+$scope.epoch_id+' option:selected').text();
-    $epoch_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
-
-    $day = angular.element('#datetimepicker_end_day_'+$scope.epoch_id+' option:selected').text();
-    $month = angular.element('#datetimepicker_end_month_'+$scope.epoch_id+' option:selected').text();
-    $year = angular.element('#datetimepicker_end_year_'+$scope.epoch_id+' option:selected').text();
-    $hour = angular.element('#datetimepicker_end_hour_'+$scope.epoch_id+' option:selected').text();
-    $min = angular.element('#datetimepicker_end_min_'+$scope.epoch_id+' option:selected').text();
-    $epoch_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
-
+    $scope.getDateData();
     close({
       text: $scope.text,
-      epoch_start: $epoch_start,
-      epoch_end: $epoch_end,
+      epoch_start: $scope.epoch_start,
+      epoch_end: $scope.epoch_end,
       type: $scope.type,
       link_epoch: $link_epoch,
       del_epoch: $scope.del_epoch,
@@ -1268,15 +1253,36 @@ mod_tlv.controller('EditEpochController', [
   $scope.cancel = function() {
     //  Manually hide the modal.
     $element.modal('hide');
+    $scope.getDateData();
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      //epoch_start: angular.element('#epoch_start_'+$scope.epoch_id).val(),
-      //epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
+      epoch_start: $scope.epoch_start,
+      epoch_end: $scope.epoch_end,
       type: $scope.type,
       link_epoch: $link_epoch,
       type_epoch: $scope.type_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  $scope.getDateData = function() {
+    $day = angular.element('#datetimepicker_start_day_'+$scope.epoch_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_start_month_'+$scope.epoch_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_start_year_'+$scope.epoch_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_start_hour_'+$scope.epoch_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_start_min_'+$scope.epoch_id+' option:selected').text();
+    $scope.epoch_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+
+    $day = angular.element('#datetimepicker_end_day_'+$scope.epoch_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_end_month_'+$scope.epoch_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_end_year_'+$scope.epoch_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_end_hour_'+$scope.epoch_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_end_min_'+$scope.epoch_id+' option:selected').text();
+    if(($day == "") | ($month == "") | ($year == "") | ($hour == "") | ($min == "")){
+      $scope.epoch_end = "";
+    } else {
+      $scope.epoch_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+    }
   };
 
   $scope.delete = function(){
