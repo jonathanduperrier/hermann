@@ -1064,8 +1064,7 @@ mod_tlv.controller('EditEventController', [
 
   $scope.text = evt_text;
   $scope.evt_id = evt_id;
-  //$scope.evt_date = evt_date.format('dd/mm/yyyy HH:MM');
-  //$date = evt_date.format('dd/mm/yyyy HH:MM');
+
   $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
   $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
   $scope.selectYearOpt = ['2014', '2015', '2016', '2016', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031'];
@@ -1195,14 +1194,37 @@ mod_tlv.controller('AddEpochController', [
 mod_tlv.controller('EditEpochController', [
   '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
   function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
-  if(epoch_end == null){
-    //epoch_end = new Date();
-  }
+
+  $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
+  $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+  $scope.selectYearOpt = ['2014', '2015', '2016', '2016', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031'];
+  $scope.selectHourOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
+  $scope.selectMinOpt = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
+
   $scope.text = epoch_text;
   $scope.epoch_id = epoch_id;
-  $scope.epoch_start = epoch_start.format('dd/mm/yyyy HH:MM');
+  $d = epoch_start.getDate();
+  $scope.start_day = $d > 9 ? "" + $d: "0" + $d;
+  $m = epoch_start.getMonth() + 1;
+  $scope.start_month = $m > 9 ? "" + $m: "0" + $m;
+  $y = epoch_start.getFullYear();
+  $scope.start_year = $y > 9 ? "" + $y: "0" + $y;
+  $h = epoch_start.getHours();
+  $scope.start_hour = $h > 9 ? "" + $h: "0" + $h;
+  $min = epoch_start.getMinutes();
+  $scope.start_min = $min > 9 ? "" + $min: "0" + $min;
+
   if(epoch_end != null){
-    $scope.epoch_end = epoch_end.format('dd/mm/yyyy HH:MM');
+    $d = epoch_end.getDate();
+    $scope.end_day = $d > 9 ? "" + $d: "0" + $d;
+    $m = epoch_end.getMonth() + 1;
+    $scope.end_month = $m > 9 ? "" + $m: "0" + $m;
+    $y = epoch_end.getFullYear();
+    $scope.end_year = $y > 9 ? "" + $y: "0" + $y;
+    $h = epoch_end.getHours();
+    $scope.end_hour = $h > 9 ? "" + $h: "0" + $h;
+    $min = epoch_end.getMinutes();
+    $scope.end_min = $min > 9 ? "" + $min: "0" + $min;
   }
   $scope.type = epoch_type;
   $scope.title = title;
@@ -1216,10 +1238,24 @@ mod_tlv.controller('EditEpochController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
+    $day = angular.element('#datetimepicker_start_day_'+$scope.epoch_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_start_month_'+$scope.epoch_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_start_year_'+$scope.epoch_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_start_hour_'+$scope.epoch_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_start_min_'+$scope.epoch_id+' option:selected').text();
+    $epoch_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+
+    $day = angular.element('#datetimepicker_end_day_'+$scope.epoch_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_end_month_'+$scope.epoch_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_end_year_'+$scope.epoch_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_end_hour_'+$scope.epoch_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_end_min_'+$scope.epoch_id+' option:selected').text();
+    $epoch_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+
     close({
       text: $scope.text,
-      epoch_start: angular.element('#epoch_start_'+$scope.epoch_id).val(),
-      epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
+      epoch_start: $epoch_start,
+      epoch_end: $epoch_end,
       type: $scope.type,
       link_epoch: $link_epoch,
       del_epoch: $scope.del_epoch,
@@ -1235,8 +1271,8 @@ mod_tlv.controller('EditEpochController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      epoch_start: angular.element('#epoch_start_'+$scope.epoch_id).val(),
-      epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
+      //epoch_start: angular.element('#epoch_start_'+$scope.epoch_id).val(),
+      //epoch_end: angular.element('#epoch_end_'+$scope.epoch_id).val(),
       type: $scope.type,
       link_epoch: $link_epoch,
       type_epoch: $scope.type_epoch,

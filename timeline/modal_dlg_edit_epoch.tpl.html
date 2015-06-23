@@ -31,10 +31,15 @@
 						        <div class='col-sm-6'>
 						            <div class="form-group">
 						                <div class='input-group date' id='datetimepicker_start_{{epoch_id}}'>
-						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="epoch_start_{{epoch_id}}" name="epoch_start" ng-model="epoch_start" value="{{epoch_start}}"/>
-						                    <span class="input-group-addon" ng-click="displayDatePicker(epoch_id, 'start')">
-						                        <span class="glyphicon glyphicon-calendar"></span>
-						                    </span>
+						                	<select ng-model="start_day" id="datetimepicker_start_day_{{epoch_id}}" ng-options="o for o in selectDayOpt"></select>
+						                	&nbsp;/&nbsp;
+						                	<select ng-model="start_month" id="datetimepicker_start_month_{{epoch_id}}" ng-options="o for o in selectMonthOpt"></select>
+						                	&nbsp;/&nbsp;
+						                	<select ng-model="start_year" id="datetimepicker_start_year_{{epoch_id}}" ng-options="o for o in selectYearOpt"></select>
+						                	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						                	<select ng-model="start_hour" id="datetimepicker_start_hour_{{epoch_id}}" ng-options="o for o in selectHourOpt"></select>
+						                	&nbsp;:&nbsp;
+						                	<select ng-model="start_min" id="datetimepicker_start_min_{{epoch_id}}" ng-options="o for o in selectMinOpt"></select>
 						                </div>
 						            </div>
 						        </div>
@@ -44,10 +49,15 @@
 						        <div class='col-sm-6'>
 						            <div class="form-group">
 						                <div class='input-group date' id='datetimepicker_end_{{epoch_id}}'>
-						                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="epoch_end_{{epoch_id}}" name="epoch_end" ng-model="epoch_end" value="{{epoch_end}}"/>
-						                    <span class="input-group-addon" ng-click="displayDatePicker(epoch_id, 'end')">
-						                        <span class="glyphicon glyphicon-calendar"></span>
-						                    </span>
+						                	<select ng-model="end_day" id="datetimepicker_end_day_{{epoch_id}}" ng-options="o for o in selectDayOpt"></select>
+						                	&nbsp;/&nbsp;
+						                	<select ng-model="end_month" id="datetimepicker_end_month_{{epoch_id}}" ng-options="o for o in selectMonthOpt"></select>
+						                	&nbsp;/&nbsp;
+						                	<select ng-model="end_year" id="datetimepicker_end_year_{{epoch_id}}" ng-options="o for o in selectYearOpt"></select>
+						                	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						                	<select ng-model="end_hour" id="datetimepicker_end_hour_{{epoch_id}}" ng-options="o for o in selectHourOpt"></select>
+						                	&nbsp;:&nbsp;
+						                	<select ng-model="end_min" id="datetimepicker_end_min_{{epoch_id}}" ng-options="o for o in selectMinOpt"></select>
 						                </div>
 						            </div>
 						        </div>
