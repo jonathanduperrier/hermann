@@ -489,6 +489,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
     $scope.editEpoch = function($id, $text, $start, $end, $type){
       
+      var $vPlInit = $scope.dateStartExp0/1e3|0; 
+      var $vPl = $start/1e3|0; 
+      $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes*/
+
       $startEpochTS = $start.valueOf();
       $endEpochTS = $end.valueOf();
       $diffTSEpoch = (($endEpochTS/1e3|0) - ($startEpochTS/1e3|0)) / $scl_coef;
@@ -520,6 +524,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           }
           $scope.electrodeObj[key].type = $type;
           $scope.electrodeObj[key].epoch_height = $diffTSEpoch;
+          $scope.electrodeObj[key].vPlacement = $vPlacement;
         }
       });
       angular.forEach($scope.neuronObj, function(value, key) {
@@ -533,6 +538,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           }
           $scope.neuronObj[key].type = $type;
           $scope.neuronObj[key].epoch_height = $diffTSEpoch;
+          $scope.neuronObj[key].vPlacement = $vPlacement;
         }
       });
       angular.forEach($scope.protocolObj, function(value, key) {
@@ -546,6 +552,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           }
           $scope.protocolObj[key].type = $type;
           $scope.protocolObj[key].epoch_height = $diffTSEpoch;
+          $scope.protocolObj[key].vPlacement = $vPlacement;
         }
       });
     };
