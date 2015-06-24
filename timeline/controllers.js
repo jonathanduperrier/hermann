@@ -344,6 +344,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
       }
     };
+
+    $scope.showDlgAddElectrode = function(){
+
+    };
+
+    $scope.showDlgAddNeuron = function(){
+
+    };
+
+    $scope.showDlgAddProtocol = function(){
+
+    };
+
     $scope.getExpFromTimeline = function($numberCol){
       var $experiment = "";
       angular.forEach($scope.timeLineObj, function($value, $key) {
@@ -487,6 +500,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
       });
     };
+
+    $scope.showDlgEditElectrode = function(){
+
+    };
+
+    $scope.showDlgEditNeuron = function(){
+
+    };
+
+    $scope.showDlgEditProtocol = function(){
+
+    };
+
     $scope.editEpoch = function($id, $text, $start, $end, $type){
       
       var $vPlInit = $scope.dateStartExp0/1e3|0; 
@@ -1171,7 +1197,63 @@ mod_tlv.controller('AddEpochController', [
   };
 
   $scope.close = function() {
+    $link_epoch = angular.element('#link_epoch option:selected').val();
+    close({
+      text: $scope.text,
+      //date: $scope.date,
+      type: $scope.type,
+      link_epoch: $link_epoch,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
     $link_epoch = angular.element('#link_epoch').val();
+    close({
+      text: $scope.text,
+      //date: $scope.date,
+      type: $scope.type,
+      link_epoch:  $link_epoch,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+}]);
+
+
+mod_tlv.controller('AddElectrodeController', [
+  '$scope', '$element', 'title', 'restriction', 'epochObj', 'epochObjList', 'type_epoch', 'close', 
+  function($scope, $element, title, restriction, epochObj, epochObjList , type_epoch, close) {
+
+  $scope.text = null;
+  //$scope.date = null;
+  $scope.type = null;
+  $scope.type_epoch = type_epoch;
+  $scope.link_epoch = null;
+  $scope.title = title;
+  $scope.restriction = restriction;
+  $scope.epochObj = epochObj;
+  $scope.epochObjList = epochObjList;
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.beforeClose = function() {
+    $link_epoch = angular.element('#link_epoch').val();
+    if($scope.type == null){
+      $scope.msgAlert = "Please choose type to create epoch !";
+    } else if(($scope.type_epoch == "neuron") && ($link_epoch == "null")){
+      $scope.msgAlert = $scope.restriction;
+    } else if(($scope.type_epoch == "protocol") && ($link_epoch == "null")){
+      $scope.msgAlert = $scope.restriction;
+    } else {
+      $scope.close();
+    }
+  };
+
+  $scope.close = function() {
+    $link_epoch = angular.element('#link_epoch option:selected').val();
     close({
       text: $scope.text,
       //date: $scope.date,
