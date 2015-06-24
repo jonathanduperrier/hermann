@@ -345,8 +345,21 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       }
     };
 
-    $scope.showDlgAddElectrode = function(){
-
+    $scope.showDlgAddElectrode = function($numberCol, $date, $timeline_name){
+        ModalService.showModal({
+          templateUrl: "timeline/modal_dlg_add_electrode.tpl.html",
+          controller: "AddElectrodeController",
+          inputs: {
+            title: "Electrode information",
+            electrodeObj: $scope.electrodeObj,
+            epochObjList: $scope.epochObjList,
+          }
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+            $scope.createElectrode($numberCol, result.text, result.type);
+          });
+        });
     };
 
     $scope.showDlgAddNeuron = function(){
@@ -1224,41 +1237,28 @@ mod_tlv.controller('AddEpochController', [
 
 
 mod_tlv.controller('AddElectrodeController', [
-  '$scope', '$element', 'title', 'restriction', 'epochObj', 'epochObjList', 'type_epoch', 'close', 
-  function($scope, $element, title, restriction, epochObj, epochObjList , type_epoch, close) {
+  '$scope', '$element', 'title', 'electrodeObj', 'close', 
+  function($scope, $element, title, electrodeObj, close) {
 
   $scope.text = null;
-  //$scope.date = null;
   $scope.type = null;
-  $scope.type_epoch = type_epoch;
-  $scope.link_epoch = null;
   $scope.title = title;
-  $scope.restriction = restriction;
-  $scope.epochObj = epochObj;
-  $scope.epochObjList = epochObjList;
+  $scope.electrodeObj = electrodeObj;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
-    $link_epoch = angular.element('#link_epoch').val();
     if($scope.type == null){
       $scope.msgAlert = "Please choose type to create epoch !";
-    } else if(($scope.type_epoch == "neuron") && ($link_epoch == "null")){
-      $scope.msgAlert = $scope.restriction;
-    } else if(($scope.type_epoch == "protocol") && ($link_epoch == "null")){
-      $scope.msgAlert = $scope.restriction;
     } else {
       $scope.close();
     }
   };
 
   $scope.close = function() {
-    $link_epoch = angular.element('#link_epoch option:selected').val();
     close({
       text: $scope.text,
-      //date: $scope.date,
       type: $scope.type,
-      link_epoch: $link_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1271,9 +1271,7 @@ mod_tlv.controller('AddElectrodeController', [
     $link_epoch = angular.element('#link_epoch').val();
     close({
       text: $scope.text,
-      //date: $scope.date,
       type: $scope.type,
-      link_epoch:  $link_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
