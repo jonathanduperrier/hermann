@@ -236,7 +236,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           inputs: {
             title: "Electrode information",
             electrodeObj: $scope.electrodeObj,
-            epochObjList: $scope.epochObjList,
           }
         }).then(function(modal) {
           modal.element.modal();
@@ -246,12 +245,36 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
     };
 
-    $scope.showDlgAddNeuron = function(){
-
+    $scope.showDlgAddNeuron = function($numberCol, $date, $timeline_name){
+        ModalService.showModal({
+          templateUrl: "timeline/modal_dlg_add_neuron.tpl.html",
+          controller: "AddNeuronController",
+          inputs: {
+            title: "Neuron information",
+            neuronObj: $scope.neuronObj,
+          }
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+            $scope.createNeuron($numberCol, result.text, result.type);
+          });
+        });
     };
 
-    $scope.showDlgAddProtocol = function(){
-
+    $scope.showDlgAddProtocol = function($numberCol, $date, $timeline_name){
+        ModalService.showModal({
+          templateUrl: "timeline/modal_dlg_add_protocol.tpl.html",
+          controller: "AddProtocolController",
+          inputs: {
+            title: "Protocol information",
+            protocolObj: $scope.protocolObj,
+          }
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+            $scope.createProtocol($numberCol, result.text, result.type);
+          });
+        });
     };
 
     $scope.getExpFromTimeline = function($numberCol){
@@ -1072,6 +1095,86 @@ mod_tlv.controller('AddElectrodeController', [
   $scope.type = null;
   $scope.title = title;
   $scope.electrodeObj = electrodeObj;
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.beforeClose = function() {
+    if($scope.type == null){
+      $scope.msgAlert = "Please choose type to create epoch !";
+    } else {
+      $scope.close();
+    }
+  };
+
+  $scope.close = function() {
+    close({
+      text: $scope.text,
+      type: $scope.type,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+    $link_epoch = angular.element('#link_epoch').val();
+    close({
+      text: $scope.text,
+      type: $scope.type,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+}]);
+
+mod_tlv.controller('AddNeuronController', [
+  '$scope', '$element', 'title', 'neuronObj', 'close', 
+  function($scope, $element, title, neuronObj, close) {
+
+  $scope.text = null;
+  $scope.type = null;
+  $scope.title = title;
+  $scope.neuronObj = neuronObj;
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.beforeClose = function() {
+    if($scope.type == null){
+      $scope.msgAlert = "Please choose type to create epoch !";
+    } else {
+      $scope.close();
+    }
+  };
+
+  $scope.close = function() {
+    close({
+      text: $scope.text,
+      type: $scope.type,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+    $link_epoch = angular.element('#link_epoch').val();
+    close({
+      text: $scope.text,
+      type: $scope.type,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+}]);
+
+mod_tlv.controller('AddProtocolController', [
+  '$scope', '$element', 'title', 'protocolObj', 'close', 
+  function($scope, $element, title, protocolObj, close) {
+
+  $scope.text = null;
+  $scope.type = null;
+  $scope.title = title;
+  $scope.protocolObj = protocolObj;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
