@@ -566,6 +566,17 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, 60, null, null, $link_epoch, $type_epoch);
         $scope.toJSON();
     };
+    $scope.createElectrode = function($numberCol, $text, $type, $link_epoch, $type_epoch){
+
+    };
+
+    $scope.createNeuron = function($numberCol, $text, $type, $link_epoch, $type_epoch){
+
+    };
+
+    $scope.createProtocol = function($numberCol, $text, $type, $link_epoch, $type_epoch){
+
+    };
 
     $scope.getExistingEpochOnTimeLine = function($type_epoch, $numberCol){
       $date_end = new Date();
@@ -677,6 +688,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         );
         $scope.loopEpochObj();
     };
+
+    $scope.addElectrode = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, $resource_uri){
+
+    };
+
+    $scope.addNeuron = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, $resource_uri){
+      
+    };
+
+    $scope.addProtocol = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, $resource_uri){
+      
+    };
+
 
     $scope.showConfirmRemoveEpoch = function($nbEpoch) {
         ModalService.showModal({
