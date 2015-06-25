@@ -230,28 +230,48 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
 
     $scope.showDlgAddElectrode = function($numberCol, $date, $timeline_name){
-        ModalService.showModal({
-          templateUrl: "timeline/modal_dlg_add_electrode.tpl.html",
-          controller: "AddElectrodeController",
-          inputs: {
-            title: "Electrode information",
-            electrodeObj: $scope.electrodeObj,
-          }
-        }).then(function(modal) {
-          modal.element.modal();
-          modal.close.then(function(result) {
-            $scope.createElectrode($numberCol, result.text, result.type);
-          });
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_add_electrode.tpl.html",
+        controller: "AddElectrodeController",
+        inputs: {
+          title: "Electrode information",
+          electrodeObj: $scope.electrodeObj,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          $scope.createElectrode($numberCol, result.text, result.type);
         });
+      });
     };
 
     $scope.showDlgAddNeuron = function($numberCol, $date, $timeline_name){
+      var defered = $q.defer();
+      $scope.tabEl = [];
+      $exp = $scope.getExpFromTimeline($numberCol);
+      electrode.get(function(){}).$promise.then(function($data){
+        $i = 0;
+        angular.forEach($data.objects, function($value){
+          $strTL = ($data.objects[$i].timeline).split("/");
+          $expEl = $scope.getExpFromTimeline($strTL[3]);
+          if($exp == $expEl){
+            $scope.tabEl[$i] = $value;
+            $startF = new Date($value.start);
+            $scope.tabEl[$i].startFormat = $startF.format('dd/mm/yyyy - HH:MM');;
+            $i++;
+          }
+        });
+        defered.resolve($scope.tabEl);
+      });
+      var promise = defered.promise;
+        promise.then(function(result) {
         ModalService.showModal({
           templateUrl: "timeline/modal_dlg_add_neuron.tpl.html",
           controller: "AddNeuronController",
           inputs: {
             title: "Neuron information",
             neuronObj: $scope.neuronObj,
+            electrodeObjList: result,
           }
         }).then(function(modal) {
           modal.element.modal();
@@ -259,22 +279,23 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.createNeuron($numberCol, result.text, result.type);
           });
         });
+      });
     };
 
     $scope.showDlgAddProtocol = function($numberCol, $date, $timeline_name){
-        ModalService.showModal({
-          templateUrl: "timeline/modal_dlg_add_protocol.tpl.html",
-          controller: "AddProtocolController",
-          inputs: {
-            title: "Protocol information",
-            protocolObj: $scope.protocolObj,
-          }
-        }).then(function(modal) {
-          modal.element.modal();
-          modal.close.then(function(result) {
-            $scope.createProtocol($numberCol, result.text, result.type);
-          });
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_add_protocol.tpl.html",
+        controller: "AddProtocolController",
+        inputs: {
+          title: "Protocol information",
+          protocolObj: $scope.protocolObj,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          $scope.createProtocol($numberCol, result.text, result.type);
         });
+      });
     };
 
     $scope.getExpFromTimeline = function($numberCol){
@@ -1100,7 +1121,7 @@ mod_tlv.controller('AddElectrodeController', [
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
     if($scope.type == null){
-      $scope.msgAlert = "Please choose type to create epoch !";
+      $scope.msgAlert = "Please choose type to create electrode !";
     } else {
       $scope.close();
     }
@@ -1119,7 +1140,6 @@ mod_tlv.controller('AddElectrodeController', [
     //  Manually hide the modal.
     $element.modal('hide');
     //  Now call close, returning control to the caller.
-    $link_epoch = angular.element('#link_epoch').val();
     close({
       text: $scope.text,
       type: $scope.type,
@@ -1128,28 +1148,35 @@ mod_tlv.controller('AddElectrodeController', [
 }]);
 
 mod_tlv.controller('AddNeuronController', [
-  '$scope', '$element', 'title', 'neuronObj', 'close', 
-  function($scope, $element, title, neuronObj, close) {
+  '$scope', '$element', 'title', 'neuronObj', 'electrodeObjList', 'close', 
+  function($scope, $element, title, neuronObj, electrodeObjList, close) {
 
   $scope.text = null;
   $scope.type = null;
   $scope.title = title;
+  $scope.link_electrode = null;
   $scope.neuronObj = neuronObj;
+  $scope.electrodeObjList = electrodeObjList;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
+    $link_electrode = angular.element('#link_electrode').val();
     if($scope.type == null){
-      $scope.msgAlert = "Please choose type to create epoch !";
+      $scope.msgAlert = "Please choose type to create neuron !";
+    } else if($link_electrode == "null"){
+      $scope.msgAlert = "A neuron must be linked to an electrode";
     } else {
       $scope.close();
     }
   };
 
   $scope.close = function() {
+    $link_electrode = angular.element('#link_electrode').val();
     close({
       text: $scope.text,
       type: $scope.type,
+      link_electrode: $link_electrode,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1159,10 +1186,11 @@ mod_tlv.controller('AddNeuronController', [
     //  Manually hide the modal.
     $element.modal('hide');
     //  Now call close, returning control to the caller.
-    $link_epoch = angular.element('#link_epoch').val();
+    $link_electrode = angular.element('#link_electrode').val();
     close({
       text: $scope.text,
       type: $scope.type,
+      link_electrode: $link_electrode,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
@@ -1179,8 +1207,11 @@ mod_tlv.controller('AddProtocolController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
+    $link_epoch = angular.element('#link_epoch').val();
     if($scope.type == null){
-      $scope.msgAlert = "Please choose type to create epoch !";
+      $scope.msgAlert = "Please choose type to create protocol !";
+    } else if($link_epoch == "null"){
+      $scope.msgAlert = "A protocol must be linked to a neuron";
     } else {
       $scope.close();
     }

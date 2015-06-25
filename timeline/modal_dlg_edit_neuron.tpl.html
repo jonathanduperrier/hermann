@@ -68,7 +68,7 @@
 						  	<div class="col-sm-10">
 						  		<select class="form-control" id="link_epoch" name="link_epoch" ng-model="link_epoch">
 						  			<option value="null" selected=selected>Choose Electrode</option>
-						  			<option ng-repeat="epochObjList in epochObjList track by $index" ng-if="epochObjList.type_epoch == 'electrode'" value="{{epochObjList.resource_uri}}" ng-selected="epochObjList.resource_uri == link_epoch">{{epochObjList.text}} - {{epochObjList.startFormat}}</option>
+						  			<option ng-repeat="electrodeObjList in electrodeObjList track by $index" ng-if="electrodeObjList.type_epoch == 'electrode'" value="{{electrodeObjList.resource_uri}}" ng-selected="electrodeObjList.resource_uri == link_epoch">{{electrodeObjList.text}} - {{electrodeObjList.startFormat}}</option>
 						  		</select>
 							</div>
 						  </div>
