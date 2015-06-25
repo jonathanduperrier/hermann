@@ -283,17 +283,38 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.showDlgAddProtocol = function($numberCol, $date, $timeline_name){
-      ModalService.showModal({
-        templateUrl: "timeline/modal_dlg_add_protocol.tpl.html",
-        controller: "AddProtocolController",
-        inputs: {
-          title: "Protocol information",
-          protocolObj: $scope.protocolObj,
-        }
-      }).then(function(modal) {
-        modal.element.modal();
-        modal.close.then(function(result) {
-          $scope.createProtocol($numberCol, result.text, result.type);
+      var defered = $q.defer();
+      $scope.tabNeur = [];
+      $exp = $scope.getExpFromTimeline($numberCol);
+      neuron.get(function(){}).$promise.then(function($data){
+        $i = 0;
+        angular.forEach($data.objects, function($value){
+          $strTL = ($data.objects[$i].timeline).split("/");
+          $expNeur = $scope.getExpFromTimeline($strTL[3]);
+          if($exp == $expNeur){
+            $scope.tabNeur[$i] = $value;
+            $startF = new Date($value.start);
+            $scope.tabNeur[$i].startFormat = $startF.format('dd/mm/yyyy - HH:MM');;
+            $i++;
+          }
+        });
+        defered.resolve($scope.tabNeur);
+      });
+      var promise = defered.promise;
+      promise.then(function(result) {
+        ModalService.showModal({
+          templateUrl: "timeline/modal_dlg_add_protocol.tpl.html",
+          controller: "AddProtocolController",
+          inputs: {
+            title: "Protocol information",
+            protocolObj: $scope.protocolObj,
+            neuronObjList: result,
+          }
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+            $scope.createProtocol($numberCol, result.text, result.type);
+          });
         });
       });
     };
@@ -1196,13 +1217,15 @@ mod_tlv.controller('AddNeuronController', [
 }]);
 
 mod_tlv.controller('AddProtocolController', [
-  '$scope', '$element', 'title', 'protocolObj', 'close', 
-  function($scope, $element, title, protocolObj, close) {
+  '$scope', '$element', 'title', 'protocolObj', 'neuronObjList', 'close', 
+  function($scope, $element, title, protocolObj, neuronObjList, close) {
 
   $scope.text = null;
   $scope.type = null;
   $scope.title = title;
+  $scope.link_neuron = null;
   $scope.protocolObj = protocolObj;
+  $scope.neuronObjList = neuronObjList;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
@@ -1218,9 +1241,11 @@ mod_tlv.controller('AddProtocolController', [
   };
 
   $scope.close = function() {
+    $link_neuron = angular.element('#link_neuron').val();
     close({
       text: $scope.text,
       type: $scope.type,
+      link_neuron: $link_neuron,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1230,10 +1255,11 @@ mod_tlv.controller('AddProtocolController', [
     //  Manually hide the modal.
     $element.modal('hide');
     //  Now call close, returning control to the caller.
-    $link_epoch = angular.element('#link_epoch').val();
+    $link_neuron = angular.element('#link_neuron').val();
     close({
       text: $scope.text,
       type: $scope.type,
+      link_neuron: $link_neuron,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
