@@ -460,7 +460,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-      $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, 60, null, null, $electrode);
+      $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, 60, null, null, $electrode);
       $scope.toJSON();
     };
 
@@ -536,7 +536,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.addElectrode = function($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat, $resource_uri){
+    $scope.addElectrode = function($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat){
       if(angular.element.isEmptyObject($scope.electrodeObj)) {
         $idElectrode = 1;
       } else {
@@ -592,12 +592,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             end : $endElectrode, 
             endFormat : $endFormat,
             epoch_height : $diffTSElectrode,
-            resource_uri : $resource_uri,
         }
       );
     };
 
-    $scope.addNeuron = function($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $resource_uri){
+    $scope.addNeuron = function($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode){
       if(angular.element.isEmptyObject($scope.neuronObj)) {
         $idNeuron = 1;
       } else {
@@ -654,12 +653,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               endFormat : $endFormat,
               epoch_height : $diffTSNeuron,
               electrode : $electrode,
-              resource_uri : $resource_uri,
           }
       );
     };
 
-    $scope.addProtocol = function($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, $scl_coef, $endProtocol, $endFormat, $neuron, $resource_uri){
+    $scope.addProtocol = function($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, $scl_coef, $endProtocol, $endFormat, $neuron){
       if(angular.element.isEmptyObject($scope.protocolObj)) {
         $idProtocol = 1;
       } else {
@@ -716,7 +714,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               endFormat : $endFormat,
               epoch_height : $diffTSProtocol,
               neuron : $neuron,
-              resource_uri : $resource_uri,
           }
       );
     };
@@ -816,6 +813,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $scope.fromJsonEvent($scale);
       $scope.fromJsonEpoch($scale);
     };
+
     $scope.fromJsonEvent = function ($scale) {
         $scope.response = events.get({}, function(data){
         $jsonEvents = angular.fromJson(data.objects);
@@ -922,9 +920,31 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $endEpoch = new Date(value.end);
                 $endFormat = $endEpoch.format('dd/mm/yyyy - HH:MM');
                 //$scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, value.resource_uri);
+                switch($type_epoch){
+                  case "electrode":
+                    $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                  break;
+                  case "neuron":
+                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                  break;
+                  case "protocol":
+                    $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                  break;
+                }
               } else {
                 //$scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch, $type_epoch, value.resource_uri);
-              }
+                switch($type_epoch){
+                  case "electrode":
+                    $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                  break;
+                  case "neuron":
+                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                  break;
+                  case "protocol":
+                    $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                  break;
+                }
+            }
           }
           $i++;
         });
