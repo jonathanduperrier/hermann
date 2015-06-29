@@ -393,11 +393,102 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.showDlgEditNeuron = function(){
+    $scope.showDlgEditNeuron = function($nbNeuron, $timeline_name){
+      var $exp = "";
+      var $electrodeObjExp = [];
 
+      $restriction = "A neuron must be linked to an electrode";
+      $type_epoch = "neuron";
+      $exp = $scope.getExpFromTimeline($numberCol);
+
+
+      //récupérer l'expériment de la timeline en cours
+      $i = 0;
+      angular.forEach($scope.electrodeObj, function($value, $key) {
+        $strTL = ($scope.electrodeObj[$key].timeline).split("/");
+        $expEl = $scope.getExpFromTimeline($strTL[3]);
+        if($expEl == $exp){
+          $electrodeObjExp[$i] = $scope.electrodeObj[$key];
+          $i++;
+        }
+      });
+      $j = 0;
+      angular.forEach($scope.epochObj, function($value, $key) {
+        $strTL = ($scope.epochObj[$key].timeline).split("/");
+        $expEl = $scope.getExpFromTimeline($strTL[3]);
+        if($expEl == $exp){
+          $scope.epochObjList[$j] = $scope.epochObj[$key];
+          $j++;
+        }
+      });
+      if($electrodeObjExp.length == 0){
+        bootbox.alert($restriction);
+        $show_modal = 0;
+      }
+
+
+
+      //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
+      angular.forEach($scope.neuronObj, function(value, key) {
+        if(value.id == $nbNeuron){
+          $neuron_id = value.id;
+          $neuron_text = value.text;
+          $neuron_type = value.type;
+          $neuron_start = value.start;
+          $neuron_end = value.end;
+          $neuron = value.neuron;
+        }
+      });
+//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
+//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
+
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
+        controller: "EditEpochController",
+        inputs: {
+          title: "Edit Neuron information",
+          epoch_id: $neuron_id,
+          epoch_text: $neuron_text,
+          epoch_type: $neuron_type,
+          epoch_start: $neuron_start,
+          epoch_end: $neuron_end,
+          type_epoch: "neuron",
+          link_epoch: $neuron,
+          epochObj: $scope.neuronObj,
+          epochObjList: $scope.neuronObjList,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+
+          from_start = result.epoch_start.split("/");
+          to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
+
+          if(result.del_epoch == true){
+            $scope.showConfirmRemoveNeuron($neuron_id);
+          } else if (result.stop_epoch == true){
+            $date_end = new Date();
+            $scope.editNeuron($nbNeuron, result.text, to_start, $date_end, result.type);
+            $scope.toJSON();
+          } else {
+            if(result.type == null){
+              bootbox.alert("Please choose type to save neuron !");
+            } else {
+              if(result.epoch_end != ""){
+                from_end = result.epoch_end.split("/");
+                to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
+              } else {
+                to_end = "";
+              }
+              $scope.editNeuron($nbNeuron, result.text, to_start, to_end, result.type);
+              $scope.toJSON();
+            }
+          }
+        });
+      });
     };
 
-    $scope.showDlgEditProtocol = function(){
+    $scope.showDlgEditProtocol = function($nbProtocol, $timeline_name){
 
     };
 
