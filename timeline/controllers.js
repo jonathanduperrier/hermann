@@ -411,29 +411,77 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.createEpoch = function($numberCol, $text, $type, $link_epoch, $type_epoch){
-        var $startEpoch = new Date();
+    $scope.createElectrode = function($numberCol, $text, $type){
+        var $startElectrode = new Date();
         var $vPlInit = $scope.dateStartExp0/1e3|0;
-        var $vPl = $startEpoch/1e3|0; 
-        var $startFormat = $startEpoch.format('dd/mm/yyyy - HH:MM');
+        var $vPl = $startElectrode/1e3|0; 
+        var $startFormat = $startElectrode.format('dd/mm/yyyy - HH:MM');
 
-        //search existing epoch on the same timeline
+
+        //search existing electrode on the same timeline
         $scope.defered = $q.defer();
-        $scope.nbEpoch = 0;
+        $scope.nbElectrode = 0;
 
         var promise = $scope.defered.promise;
-        $scope.getExistingEpochOnTimeLine($type_epoch, $numberCol);
+        $scope.getExistingElectrodeOnTimeLine($numberCol);
         promise.then(function(result) {
-          $scope.nbEpoch = result;
-          //console.log("toto 2 : "+$scope.nbEpoch);
+          $scope.nbElectrode = result;
         });
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, 60, null, null, $link_epoch, $type_epoch);
+        $scope.addElectrode($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null);
         $scope.toJSON();
     };
-    $scope.createElectrode = function($numberCol, $text, $type, $link_epoch, $type_epoch){
 
+    $scope.getExistingElectrodeOnTimeLine = function($numberCol){
+      $date_end = new Date();
+      electrode.get(function(){}).$promise.then(function($data){
+        angular.forEach($data.objects, function($value){
+          $resource_uri_splitted = $value.resource_uri.split('/');
+          $date_start = new Date($value.start);
+          $id = $resource_uri_splitted[3];
+          if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
+            $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
+            $scope.toJSON();
+            $scope.nbEpoch++;
+          }
+        });
+        $scope.defered.resolve($scope.nbEpoch);
+      });
+    };
+
+    $scope.getExistingNeuronOnTimeLine = function($numberCol){
+      $date_end = new Date();
+      neuron.get(function(){}).$promise.then(function($data){
+        angular.forEach($data.objects, function($value){
+          $resource_uri_splitted = $value.resource_uri.split('/');
+          $date_start = new Date($value.start);
+          $id = $resource_uri_splitted[3];
+          if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
+            $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
+            $scope.toJSON();
+            $scope.nbEpoch++;
+          }
+        });
+        $scope.defered.resolve($scope.nbEpoch);
+      });
+    };
+
+    $scope.getExistingProtocolOnTimeLine = function($numberCol){
+      $date_end = new Date();
+      protocol.get(function(){}).$promise.then(function($data){
+        angular.forEach($data.objects, function($value){
+          $resource_uri_splitted = $value.resource_uri.split('/');
+          $date_start = new Date($value.start);
+          $id = $resource_uri_splitted[3];
+          if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
+            $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
+            $scope.toJSON();
+            $scope.nbEpoch++;
+          }
+        });
+        $scope.defered.resolve($scope.nbEpoch);
+      });
     };
 
     $scope.createNeuron = function($numberCol, $text, $type, $link_epoch, $type_epoch){
@@ -444,116 +492,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
     };
 
-    $scope.getExistingEpochOnTimeLine = function($type_epoch, $numberCol){
-      $date_end = new Date();
-        if($type_epoch == "electrode"){
-          electrode.get(function(){}).$promise.then(function($data){
-            angular.forEach($data.objects, function($value){
-              $resource_uri_splitted = $value.resource_uri.split('/');
-              $date_start = new Date($value.start);
-              $id = $resource_uri_splitted[3];
-              if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
-                $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
-                $scope.toJSON();
-                $scope.nbEpoch++;
-              }
-            });
-            $scope.defered.resolve($scope.nbEpoch);
-          });
-        } else if ($type_epoch == "neuron"){
-          neuron.get(function(){}).$promise.then(function($data){
-            angular.forEach($data.objects, function($value){
-              $resource_uri_splitted = $value.resource_uri.split('/');
-              $date_start = new Date($value.start);
-              $id = $resource_uri_splitted[3];
-              if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
-                $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
-                $scope.toJSON();
-                $scope.nbEpoch++;
-              }
-            });
-            $scope.defered.resolve($scope.nbEpoch);
-          });
-        } else if ($type_epoch == "protocol"){
-          protocol.get(function(){}).$promise.then(function($data){
-            angular.forEach($data.objects, function($value){
-              $resource_uri_splitted = $value.resource_uri.split('/');
-              $date_start = new Date($value.start);
-              $id = $resource_uri_splitted[3];
-              if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
-                $scope.editEpoch($id, $value.text, $date_start, $date_end, $value.type);
-                $scope.toJSON();
-                $scope.nbEpoch++;
-              }
-            });
-            $scope.defered.resolve($scope.nbEpoch);
-          });
-        }
-    };
 
-    $scope.addEpoch = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, $resource_uri){
-        if(angular.element.isEmptyObject($scope.epochObj)) {
-          $idEpoch = 1;
-        } else {
-          angular.forEach($scope.epochObj, function(value){
-            if($scope.epochObj.id > $idEpoch){
-              $idEpoch = $scope.epochObj.id;
-            }
-          });
-          $idEpoch++;
-        }
-        var $i=0;
-        var $TLexp = "";
-        var $TLcolor = "";
-        var $TLName = "";
-        angular.forEach($scope.timeLineObj, function($value, $key){
-          if($numberCol == $scope.timeLineObj[$key].id){
-            $TLexp = $scope.timeLineObj[$key].experiment;
-            $TLcolor = $scope.timeLineObj[$key].color;
-            $TLName =  $scope.timeLineObj[$key].name;
-          }
-          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
-            $scope.timeLineObj[$key].height = $vPlacement+150;
-            angular.element("#graduation").height($vPlacement+150);
-          }
-          $i++;
-        });
-
-        if($endEpoch != null){
-          $startEpochTS = $startEpoch.valueOf();
-          $endEpochTS = $endEpoch.valueOf();
-          $diffTSEpoch = (($endEpochTS/1e3|0) - ($startEpochTS/1e3|0)) / $scl_coef;
-          if($diffTSEpoch < ($scope.heightMinEpoch+1)){
-            $diffTSEpoch = $scope.heightMinEpoch;
-          }
-        } else {
-          $diffTSEpoch = $scope.heightMinEpoch;
-        }
-
-        $scope.epochObj.push (
-            {
-                id : $idEpoch,
-                timeline : "/notebooks/timeline/" + $numberCol,
-                text : $text,
-                start : $startEpoch,
-                startFormat : $startFormat,
-                type : $type,
-                color : "#FFE500",
-                vPlacement : $vPlacement,
-                TimeLineExp : '#/timeline' + $TLexp,
-                UrlExp : window.location.hash,
-                TimeLineColor : $TLcolor,
-                TimeLineName : $TLName,
-                end : $endEpoch, 
-                endFormat : $endFormat,
-                epoch_height : $diffTSEpoch,
-                type_epoch : $type_epoch,
-                link_epoch : $link_epoch,
-                resource_uri : $resource_uri,
-            }
-        );
-        $scope.loopEpochObj();
-    };
 
     $scope.addElectrode = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, $resource_uri){
 
