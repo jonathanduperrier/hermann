@@ -454,18 +454,35 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $scope.nbEpoch = 0;
 
       var promise = $scope.defered.promise;
-      $scope.getExistingEpochOnTimeLine($type_epoch, $numberCol);
+      $scope.getExistingNeuronOnTimeLine($numberCol);
       promise.then(function(result) {
         $scope.nbEpoch = result;
       });
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-      $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, 60, null, null, $link_epoch, $type_epoch);
+      $scope.addEpoch($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, 60, null, null, $electrode);
       $scope.toJSON();
     };
 
-    $scope.createProtocol = function($numberCol, $text, $type, $link_epoch){
+    $scope.createProtocol = function($numberCol, $text, $type, $neuron){
+      var $startProtocol = new Date();
+      var $vPlInit = $scope.dateStartExp0/1e3|0;
+      var $vPl = $startProtocol/1e3|0; 
+      var $startFormat = $startProtocol.format('dd/mm/yyyy - HH:MM');
 
+      //search existing epoch on the same timeline
+      $scope.defered = $q.defer();
+      $scope.nbProtocol = 0;
+
+      var promise = $scope.defered.promise;
+      $scope.getExistingProtocolOnTimeLine($numberCol);
+      promise.then(function(result) {
+        $scope.nbProtocol = result;
+      });
+
+      $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
+      $scope.addProtocol($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, 60, null, null, $neuron);
+      $scope.toJSON();
     };
 
     $scope.getExistingElectrodeOnTimeLine = function($numberCol){
@@ -642,8 +659,66 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       );
     };
 
-    $scope.addProtocol = function($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, $resource_uri){
-      
+    $scope.addProtocol = function($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, $scl_coef, $endProtocol, $endFormat, $neuron, $resource_uri){
+      if(angular.element.isEmptyObject($scope.protocolObj)) {
+        $idProtocol = 1;
+      } else {
+        angular.forEach($scope.protocolObj, function(value){
+          if($scope.protocolObj.id > $idProtocol){
+            $idProtocol = $scope.protocolObj.id;
+          }
+        });
+        $idProtocol++;
+      }
+      var $i=0;
+      var $TLexp = "";
+      var $TLcolor = "";
+      var $TLName = "";
+      angular.forEach($scope.timeLineObj, function($value, $key){
+        if($numberCol == $scope.timeLineObj[$key].id){
+          $TLexp = $scope.timeLineObj[$key].experiment;
+          $TLcolor = $scope.timeLineObj[$key].color;
+          $TLName =  $scope.timeLineObj[$key].name;
+        }
+        if(($vPlacement+150) > $scope.timeLineObj[$key].height){
+          $scope.timeLineObj[$key].height = $vPlacement+150;
+          angular.element("#graduation").height($vPlacement+150);
+        }
+        $i++;
+      });
+
+      if($endProtocol != null){
+        $startProtocolTS = $startProtocol.valueOf();
+        $endProtocolTS = $endProtocol.valueOf();
+        $diffTSProtocol = (($endProtocolTS/1e3|0) - ($startProtocolTS/1e3|0)) / $scl_coef;
+        if($diffTSProtocol < ($scope.heightMinProtocol+1)){
+          $diffTSProtocol = $scope.heightMinProtocol;
+        }
+      } else {
+        $diffTSProtocol = $scope.heightMinProtocol;
+      }
+
+      $scope.protocolObj.push (
+          {
+              id : $idProtocol,
+              timeline : "/notebooks/timeline/" + $numberCol,
+              text : $text,
+              start : $startProtocol,
+              startFormat : $startFormat,
+              type : $type,
+              color : "#FFE500",
+              vPlacement : $vPlacement,
+              TimeLineExp : '#/timeline' + $TLexp,
+              UrlExp : window.location.hash,
+              TimeLineColor : $TLcolor,
+              TimeLineName : $TLName,
+              end : $endProtocol, 
+              endFormat : $endFormat,
+              epoch_height : $diffTSProtocol,
+              neuron : $neuron,
+              resource_uri : $resource_uri,
+          }
+      );
     };
 
 
