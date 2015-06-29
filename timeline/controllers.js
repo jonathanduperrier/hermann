@@ -412,21 +412,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $i++;
         }
       });
-      $j = 0;
-      angular.forEach($scope.epochObj, function($value, $key) {
-        $strTL = ($scope.epochObj[$key].timeline).split("/");
-        $expEl = $scope.getExpFromTimeline($strTL[3]);
-        if($expEl == $exp){
-          $scope.epochObjList[$j] = $scope.epochObj[$key];
-          $j++;
-        }
-      });
+
       if($electrodeObjExp.length == 0){
         bootbox.alert($restriction);
         $show_modal = 0;
       }
-
-
 
       //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
       angular.forEach($scope.neuronObj, function(value, key) {
@@ -489,7 +479,88 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.showDlgEditProtocol = function($nbProtocol, $timeline_name){
+      var $exp = "";
+      var $protocolObjExp = [];
 
+      $restriction = "A protocole must be linked to a protocol";
+      $type_epoch = "protocol";
+      $exp = $scope.getExpFromTimeline($numberCol);
+      $i = 0;
+      angular.forEach($scope.protocolObj, function($value, $key) {
+        $strTL = ($scope.protocolObj[$key].timeline).split("/");
+        $expEl = $scope.getExpFromTimeline($strTL[3]);
+        if($expEl == $exp){
+          $protocolObjExp[$i] = $scope.protocolObj[$key];
+          $i++;
+        }
+      });
+
+      if($protocolObjExp.length == 0){
+        bootbox.alert($restriction);
+        $show_modal = 0;
+      }
+
+
+      //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
+      angular.forEach($scope.protocolObj, function(value, key) {
+        if(value.id == $nbProtocol){
+          $protocol_id = value.id;
+          $protocol_text = value.text;
+          $protocol_type = value.type;
+          $protocol_start = value.start;
+          $protocol_end = value.end;
+          $protocol = value.protocol;
+        }
+      });
+
+
+//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
+//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
+
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
+        controller: "EditEpochController",
+        inputs: {
+          title: "Edit Protocol information",
+          epoch_id: $protocol_id,
+          epoch_text: $protocol_text,
+          epoch_type: $protocol_type,
+          epoch_start: $protocol_start,
+          epoch_end: $protocol_end,
+          type_epoch: "protocol",
+          link_epoch: $protocol,
+          epochObj: $scope.protocolObj,
+          epochObjList: $scope.protocolObjList,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+
+          from_start = result.epoch_start.split("/");
+          to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
+
+          if(result.del_epoch == true){
+            $scope.showConfirmRemoveProtocol($protocol_id);
+          } else if (result.stop_epoch == true){
+            $date_end = new Date();
+            $scope.editProtocol($nbProtocol, result.text, to_start, $date_end, result.type);
+            $scope.toJSON();
+          } else {
+            if(result.type == null){
+              bootbox.alert("Please choose type to save protocol !");
+            } else {
+              if(result.epoch_end != ""){
+                from_end = result.epoch_end.split("/");
+                to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
+              } else {
+                to_end = "";
+              }
+              $scope.editProtocol($nbProtocol, result.text, to_start, to_end, result.type);
+              $scope.toJSON();
+            }
+          }
+        });
+      });
     };
 
     $scope.editElectrode = function($id, $text, $start, $end, $type){
@@ -570,6 +641,55 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.protocolObj[key].epoch_height = $diffTSEpoch;
           $scope.protocolObj[key].vPlacement = $vPlacement;
         }
+      });
+
+
+//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
+//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
+
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
+        controller: "EditEpochController",
+        inputs: {
+          title: "Edit Protocol information",
+          epoch_id: $protocol_id,
+          epoch_text: $protocol_text,
+          epoch_type: $protocol_type,
+          epoch_start: $protocol_start,
+          epoch_end: $protocol_end,
+          type_epoch: "protocol",
+          link_epoch: $protocol,
+          epochObj: $scope.protocolObj,
+          epochObjList: $scope.protocolObjList,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+
+          from_start = result.epoch_start.split("/");
+          to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
+
+          if(result.del_epoch == true){
+            $scope.showConfirmRemoveProtocol($protocol_id);
+          } else if (result.stop_epoch == true){
+            $date_end = new Date();
+            $scope.editProtocol($nbProtocol, result.text, to_start, $date_end, result.type);
+            $scope.toJSON();
+          } else {
+            if(result.type == null){
+              bootbox.alert("Please choose type to save protocol !");
+            } else {
+              if(result.epoch_end != ""){
+                from_end = result.epoch_end.split("/");
+                to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
+              } else {
+                to_end = "";
+              }
+              $scope.editProtocol($nbProtocol, result.text, to_start, to_end, result.type);
+              $scope.toJSON();
+            }
+          }
+        });
       });
     };
 
