@@ -329,8 +329,68 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       return $experiment;
     };
 
-    $scope.showDlgEditElectrode = function(){
+    $scope.showDlgEditElectrode = function($nbElectrode, $timeline_name){
+      var $exp = "";
+      var $electrodeObjExp = [];
 
+      //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
+      angular.forEach($scope.electrodeObj, function(value, key) {
+        if(value.id == $nbElectrode){
+          $electrode_id = value.id;
+          $electrode_text = value.text;
+          $electrode_type = value.type;
+          $electrode_start = value.start;
+          $electrode_end = value.end;
+          $electrode = value.electrode;
+        }
+      });
+//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
+//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
+
+      ModalService.showModal({
+        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
+        controller: "EditEpochController",
+        inputs: {
+          title: "Edit Electrode information",
+          epoch_id: $electrode_id,
+          epoch_text: $electrode_text,
+          epoch_type: $electrode_type,
+          epoch_start: $electrode_start,
+          epoch_end: $electrode_end,
+          type_epoch: "electrode",
+          link_epoch: $electrode,
+          epochObj: $scope.electrodeObj,
+          epochObjList: $scope.electrodeObjList,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+
+          from_start = result.epoch_start.split("/");
+          to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
+
+          if(result.del_epoch == true){
+            $scope.showConfirmRemoveElectrode($electrode_id);
+          } else if (result.stop_epoch == true){
+            $date_end = new Date();
+            $scope.editElectrode($nbElectrode, result.text, to_start, $date_end, result.type);
+            $scope.toJSON();
+          } else {
+            if(result.type == null){
+              bootbox.alert("Please choose type to save electrode !");
+            } else {
+              if(result.epoch_end != ""){
+                from_end = result.epoch_end.split("/");
+                to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
+              } else {
+                to_end = "";
+              }
+              $scope.editElectrode($nbElectrode, result.text, to_start, to_end, result.type);
+              $scope.toJSON();
+            }
+          }
+        });
+      });
     };
 
     $scope.showDlgEditNeuron = function(){
@@ -1304,3 +1364,121 @@ mod_tlv.controller('AddProtocolController', [
   };
 }]);
 
+mod_tlv.controller('EditEpochController', [
+  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
+  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
+
+  $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
+  $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+  $scope.selectYearOpt = ['2014', '2015', '2016', '2016', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031'];
+  $scope.selectHourOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
+  $scope.selectMinOpt = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
+
+  $scope.text = epoch_text;
+  $scope.epoch_id = epoch_id;
+  $d = epoch_start.getDate();
+  $scope.start_day = $d > 9 ? "" + $d: "0" + $d;
+  $m = epoch_start.getMonth() + 1;
+  $scope.start_month = $m > 9 ? "" + $m: "0" + $m;
+  $y = epoch_start.getFullYear();
+  $scope.start_year = $y > 9 ? "" + $y: "0" + $y;
+  $h = epoch_start.getHours();
+  $scope.start_hour = $h > 9 ? "" + $h: "0" + $h;
+  $min = epoch_start.getMinutes();
+  $scope.start_min = $min > 9 ? "" + $min: "0" + $min;
+
+  if(epoch_end != null){
+    $d = epoch_end.getDate();
+    $scope.end_day = $d > 9 ? "" + $d: "0" + $d;
+    $m = epoch_end.getMonth() + 1;
+    $scope.end_month = $m > 9 ? "" + $m: "0" + $m;
+    $y = epoch_end.getFullYear();
+    $scope.end_year = $y > 9 ? "" + $y: "0" + $y;
+    $h = epoch_end.getHours();
+    $scope.end_hour = $h > 9 ? "" + $h: "0" + $h;
+    $min = epoch_end.getMinutes();
+    $scope.end_min = $min > 9 ? "" + $min: "0" + $min;
+  }
+  $scope.type = epoch_type;
+  $scope.title = title;
+  $scope.del_epoch = false;
+  $scope.stop_epoch = false;
+  $scope.link_epoch = link_epoch;
+  $scope.type_epoch = type_epoch;
+  $scope.epochObj = epochObj;
+  $scope.epochObjList = epochObjList;
+
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    $scope.getDateData();
+    close({
+      text: $scope.text,
+      epoch_start: $scope.epoch_start,
+      epoch_end: $scope.epoch_end,
+      type: $scope.type,
+      //link_epoch: $link_epoch,
+      del_epoch: $scope.del_epoch,
+      stop_epoch: $scope.stop_epoch,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    $scope.getDateData();
+    //  Now call close, returning control to the caller.
+    close({
+      text: $scope.text,
+      epoch_start: $scope.epoch_start,
+      epoch_end: $scope.epoch_end,
+      type: $scope.type,
+      link_epoch: $link_epoch,
+      type_epoch: $scope.type_epoch,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  $scope.getDateData = function() {
+    $day = angular.element('#datetimepicker_start_day_'+$scope.epoch_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_start_month_'+$scope.epoch_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_start_year_'+$scope.epoch_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_start_hour_'+$scope.epoch_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_start_min_'+$scope.epoch_id+' option:selected').text();
+    $scope.epoch_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+
+    $day = angular.element('#datetimepicker_end_day_'+$scope.epoch_id+' option:selected').text();
+    $month = angular.element('#datetimepicker_end_month_'+$scope.epoch_id+' option:selected').text();
+    $year = angular.element('#datetimepicker_end_year_'+$scope.epoch_id+' option:selected').text();
+    $hour = angular.element('#datetimepicker_end_hour_'+$scope.epoch_id+' option:selected').text();
+    $min = angular.element('#datetimepicker_end_min_'+$scope.epoch_id+' option:selected').text();
+    if(($day == "") | ($month == "") | ($year == "") | ($hour == "") | ($min == "")){
+      $scope.epoch_end = "";
+    } else {
+      $scope.epoch_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+    }
+  };
+
+  $scope.delete = function(){
+    $scope.del_epoch = true;
+    $scope.close();
+  };
+
+  $scope.stop = function(){
+    $scope.stop_epoch = true;
+    $scope.close();
+  };
+
+  $scope.displayDatePicker = function($epoch_id, $start_end) {
+    if($start_end == "start"){
+      angular.element('#datetimepicker_start_'+$epoch_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    } else if ($start_end == "end"){
+      angular.element('#datetimepicker_end_'+$epoch_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    }
+  };
+}]);
