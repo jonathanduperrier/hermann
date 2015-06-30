@@ -570,8 +570,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $startElectrodeTS = $start.valueOf();
       $endElectrodeTS = $end.valueOf();
       $diffTSElectrode = (($endElectrodeTS/1e3|0) - ($startElectrodeTS/1e3|0)) / $scl_coef;
-      if($diffTSElectrode < ($scope.heightMinElectrode+1)){
-        $diffTSElectrode = $scope.heightMinElectrode;
+      if($diffTSElectrode < ($scope.heightMinEpoch+1)){
+        $diffTSElectrode = $scope.heightMinEpoch;
       }
       angular.forEach($scope.electrodeObj, function(value, key) {
         if((value.id == $id)){
@@ -597,8 +597,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $startNeuronTS = $start.valueOf();
       $endNeuronTS = $end.valueOf();
       $diffTSNeuron = (($endNeuronTS/1e3|0) - ($startNeuronTS/1e3|0)) / $scl_coef;
-      if($diffTSNeuron < ($scope.heightMinNeuron+1)){
-        $diffTSNeuron = $scope.heightMinNeuron;
+      if($diffTSNeuron < ($scope.heightMinEpoch+1)){
+        $diffTSNeuron = $scope.heightMinEpoch;
       }
       angular.forEach($scope.neuronObj, function(value, key) {
         if(value.id == $id){
@@ -624,8 +624,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $startProtocolTS = $start.valueOf();
       $endProtocolTS = $end.valueOf();
       $diffTSProtocol = (($endProtocolTS/1e3|0) - ($startProtocolTS/1e3|0)) / $scl_coef;
-      if($diffTSProtocol < ($scope.heightMinProtocol+1)){
-        $diffTSProtocol = $scope.heightMinProtocol;
+      if($diffTSProtocol < ($scope.heightMinEpoch+1)){
+        $diffTSProtocol = $scope.heightMinEpoch;
       }
       angular.forEach($scope.protocolObj, function(value, key) {
         if(value.id == $id){
@@ -640,55 +640,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.protocolObj[key].epoch_height = $diffTSEpoch;
           $scope.protocolObj[key].vPlacement = $vPlacement;
         }
-      });
-
-
-//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
-//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
-
-      ModalService.showModal({
-        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
-        controller: "EditEpochController",
-        inputs: {
-          title: "Edit Protocol information",
-          epoch_id: $protocol_id,
-          epoch_text: $protocol_text,
-          epoch_type: $protocol_type,
-          epoch_start: $protocol_start,
-          epoch_end: $protocol_end,
-          type_epoch: "protocol",
-          link_epoch: $protocol,
-          epochObj: $scope.protocolObj,
-          epochObjList: $scope.protocolObjList,
-        }
-      }).then(function(modal) {
-        modal.element.modal();
-        modal.close.then(function(result) {
-
-          from_start = result.epoch_start.split("/");
-          to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
-
-          if(result.del_epoch == true){
-            $scope.showConfirmRemoveProtocol($protocol_id);
-          } else if (result.stop_epoch == true){
-            $date_end = new Date();
-            $scope.editProtocol($nbProtocol, result.text, to_start, $date_end, result.type);
-            $scope.toJSON();
-          } else {
-            if(result.type == null){
-              bootbox.alert("Please choose type to save protocol !");
-            } else {
-              if(result.epoch_end != ""){
-                from_end = result.epoch_end.split("/");
-                to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
-              } else {
-                to_end = "";
-              }
-              $scope.editProtocol($nbProtocol, result.text, to_start, to_end, result.type);
-              $scope.toJSON();
-            }
-          }
-        });
       });
     };
 
@@ -838,11 +789,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $startElectrodeTS = $startElectrode.valueOf();
         $endElectrodeTS = $endElectrode.valueOf();
         $diffTSElectrode = (($endElectrodeTS/1e3|0) - ($startElectrodeTS/1e3|0)) / $scl_coef;
-        if($diffTSElectrode < ($scope.heightMinElectrode+1)){
-          $diffTSElectrode = $scope.heightMinElectrode;
+        if($diffTSElectrode < ($scope.heightMinEpoch+1)){
+          $diffTSElectrode = $scope.heightMinEpoch;
         }
       } else {
-        $diffTSElectrode = $scope.heightMinElectrode;
+        $diffTSElectrode = $scope.heightMinEpoch;
       }
 
       $scope.electrodeObj.push (
@@ -898,11 +849,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $startNeuronTS = $startNeuron.valueOf();
         $endNeuronTS = $endNeuron.valueOf();
         $diffTSNeuron = (($endNeuronTS/1e3|0) - ($startNeuronTS/1e3|0)) / $scl_coef;
-        if($diffTSNeuron < ($scope.heightMinNeuron+1)){
-          $diffTSNeuron = $scope.heightMinNeuron;
+        if($diffTSNeuron < ($scope.heightMinEpoch+1)){
+          $diffTSNeuron = $scope.heightMinEpoch;
         }
       } else {
-        $diffTSNeuron = $scope.heightMinNeuron;
+        $diffTSNeuron = $scope.heightMinEpoch;
       }
 
       $scope.neuronObj.push (
@@ -959,11 +910,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $startProtocolTS = $startProtocol.valueOf();
         $endProtocolTS = $endProtocol.valueOf();
         $diffTSProtocol = (($endProtocolTS/1e3|0) - ($startProtocolTS/1e3|0)) / $scl_coef;
-        if($diffTSProtocol < ($scope.heightMinProtocol+1)){
-          $diffTSProtocol = $scope.heightMinProtocol;
+        if($diffTSProtocol < ($scope.heightMinEpoch+1)){
+          $diffTSProtocol = $scope.heightMinEpoch;
         }
       } else {
-        $diffTSProtocol = $scope.heightMinProtocol;
+        $diffTSProtocol = $scope.heightMinEpoch;
       }
 
       $scope.protocolObj.push (
@@ -1090,7 +1041,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.displayZoomEvent = function ($scale) {
       angular.element('.event').remove();
       $scope.eventObj = [];
-      $scope.epochObj = [];
+      $scope.electrodeObj = [];
+      $scope.neuronObj = [];
+      $scope.protocolObj = [];
       $scope.fromJsonEvent($scale);
       $scope.fromJsonEpoch($scale);
     };
@@ -1216,13 +1169,13 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 //$scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch, $type_epoch, value.resource_uri);
                 switch($type_epoch){
                   case "electrode":
-                    $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                    $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                   case "protocol":
-                    $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                    $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                 }
             }
@@ -1551,7 +1504,7 @@ mod_tlv.controller('AddProtocolController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
-    $link_epoch = angular.element('#link_epoch').val();
+    $link_epoch = angular.element('#link_neuron').val();
     if($scope.type == null){
       $scope.msgAlert = "Please choose type to create protocol !";
     } else if($link_epoch == "null"){
