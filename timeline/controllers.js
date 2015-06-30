@@ -370,7 +370,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
 
           if(result.del_epoch == true){
-            $scope.showConfirmRemoveElectrode($electrode_id);
+            $scope.showConfirmRemoveEpoch($electrode_id, "electrode");
           } else if (result.stop_epoch == true){
             $date_end = new Date();
             $scope.editElectrode($nbElectrode, result.text, to_start, $date_end, result.type);
@@ -455,7 +455,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
 
           if(result.del_epoch == true){
-            $scope.showConfirmRemoveNeuron($neuron_id);
+            $scope.showConfirmRemoveEpoch($neuron_id, "neuron");
           } else if (result.stop_epoch == true){
             $date_end = new Date();
             $scope.editNeuron($nbNeuron, result.text, to_start, $date_end, result.type);
@@ -500,7 +500,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $show_modal = 0;
       }
 
-
       //récupérer l'epoch correspondant ($nbEpoch = id) dans $scope.epochObj
       angular.forEach($scope.protocolObj, function(value, key) {
         if(value.id == $nbProtocol){
@@ -540,7 +539,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
 
           if(result.del_epoch == true){
-            $scope.showConfirmRemoveProtocol($protocol_id);
+            $scope.showConfirmRemoveEpoch($protocol_id, "protocol");
           } else if (result.stop_epoch == true){
             $date_end = new Date();
             $scope.editProtocol($nbProtocol, result.text, to_start, $date_end, result.type);
@@ -988,9 +987,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           }
       );
     };
+/**delete epoch**/
 
-
-    $scope.showConfirmRemoveEpoch = function($nbEpoch) {
+    $scope.showConfirmRemoveEpoch = function($nbEpoch, $type_epoch) {
         ModalService.showModal({
             templateUrl: 'timeline/modal_confirm_remove_epoch.tpl.html',
             controller: "ModalController"
@@ -1004,29 +1003,16 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
     };
 
-    $scope.removeEpoch = function($nbEpoch){
-        angular.element('#epoch_' + $nbEpoch).remove();        
-        angular.forEach($scope.epochObj, function($value, $key) {
-          if(($value.id == $nbEpoch)){
-            $scope.epochObj.splice($key, 1);
-          }
-        });
-        angular.forEach($scope.electrodeObj, function($value, $key) {
-          if($value.id == $nbEpoch){
-            $scope.electrodeObj.splice($key, 1);
-          }
-        });
-        angular.forEach($scope.neuronObj, function($value, $key) {
-          if($value.id == $nbEpoch){
-            $scope.neuronObj.splice($key, 1);
-          }
-        });
-        angular.forEach($scope.protocolObj, function($value, $key) {
-          if($value.id == $nbEpoch){
-            $scope.protocolObj.splice($key, 1);
-          }
-        });
-        $scope.toJSON();
+    $scope.removeElectrode = function(){
+      
+    };
+    
+    $scope.removeNeuron = function(){
+      
+    };
+
+    $scope.removeProtocol = function(){
+      
     };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
