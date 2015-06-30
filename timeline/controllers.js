@@ -997,22 +997,46 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             modal.element.modal();
             modal.close.then(function(result) {
                 if (result=="Yes") {
-                    $scope.removeEpoch($nbEpoch);
+                  if($type_epoch == "electrode"){
+                    $scope.removeElectrode($nbEpoch);
+                  } else if($type_epoch == "neuron"){
+                    $scope.removeNeuron($nbEpoch);
+                  } else if($type_epoch == "protocol"){
+                    $scope.removeProtocol($nbEpoch);
+                  }
                 }
             });
         });
     };
 
-    $scope.removeElectrode = function(){
-      
-    };
-    
-    $scope.removeNeuron = function(){
-      
+    $scope.removeElectrode = function($nbElectrode){
+      angular.element('#electrode_' + $nbElectrode).remove();
+      angular.forEach($scope.electrodeObj, function($value, $key) {
+        if($value.id == $nbElectrode){
+          $scope.electrodeObj.splice($key, 1);
+        }
+      });
+      $scope.toJSON();
     };
 
-    $scope.removeProtocol = function(){
-      
+    $scope.removeNeuron = function($nbNeuron){
+      angular.element('#neuron_' + $nbNeuron).remove();
+      angular.forEach($scope.neuronObj, function($value, $key) {
+        if($value.id == $nbNeuron){
+          $scope.neuronObj.splice($key, 1);
+        }
+      });
+      $scope.toJSON();
+    };
+
+    $scope.removeProtocol = function($nbProtocol){
+      angular.element('#protocol_' + $nbProtocol).remove();
+      angular.forEach($scope.protocolObj, function($value, $key) {
+      if($value.id == $nbProtocol){
+          $scope.protocolObj.splice($key, 1);
+        }
+      });
+      $scope.toJSON();
     };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
