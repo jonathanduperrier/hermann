@@ -251,15 +251,17 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $exp = $scope.getExpFromTimeline($numberCol);
       electrode.get(function(){}).$promise.then(function($data){
         $i = 0;
+        $j = 0;
         angular.forEach($data.objects, function($value){
-          $strTL = ($data.objects[$i].timeline).split("/");
+          $strTL = ($data.objects[$j].timeline).split("/");
           $expEl = $scope.getExpFromTimeline($strTL[3]);
           if($exp == $expEl){
             $scope.tabEl[$i] = $value;
             $startF = new Date($value.start);
-            $scope.tabEl[$i].startFormat = $startF.format('dd/mm/yyyy - HH:MM');;
+            $scope.tabEl[$i].startFormat = $startF.format('dd/mm/yyyy - HH:MM');
             $i++;
           }
+          $j++;
         });
         defered.resolve($scope.tabEl);
       });
@@ -681,7 +683,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-      $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $vPlacement, 60, null, null, $electrode);
+      $scope.addNeuron($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode);
       $scope.toJSON();
     };
 
@@ -1222,10 +1224,22 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         angular.element(".event_" + $event_id).css("z-index", "10");
     };
 
-    $scope.epochZIndex = function($epoch_id) {
+    $scope.electrodeZIndex = function($epoch_id) {
         angular.element(".event").css("z-index", "0");
         angular.element(".epoch").css("z-index", "0");
-        angular.element(".epoch_" + $epoch_id).css("z-index", "10");
+        angular.element(".electrode_" + $epoch_id).css("z-index", "10");
+    };
+
+    $scope.neuronZIndex = function($epoch_id) {
+        angular.element(".event").css("z-index", "0");
+        angular.element(".epoch").css("z-index", "0");
+        angular.element(".neuron_" + $epoch_id).css("z-index", "10");
+    };
+
+    $scope.protocolZIndex = function($epoch_id) {
+        angular.element(".event").css("z-index", "0");
+        angular.element(".epoch").css("z-index", "0");
+        angular.element(".protocol_" + $epoch_id).css("z-index", "10");
     };
 
     $scope.toogleEvtLeft = function() {
@@ -1456,10 +1470,11 @@ mod_tlv.controller('AddNeuronController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
-    $link_electrode = angular.element('#link_electrode').val();
+    //$link_electrode = angular.element('#link_electrode').val();
+    $link_electrode = $scope.link_electrode;
     if($scope.type == null){
       $scope.msgAlert = "Please choose type to create neuron !";
-    } else if($link_electrode == "null"){
+    } else if(($link_electrode == "null") | ($link_electrode == null)){
       $scope.msgAlert = "A neuron must be linked to an electrode";
     } else {
       $scope.close();
@@ -1467,7 +1482,8 @@ mod_tlv.controller('AddNeuronController', [
   };
 
   $scope.close = function() {
-    $link_electrode = angular.element('#link_electrode').val();
+    //$link_electrode = angular.element('#link_electrode').val();
+    $link_electrode = $scope.link_electrode;
     close({
       text: $scope.text,
       type: $scope.type,
@@ -1481,7 +1497,8 @@ mod_tlv.controller('AddNeuronController', [
     //  Manually hide the modal.
     $element.modal('hide');
     //  Now call close, returning control to the caller.
-    $link_electrode = angular.element('#link_electrode').val();
+    //$link_electrode = angular.element('#link_electrode').val();
+    $link_electrode = $scope.link_electrode;
     close({
       text: $scope.text,
       type: $scope.type,
@@ -1615,18 +1632,18 @@ mod_tlv.controller('EditEpochController', [
   };
 
   $scope.getDateData = function() {
-    $day = angular.element('#datetimepicker_start_day_'+$scope.epoch_id+' option:selected').text();
-    $month = angular.element('#datetimepicker_start_month_'+$scope.epoch_id+' option:selected').text();
-    $year = angular.element('#datetimepicker_start_year_'+$scope.epoch_id+' option:selected').text();
-    $hour = angular.element('#datetimepicker_start_hour_'+$scope.epoch_id+' option:selected').text();
-    $min = angular.element('#datetimepicker_start_min_'+$scope.epoch_id+' option:selected').text();
+    $day = $scope.start_day;
+    $month = $scope.start_month;
+    $year = $scope.start_year;
+    $hour = $scope.start_hour;
+    $min = $scope.start_min;
     $scope.epoch_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
 
-    $day = angular.element('#datetimepicker_end_day_'+$scope.epoch_id+' option:selected').text();
-    $month = angular.element('#datetimepicker_end_month_'+$scope.epoch_id+' option:selected').text();
-    $year = angular.element('#datetimepicker_end_year_'+$scope.epoch_id+' option:selected').text();
-    $hour = angular.element('#datetimepicker_end_hour_'+$scope.epoch_id+' option:selected').text();
-    $min = angular.element('#datetimepicker_end_min_'+$scope.epoch_id+' option:selected').text();
+    $day = $scope.end_day;
+    $month = $scope.end_month;
+    $year = $scope.end_year;
+    $hour = $scope.end_hour;
+    $min = $scope.end_min;
     if(($day == "") | ($month == "") | ($year == "") | ($hour == "") | ($min == "")){
       $scope.epoch_end = "";
     } else {
