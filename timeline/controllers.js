@@ -1139,9 +1139,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $startEpoch = new Date(value.start);
             $timeStampEvtMin = $scope.dateStartExp0.valueOf();
 
-            if($timeStampEvtMax < $startEpoch.valueOf()){
+            //if($timeStampEvtMax < $startEpoch.valueOf()){
               $timeStampEvtMax = $startEpoch.valueOf();
-            }
+            //}
             $diffTSEpoch = (($timeStampEvtMax/1e3|0) - ($timeStampEvtMin/1e3|0))/$scl_coef; ///60
           } else {
             $diffTSEpoch = 0;
@@ -1644,7 +1644,7 @@ mod_tlv.controller('EditEpochController', [
     $year = $scope.end_year;
     $hour = $scope.end_hour;
     $min = $scope.end_min;
-    if(($day == "") | ($month == "") | ($year == "") | ($hour == "") | ($min == "")){
+    if(($day === undefined) | ($month === undefined) | ($year === undefined) | ($hour === undefined) | ($min === undefined)){
       $scope.epoch_end = "";
     } else {
       $scope.epoch_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
