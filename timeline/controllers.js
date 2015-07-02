@@ -641,7 +641,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.protocolObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           }
           $scope.protocolObj[key].type = $type;
-          $scope.protocolObj[key].epoch_height = $diffTSEpoch;
+          $scope.protocolObj[key].epoch_height = $diffTSProtocol;
           $scope.protocolObj[key].vPlacement = $vPlacement;
         }
       });
@@ -942,7 +942,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           }
       );
     };
-/**delete epoch**/
 
     $scope.showConfirmRemoveEpoch = function($nbEpoch, $type_epoch) {
         ModalService.showModal({
@@ -965,6 +964,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.removeElectrode = function($nbElectrode){
+      $scope.remLinkedNeuronFromElectrode($nbElectrode);
       angular.element('#electrode_' + $nbElectrode).remove();
       angular.forEach($scope.electrodeObj, function($value, $key) {
         if($value.id == $nbElectrode){
@@ -974,7 +974,34 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $scope.toJSON();
     };
 
+    $scope.remLinkedNeuronFromElectrode = function($nbElectrode){
+      $scope.tabNeur = [];
+      var defered = $q.defer();
+      neuron.get(function(){}).$promise.then(function($data){
+        $i=0;
+        angular.forEach($data.objects, function($value){
+          $scope.tabNeur[$i] = $value;
+          $i++;
+        });
+        defered.resolve($scope.tabNeur);
+      });
+
+      var promise = defered.promise;
+      promise.then(function(result) {
+        $i=0;
+        if(result.length > 0){
+          angular.forEach($scope.tabNeur, function($value){
+            $tabNbNeuron = result[$i].resource_uri.split("/");
+            $nbNeuron = $tabNbNeuron[3];
+            $scope.removeNeuron($nbNeuron);
+            $i++;
+          });
+        }
+      });
+    };
+
     $scope.removeNeuron = function($nbNeuron){
+      $scope.remLinkedProtocolFromNeuron($nbNeuron);
       angular.element('#neuron_' + $nbNeuron).remove();
       angular.forEach($scope.neuronObj, function($value, $key) {
         if($value.id == $nbNeuron){
@@ -982,6 +1009,33 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }
       });
       $scope.toJSON();
+    };
+
+    $scope.remLinkedProtocolFromNeuron = function(){
+      $scope.tabProtocol = [];
+      var defered = $q.defer();
+      
+      protocol.get(function(){}).$promise.then(function($data){
+        $i=0;
+        angular.forEach($data.objects, function($value){
+          $scope.tabProtocol[$i] = $value;
+          $i++;
+        });
+        defered.resolve($scope.tabProtocol);
+      });
+
+      var promise = defered.promise;
+      promise.then(function(result) {
+        $i=0;
+        if(result.length > 0){
+          angular.forEach($scope.tabProtocol, function($value){
+            $tabNbProtocol = result[$i].resource_uri.split("/");
+            $nbProtocol = $tabNbProtocol[3];
+            $scope.removeProtocol($nbProtocol);
+            $i++;
+          });
+        }
+      });
     };
 
     $scope.removeProtocol = function($nbProtocol){
