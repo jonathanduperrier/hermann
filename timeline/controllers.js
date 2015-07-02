@@ -290,8 +290,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $exp = $scope.getExpFromTimeline($numberCol);
       neuron.get(function(){}).$promise.then(function($data){
         $i = 0;
+        $j = 0;
         angular.forEach($data.objects, function($value){
-          $strTL = ($data.objects[$i].timeline).split("/");
+          $strTL = ($data.objects[$j].timeline).split("/");
           $expNeur = $scope.getExpFromTimeline($strTL[3]);
           if($exp == $expNeur){
             $scope.tabNeur[$i] = $value;
@@ -299,6 +300,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.tabNeur[$i].startFormat = $startF.format('dd/mm/yyyy - HH:MM');;
             $i++;
           }
+          $j++;
         });
         defered.resolve($scope.tabNeur);
       });
@@ -1521,10 +1523,11 @@ mod_tlv.controller('AddProtocolController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
-    $link_epoch = angular.element('#link_neuron').val();
+    //$link_neuron = angular.element('#link_neuron').val();
+    $link_neuron = $scope.link_neuron;
     if($scope.type == null){
       $scope.msgAlert = "Please choose type to create protocol !";
-    } else if($link_epoch == "null"){
+    } else if(($link_neuron == "null") | ($link_neuron == null)){
       $scope.msgAlert = "A protocol must be linked to a neuron";
     } else {
       $scope.close();
@@ -1532,7 +1535,8 @@ mod_tlv.controller('AddProtocolController', [
   };
 
   $scope.close = function() {
-    $link_neuron = angular.element('#link_neuron').val();
+    //$link_neuron = angular.element('#link_neuron').val();
+    $link_neuron = $scope.link_neuron;
     close({
       text: $scope.text,
       type: $scope.type,
@@ -1546,7 +1550,8 @@ mod_tlv.controller('AddProtocolController', [
     //  Manually hide the modal.
     $element.modal('hide');
     //  Now call close, returning control to the caller.
-    $link_neuron = angular.element('#link_neuron').val();
+    //$link_neuron = angular.element('#link_neuron').val();
+    $link_neuron = $scope.link_neuron;
     close({
       text: $scope.text,
       type: $scope.type,
