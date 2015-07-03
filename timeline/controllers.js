@@ -964,92 +964,36 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.removeElectrode = function($nbElectrode){
-      $scope.remLinkedNeuronFromElectrode($nbElectrode);
-      angular.element('#electrode_' + $nbElectrode).remove();
       angular.forEach($scope.electrodeObj, function($value, $key) {
         if($value.id == $nbElectrode){
           $scope.electrodeObj.splice($key, 1);
         }
       });
       $scope.toJSON();
-    };
-
-    $scope.remLinkedNeuronFromElectrode = function($nbElectrode){
-      var semaphore = false;
-      $scope.tabNeur = [];
-      $scope.tabProtocol = [];
-      neuron.get(function($data){
-        $i=0;
-        angular.forEach($data.objects, function($value){
-          if($value.electrode == "/notebooks/electrode/"+$nbElectrode){
-            $scope.tabNeur[$i] = $value;
-            $tabNbNeuron = $scope.tabNeur[$i].resource_uri.split("/");
-            $scope.nbNeuron = $tabNbNeuron[3];
-            $i++;
-          }
-        });
-        $i=0;
-        if($scope.tabNeur.length > 0){
-          angular.forEach($scope.tabNeur, function($value){
-            $scope.removeNeuron($scope.nbNeuron);
-            $i++;
-          });
-        }
-        semaphore = true;
-      });
-      while (!semaphore) {
-        // We're just waiting.
-      }
+      $scope.fromJsonEvent(1);
+      $scope.fromJsonEpoch(1);
     };
 
     $scope.removeNeuron = function($nbNeuron){
-      angular.element('#neuron_' + $nbNeuron).remove();
-      $scope.remLinkedProtocolFromNeuron($nbNeuron);
       angular.forEach($scope.neuronObj, function($value, $key) {
         if($value.id == $nbNeuron){
           $scope.neuronObj.splice($key, 1);
         }
       });
       $scope.toJSON();
-    };
-
-    $scope.remLinkedProtocolFromNeuron = function($nbNeuron){
-      var semaphore2 = false;
-      $scope.tabProtocol = [];
-     
-      protocol.get(function($data){
-        $i=0;
-        angular.forEach($data.objects, function($value){
-          if($value.neuron == "/notebooks/neuron/"+$nbNeuron){
-            $scope.tabProtocol[$i] = $value;
-            $i++;
-          }
-        });
-
-        $i=0;
-        if($scope.tabProtocol.length > 0){
-          angular.forEach($scope.tabProtocol, function($value){
-            $tabNbProtocol = $scope.tabProtocol[$i].resource_uri.split("/");
-            $nbProtocol = $tabNbProtocol[3];
-            $scope.removeProtocol($nbProtocol);
-            $i++;
-          });
-        }
-        semaphore2 = true;
-      });
-      while (!semaphore2) {
-        // We're just waiting.
-      }
+      $scope.fromJsonEvent(1);
+      $scope.fromJsonEpoch(1);
     };
 
     $scope.removeProtocol = function($nbProtocol){
-      angular.element('#protocol_' + $nbProtocol).remove();
       angular.forEach($scope.protocolObj, function($value, $key) {
       if($value.id == $nbProtocol){
           $scope.protocolObj.splice($key, 1);
         }
       });
       $scope.toJSON();
+      $scope.fromJsonEvent(1);
+      $scope.fromJsonEpoch(1);
     };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
