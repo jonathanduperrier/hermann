@@ -964,25 +964,50 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.removeElectrode = function($nbElectrode){
-      angular.forEach($scope.electrodeObj, function($value, $key) {
-        if($value.id == $nbElectrode){
-          $scope.electrodeObj.splice($key, 1);
+      $scope.tabNeur = [];
+      neuron.get(function($data){
+        $i=0;
+        angular.forEach($data.objects, function($value){
+          if($value.electrode == "/notebooks/electrode/"+$nbElectrode){
+            $scope.tabNeur[$i] = $value;
+            $i++;
+          }
+        });
+        if($scope.tabNeur.length == 0){
+          angular.forEach($scope.electrodeObj, function($value, $key) {
+            if($value.id == $nbElectrode){
+              $scope.electrodeObj.splice($key, 1);
+            }
+          });
+          $scope.toJSON();
+        } else {
+          bootbox.alert("You must remove dependant neurons of this electrode before remove it.");
         }
       });
-      $scope.toJSON();
-      $scope.fromJsonEvent(1);
-      $scope.fromJsonEpoch(1);
     };
 
     $scope.removeNeuron = function($nbNeuron){
-      angular.forEach($scope.neuronObj, function($value, $key) {
-        if($value.id == $nbNeuron){
-          $scope.neuronObj.splice($key, 1);
+      $scope.tabProtocol = [];
+      protocol.get(function($data){
+        $i=0;
+        angular.forEach($data.objects, function($value){
+          if($value.neuron == "/notebooks/neuron/"+$nbNeuron){
+            $scope.tabProtocol[$i] = $value;
+            $i++;
+          }
+        });
+        $i=0;
+        if($scope.tabProtocol.length == 0){
+          angular.forEach($scope.neuronObj, function($value, $key) {
+            if($value.id == $nbNeuron){
+              $scope.neuronObj.splice($key, 1);
+            }
+          });
+          $scope.toJSON();
+        } else {
+          bootbox.alert("You must remove dependant ptotocol of this neuron before remove it.");
         }
       });
-      $scope.toJSON();
-      $scope.fromJsonEvent(1);
-      $scope.fromJsonEpoch(1);
     };
 
     $scope.removeProtocol = function($nbProtocol){
@@ -992,8 +1017,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }
       });
       $scope.toJSON();
-      $scope.fromJsonEvent(1);
-      $scope.fromJsonEpoch(1);
     };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
@@ -1159,7 +1182,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               if(value.end != null){
                 $endEpoch = new Date(value.end);
                 $endFormat = $endEpoch.format('dd/mm/yyyy - HH:MM');
-                //$scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, $type_epoch, value.resource_uri);
                 switch($type_epoch){
                   case "electrode":
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
@@ -1172,7 +1194,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                   break;
                 }
               } else {
-                //$scope.addEpoch($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch, $type_epoch, value.resource_uri);
                 switch($type_epoch){
                   case "electrode":
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch);
