@@ -28,6 +28,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.dateStartExp = "";
     $scope.dateEndExp = "";
     $scope.heightMinEpoch = 35;
+    $rootScope.spin = 0;
 
     $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
       //data.object
@@ -648,6 +649,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.createElectrode = function($numberCol, $text, $type){
+        angular.element(window).spin();
+        $rootScope.spin = 1;
+      
         var $startElectrode = new Date();
         var $vPlInit = $scope.dateStartExp0/1e3|0;
         var $vPl = $startElectrode/1e3|0; 
@@ -669,6 +673,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.createNeuron = function($numberCol, $text, $type, $electrode){
+      angular.element(window).spin();
+      $rootScope.spin = 1;
+
       var $startNeuron = new Date();
       var $vPlInit = $scope.dateStartExp0/1e3|0;
       var $vPl = $startNeuron/1e3|0; 
@@ -690,6 +697,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.createProtocol = function($numberCol, $text, $type, $neuron){
+      angular.element(window).spin();
+      $rootScope.spin = 1;
+
       var $startProtocol = new Date();
       var $vPlInit = $scope.dateStartExp0/1e3|0;
       var $vPl = $startProtocol/1e3|0; 
@@ -1033,19 +1043,17 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
         events.put( $scope.jsonContentEvent, function(){} );
         electrode.put( $scope.jsonContentElectrode, function(){} ).$promise.then(function(val) {
-          angular.element(window).spin();
           $rootScope.electrodeObj = val.objects;
           neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
-            angular.element(window).spin();
             $rootScope.neuronObj = val2.objects;
             protocol.put( $scope.jsonContentProtocol, function(val3){
-              angular.element(window).spin();
               $rootScope.protocolObj = val3.objects;
-              setTimeout(function(){ angular.element(window).spin(); }, 3500);
+              if($rootScope.spin == 1){
+                setTimeout(function(){ angular.element(window).spin(); }, 3500);
+              }
+              $rootScope.spin = 0;
             });
-            setTimeout(function(){ angular.element(window).spin(); }, 3500);
           });
-          setTimeout(function(){ angular.element(window).spin(); }, 3500);
         });
       });
     };
