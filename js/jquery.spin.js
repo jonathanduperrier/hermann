@@ -8,7 +8,7 @@
  */
 
 // preload spinner
-(new Image()).src = '//i.imgur.com/uM2gq.gif';
+(new Image()).src = '../img/ajax-loader.gif';
 
 // let's do this
 (function($){
@@ -29,7 +29,7 @@
                 padding: '10px',
                 backgroundSize: '20px',
                 backgroundColor: '#fff',
-                backgroundImage: 'url(//i.imgur.com/uM2gq.gif)',
+                backgroundImage: 'url(../img/ajax-loader.gif)',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center center',
                 height: '40px',
