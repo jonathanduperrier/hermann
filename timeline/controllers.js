@@ -1033,13 +1033,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       timeLine.put({experiment__id:id_exp}, $scope.jsonContentTimeLine , function(){}).$promise.then(function(val) {
         events.put( $scope.jsonContentEvent, function(){} );
         electrode.put( $scope.jsonContentElectrode, function(){} ).$promise.then(function(val) {
+          angular.element(window).spin();
           $rootScope.electrodeObj = val.objects;
           neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
+            angular.element(window).spin();
             $rootScope.neuronObj = val2.objects;
             protocol.put( $scope.jsonContentProtocol, function(val3){
+              angular.element(window).spin();
               $rootScope.protocolObj = val3.objects;
+              setTimeout(function(){ angular.element(window).spin(); }, 3500);
             });
+            setTimeout(function(){ angular.element(window).spin(); }, 3500);
           });
+          setTimeout(function(){ angular.element(window).spin(); }, 3500);
         });
       });
     };

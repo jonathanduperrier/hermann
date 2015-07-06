@@ -53,12 +53,13 @@ mod_exp.controller('ListExperiment', [
               var $i=0;
               angular.forEach($scope.timeLineObj, function(){
                 $scope.resource_uri = val.resource_uri;
-
                 timeLine.post($scope.timeLineObj[$i])
                 .$promise.then(function(val) {
+                  angular.element(window).spin();
                   if($i==nb_create_timeline){
                     angular.element('a[href$="#/timeline"]:first').attr("href", app_url + '#/timeline' + $scope.resource_uri)
                   }
+                  setTimeout(function(){ angular.element(window).spin(); }, 3500);
                 });
                 $i++;
               });
