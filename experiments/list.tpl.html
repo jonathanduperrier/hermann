@@ -24,6 +24,7 @@
                 </thead>
                 <tr ng-repeat="exp in experiment.objects | filter:query | orderBy:orderProp">
                     <!--<td style="width: 18px"><a class="btn btn-mini" href="#{{exp.resource_uri}}/edit"><i class="icon-pencil"></i></a></td>-->
+                    <td></td>
                     <td><a href="#/timeline{{exp.resource_uri}}">{{exp.label}}</a></td>
                     <td>{{exp.start}}</td>
                     <td>{{exp.end}}</td>
