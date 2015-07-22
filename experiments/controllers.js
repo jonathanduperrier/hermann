@@ -89,7 +89,26 @@ mod_exp.controller('ListExperiment', [
           researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
         }
       );
-    }
+    };
+
+    $scope.showDlgEditExperiment = function($exp_uri){
+        ModalService.showModal({
+        templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
+        controller: "EditExperimentController",
+        inputs: {
+          title: "Experiment information",
+          exp_uri: $exp_uri,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          if(result.type == null){
+            bootbox.alert("Please choose type to create experiment !");
+          }
+        });
+      });
+    };
+
 }]);
 
 mod_exp.controller('AddExperimentController', [
@@ -100,6 +119,45 @@ mod_exp.controller('AddExperimentController', [
   $scope.type = null;
   $scope.title = title;
   
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    close({
+      label: $scope.label,
+      type: $scope.type
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+
+    //  Manually hide the modal.
+    $element.modal('hide');
+    
+    //  Now call close, returning control to the caller.
+    close({
+      label: $scope.label,
+      type: $scope.type
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+}]);
+
+mod_exp.controller('EditExperimentController', [
+  '$scope', '$routeParams', 'Experiment', '$element', 'exp_uri', 'title', 'close', 
+  function($scope, $routeParams, Experiment, $element, exp_uri, title, close) {
+
+    $scope.experiment = Experiment.get( {id: $routeParams.eId}, function(data){
+      angular.forEach($scope.experiment.objects, function(value, key) {
+        if(value.resource_uri == exp_uri){
+          $scope.label = value.label;
+          $scope.type = value.type;
+        }
+      });
+      $scope.title = title;
+    });
+
+
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
