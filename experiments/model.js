@@ -9,13 +9,23 @@
 mod_exp.factory( 
     'Experiment', // Object model
     function( $resource ){ // , $filter can be added if ngFilter is injected above
-        //return $resource( base_url + 'experiment/:id', { id:'@eId' },
-        return $resource( base_url + 'experiment/', {},
+        return $resource( base_url + 'experiment/:id', { id:'@eId' },
         {
             get: { method: 'GET', params:{ format:'json' }, isArray: false },
             save: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
             put: { method:'PUT', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
+            patch:  { method:'PATCH', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
             del: { method: 'DELETE', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
+        });
+    }
+);
+
+mod_exp.factory( 
+    'Setup', // Object model
+    function( $resource ){ // , $filter can be added if ngFilter is injected above
+        return $resource( base_url + 'devices/setup/:id', { id:'@eId' },
+        {
+            get: { method: 'GET', params:{ format:'json' }, isArray: false },
         });
     }
 );

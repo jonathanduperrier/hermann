@@ -30,7 +30,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.heightMinEpoch = 35;
     $rootScope.spin = 0;
 
-    $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
+    $scope.experiment = Experiment.get(function(data){
       //data.object
       angular.forEach(data.objects, function($value){
         if($value.id.toString() == $routeParams.eID){
@@ -1286,7 +1286,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.stopExperiment = function() {
-      $scope.experiment = Experiment.get(function(data){
+      $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
         //data.object
         angular.forEach(data.objects, function($value){
           if($value.id == $routeParams.eID){

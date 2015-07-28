@@ -35,7 +35,7 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to create experiment !");
           } else {
-            $scope.createExp(result.label, result.type);
+            $scope.createExp(result.label, result.type, result.notes);
 
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
@@ -68,13 +68,13 @@ mod_exp.controller('ListExperiment', [
         });
       });
     };
-    $scope.createExp = function($label, $type){
+    $scope.createExp = function($label, $type, $notes){
       var $date = new Date();
       var $expSend = {
           label: $label,
           type: $type,
           start: $date,
-          note: " ",
+          notes: $notes,
           setup: "/devices/setup/1",
           researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
       };
@@ -84,7 +84,7 @@ mod_exp.controller('ListExperiment', [
           label: $label,
           type: $type,
           start: $date,
-          note: " ",
+          notes: $notes,
           setup: "/devices/setup/1",
           researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
         }
@@ -103,12 +103,28 @@ mod_exp.controller('ListExperiment', [
         modal.element.modal();
         modal.close.then(function(result) {
           if(result.type == null){
-            bootbox.alert("Please choose type to create experiment !");
+            bootbox.alert("Please choose type to save experiment !");
+          } else {
+            $scope.editExperiment($exp_uri, result.label, result.type, result.notes);
+
+            var $nCol = $exp_uri.split('/');
+            var id_exp = $nCol[2];
+            $scope.jsonNewLabel = '{ "label" : "'+result.label+'", "type": "'+result.type+'", "notes": "'+result.notes+'"  }';
+            Experiment.patch({id:id_exp}, $scope.jsonNewLabel, function(value){});
           }
         });
       });
     };
 
+    $scope.editExperiment = function($exp_uri, $label, $type, $notes){
+      angular.forEach($scope.experiment.objects, function(value, key) {
+        if(value.resource_uri == $exp_uri){
+          $scope.experiment.objects[key].label = $label;
+          $scope.experiment.objects[key].type = $type;
+           $scope.experiment.objects[key].notes = $notes;
+        }
+      });
+    };
 }]);
 
 mod_exp.controller('AddExperimentController', [
@@ -117,6 +133,7 @@ mod_exp.controller('AddExperimentController', [
 
   $scope.label = null;
   $scope.type = null;
+  $scope.notes = null;
   $scope.title = title;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
@@ -124,7 +141,8 @@ mod_exp.controller('AddExperimentController', [
   $scope.close = function() {
     close({
       label: $scope.label,
-      type: $scope.type
+      type: $scope.type,
+      notes: $scope.notes
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -138,7 +156,8 @@ mod_exp.controller('AddExperimentController', [
     //  Now call close, returning control to the caller.
     close({
       label: $scope.label,
-      type: $scope.type
+      type: $scope.type,
+      notes: $scope.notes
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
@@ -152,6 +171,7 @@ mod_exp.controller('EditExperimentController', [
         if(value.resource_uri == exp_uri){
           $scope.label = value.label;
           $scope.type = value.type;
+          $scope.notes = value.notes;
         }
       });
       $scope.title = title;
@@ -163,7 +183,8 @@ mod_exp.controller('EditExperimentController', [
   $scope.close = function() {
     close({
       label: $scope.label,
-      type: $scope.type
+      type: $scope.type,
+      notes: $scope.notes
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -177,7 +198,8 @@ mod_exp.controller('EditExperimentController', [
     //  Now call close, returning control to the caller.
     close({
       label: $scope.label,
-      type: $scope.type
+      type: $scope.type,
+      notes: $scope.notes
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
