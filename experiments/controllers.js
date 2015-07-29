@@ -20,8 +20,7 @@ mod_exp.controller('ListExperiment', [
     $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#f2f7ff','#f2f7ff', '#f2f7ff'];
 
     //var defered = $q.defer();
-
-    $scope.experiment = Experiment.get();
+    $scope.experiment = Experiment.get();    
     $scope.showDlgAddExperiment = function($http, $q){
       ModalService.showModal({
         templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
@@ -35,8 +34,7 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to create experiment !");
           } else {
-            $scope.createExp(result.label, result.type, result.notes);
-
+            $scope.createExp(result.label, result.type, result.notes, result.setup);
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
               var $i=0;
@@ -68,14 +66,14 @@ mod_exp.controller('ListExperiment', [
         });
       });
     };
-    $scope.createExp = function($label, $type, $notes){
+    $scope.createExp = function($label, $type, $notes, $setup){
       var $date = new Date();
       var $expSend = {
           label: $label,
           type: $type,
           start: $date,
           notes: $notes,
-          setup: "/devices/setup/1",
+          setup: $setup,
           researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
       };
       $scope.expSend = $expSend;
@@ -85,7 +83,7 @@ mod_exp.controller('ListExperiment', [
           type: $type,
           start: $date,
           notes: $notes,
-          setup: "/devices/setup/1",
+          setup: $setup,
           researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
         }
       );
@@ -93,7 +91,7 @@ mod_exp.controller('ListExperiment', [
 
     $scope.showDlgEditExperiment = function($exp_uri){
         ModalService.showModal({
-        templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
+        templateUrl: "experiments/modal_dlg_edit_experiment.tpl.html",
         controller: "EditExperimentController",
         inputs: {
           title: "Experiment information",
@@ -105,44 +103,65 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to save experiment !");
           } else {
-            $scope.editExperiment($exp_uri, result.label, result.type, result.notes);
+            $scope.editExperiment($exp_uri, result.label, result.type, result.notes, result.setup);
 
             var $nCol = $exp_uri.split('/');
             var id_exp = $nCol[2];
-            $scope.jsonNewLabel = '{ "label" : "'+result.label+'", "type": "'+result.type+'", "notes": "'+result.notes+'"  }';
+            $scope.jsonNewLabel = '{ "label" : "'+result.label+'", "type": "'+result.type+'", "notes": "'+result.notes+'", "setup": "'+result.setup+'"}';
             Experiment.patch({id:id_exp}, $scope.jsonNewLabel, function(value){});
           }
         });
       });
     };
 
-    $scope.editExperiment = function($exp_uri, $label, $type, $notes){
+    $scope.editExperiment = function($exp_uri, $label, $type, $notes, $setup){
       angular.forEach($scope.experiment.objects, function(value, key) {
         if(value.resource_uri == $exp_uri){
           $scope.experiment.objects[key].label = $label;
           $scope.experiment.objects[key].type = $type;
-           $scope.experiment.objects[key].notes = $notes;
+          $scope.experiment.objects[key].notes = $notes;
+          $scope.experiment.objects[key].setup = $setup;
         }
       });
     };
 }]);
 
 mod_exp.controller('AddExperimentController', [
-  '$scope', '$element', 'title', 'close', 
-  function($scope, $element, title, close) {
+  '$scope', '$element', 'title', 'close', 'Setup', 
+  function($scope, $element, title, close, Setup) {
+
+  $scope.lstSetup = Setup.get();
 
   $scope.label = null;
   $scope.type = null;
   $scope.notes = null;
+  $scope.setup = null;
   $scope.title = title;
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
+  $scope.beforeClose = function() {
+    if(($scope.label == "") | ($scope.label == null)) {
+      $scope.msgAlert = "Please enter label to create experiment !";
+    } else {
+      if($scope.type == null){
+        $scope.msgAlert = "Please choose type to create experiment !";
+      } else {
+        if($scope.setup == null){
+          $scope.msgAlert = "Please choose setup to create experiment !";
+        } else {
+          $scope.close();
+        }
+      }
+    }
+  };
+
   $scope.close = function() {
     close({
       label: $scope.label,
       type: $scope.type,
-      notes: $scope.notes
+      notes: $scope.notes,
+      setup: $scope.setup
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -157,21 +176,23 @@ mod_exp.controller('AddExperimentController', [
     close({
       label: $scope.label,
       type: $scope.type,
-      notes: $scope.notes
+      notes: $scope.notes,
+      setup: $scope.setup
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
 
 mod_exp.controller('EditExperimentController', [
-  '$scope', '$routeParams', 'Experiment', '$element', 'exp_uri', 'title', 'close', 
-  function($scope, $routeParams, Experiment, $element, exp_uri, title, close) {
-
+  '$scope', '$routeParams', 'Experiment', 'Setup',  '$element', 'exp_uri', 'title', 'close',
+  function($scope, $routeParams, Experiment, Setup, $element, exp_uri, title, close) {
+    $scope.lstSetup = Setup.get();
     $scope.experiment = Experiment.get( {id: $routeParams.eId}, function(data){
       angular.forEach($scope.experiment.objects, function(value, key) {
         if(value.resource_uri == exp_uri){
           $scope.label = value.label;
           $scope.type = value.type;
           $scope.notes = value.notes;
+          $scope.setup = value.setup;
         }
       });
       $scope.title = title;
@@ -184,7 +205,8 @@ mod_exp.controller('EditExperimentController', [
     close({
       label: $scope.label,
       type: $scope.type,
-      notes: $scope.notes
+      notes: $scope.notes,
+      setup: $scope.setup
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -199,7 +221,8 @@ mod_exp.controller('EditExperimentController', [
     close({
       label: $scope.label,
       type: $scope.type,
-      notes: $scope.notes
+      notes: $scope.notes,
+      setup: $scope.setup
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
