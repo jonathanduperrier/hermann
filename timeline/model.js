@@ -52,3 +52,21 @@ protocolServices.factory('protocol', ['$resource',
       post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
     });
   }]);
+
+var CellTypeService = angular.module('CellTypeService', ['ngResource']);
+
+CellTypeService.factory('CellType', ['$resource',
+  function($resource){
+    return $resource( base_url + 'neuralstructures/celltype/', {}, {
+      get: {method:'GET', params:{format:'json'}, isArray:false}
+    });
+  }]);
+
+var DeviceTypeService = angular.module('DeviceTypeService', ['ngResource']);
+
+DeviceTypeService.factory('DeviceType', ['$resource',
+  function($resource){
+    return $resource( base_url + 'devices/type/', {}, {
+      get: {method:'GET', params:{format:'json'}, isArray:false}
+    });
+  }]);

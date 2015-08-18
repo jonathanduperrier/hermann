@@ -18,11 +18,7 @@
 						    <label for="type" class="col-sm-2 control-label">Type : </label>
 						    <div class="col-sm-10">
 						    	<select class="form-control" id="type" name="type" placeholder="type ..." ng-model="type">
-								  <option>Type 1</option>
-								  <option>Type 2</option>
-								  <option>Type 3</option>
-								  <option>Type 4</option>
-								  <option>Type 5</option>
+						  	  		<option ng-repeat="type in lstTypeNeuron.objects" value="{{type.name}}" >{{type.name}}</option>
 								</select>
 						    </div>
 						  </div>

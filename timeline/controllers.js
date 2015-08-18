@@ -3,14 +3,15 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'angularModalService', 
                                          'timeLineServices', 
                                          'eventServices',
-                                         'epochServices',
                                          'electrodeServices',
                                          'neuronServices',
                                          'protocolServices',
                                          'hermann.experiments',
+                                         'CellTypeService',
+                                         'DeviceTypeService'
                                          ]);
 mod_tlv.controller('timeLineVisualController', 
-function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epoch, electrode, neuron, protocol, $routeParams, Experiment) {
+function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, electrode, neuron, protocol, $routeParams, Experiment) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
@@ -1457,9 +1458,10 @@ mod_tlv.controller('EditEventController', [
 }]);
 
 mod_tlv.controller('AddElectrodeController', [
-  '$scope', '$element', 'title', 'electrodeObj', 'close', 
-  function($scope, $element, title, electrodeObj, close) {
+  '$scope', '$element', 'title', 'electrodeObj', 'DeviceType', 'close', 
+  function($scope, $element, title, electrodeObj, DeviceType, close) {
 
+  $scope.lstTypeElectrode = DeviceType.get();
   $scope.text = null;
   $scope.type = null;
   $scope.title = title;
@@ -1496,8 +1498,10 @@ mod_tlv.controller('AddElectrodeController', [
 }]);
 
 mod_tlv.controller('AddNeuronController', [
-  '$scope', '$element', 'title', 'neuronObj', 'electrodeObjList', 'close', 
-  function($scope, $element, title, neuronObj, electrodeObjList, close) {
+  '$scope', '$element', 'title', 'neuronObj', 'electrodeObjList', 'CellType', 'close', 
+  function($scope, $element, title, neuronObj, electrodeObjList, CellType, close) {
+
+  $scope.lstTypeNeuron = CellType.get();
 
   $scope.text = null;
   $scope.type = null;
@@ -1547,7 +1551,7 @@ mod_tlv.controller('AddNeuronController', [
 }]);
 
 mod_tlv.controller('AddProtocolController', [
-  '$scope', '$element', 'title', 'protocolObj', 'neuronObjList', 'close', 
+  '$scope', '$element', 'title', 'protocolObj', 'neuronObjList', 'close',
   function($scope, $element, title, protocolObj, neuronObjList, close) {
 
   $scope.text = null;
@@ -1598,8 +1602,8 @@ mod_tlv.controller('AddProtocolController', [
 }]);
 
 mod_tlv.controller('EditEpochController', [
-  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
-  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
+  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'DeviceType', 'CellType', 'close', 
+  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, DeviceType, CellType, close) {
 
   $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
   $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -1640,7 +1644,26 @@ mod_tlv.controller('EditEpochController', [
   $scope.type_epoch = type_epoch;
   $scope.epochObj = epochObj;
   $scope.epochObjList = epochObjList;
+  $scope.lstTypeObj = [];
+  
+  if($scope.type_epoch == "electrode"){
+    $scope.lstType = DeviceType.get();
+  }
+  if($scope.type_epoch == "neuron"){
+    $scope.lstType = CellType.get();
+  }
+  /*if($scope.type_epoch == "protocol"){
+    $tabLstType = ["type1", "type2", "type3", "type4", "type5"]
 
+    angular.forEach($tabLstType, function($value){
+      $scope.lstTypeObj.push (
+        {
+          name: $value,
+        }
+      );
+    });
+    $scope.lstType = '{ "objects" : ' + angular.toJson($scope.lstTypeObj) + '}';
+  }*/
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
@@ -1650,7 +1673,6 @@ mod_tlv.controller('EditEpochController', [
       epoch_start: $scope.epoch_start,
       epoch_end: $scope.epoch_end,
       type: $scope.type,
-      //link_epoch: $link_epoch,
       del_epoch: $scope.del_epoch,
       stop_epoch: $scope.stop_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
