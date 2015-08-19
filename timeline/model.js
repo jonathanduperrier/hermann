@@ -62,6 +62,18 @@ CellTypeService.factory('CellType', ['$resource',
     });
   }]);
 
+var CellService = angular.module('CellService', ['ngResource']);
+
+CellService.factory('Cell', ['$resource',
+  function($resource){
+    return $resource( base_url + 'neuralstructures/cell/', {}, {
+      get: {method:'GET', params:{format:'json'}, isArray:false},
+      put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
+      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
+    });
+  }]);
+
+
 var DeviceTypeService = angular.module('DeviceTypeService', ['ngResource']);
 
 DeviceTypeService.factory('DeviceType', ['$resource',

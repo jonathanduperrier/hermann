@@ -18,6 +18,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.epochObj = [];
     $scope.electrodeObj = [];
     $scope.neuronObj = [];
+    $scope.cellObj = [];
     $scope.protocolObj = [];
     $rootScope.electrodeObj = [];
     $rootScope.neuronObj = [];
@@ -891,6 +892,13 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               electrode : $electrode,
           }
       );
+      $scope.cellObj.push (
+          {
+            label : $text,
+            type : $type,
+            //properties : 
+          }
+        );
     };
 
     $scope.addProtocol = function($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, $scl_coef, $endProtocol, $endFormat, $neuron){
@@ -1037,7 +1045,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $scope.jsonContentTimeLine = '{ "objects" : ' + angular.toJson($scope.timeLineObj) + '}';
       $scope.jsonContentEvent = '{ "objects" : ' + angular.toJson($scope.eventObj) + '}';        
       $scope.jsonContentElectrode = '{ "objects" : ' + angular.toJson($scope.electrodeObj) + '}';
+      
       $scope.jsonContentNeuron = '{ "objects" : ' + angular.toJson($scope.neuronObj) + '}';
+      $scope.jsonContentCell = '{ "objects" : ' + angular.toJson($scope.cellObj) + '}';
+
       $scope.jsonContentProtocol = '{ "objects" : ' + angular.toJson($scope.protocolObj) + '}';        
 
       //clear tabs of epoch
@@ -1046,6 +1057,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         electrode.put( $scope.jsonContentElectrode, function(){} ).$promise.then(function(val) {
           $rootScope.electrodeObj = val.objects;
           neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
+            Cell.put($scope.jsonContentCell, function(){} );
+
             $rootScope.neuronObj = val2.objects;
             protocol.put( $scope.jsonContentProtocol, function(val3){
               $rootScope.protocolObj = val3.objects;
