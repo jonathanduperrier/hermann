@@ -1,0 +1,48 @@
+				<div class="modal fade">
+				  <div class="modal-dialog modal-lg">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" ng-click="" data-dismiss="modal" aria-hidden="true">&times;</button>
+				        <h4 class="modal-title">{{title}}</h4>
+				      </div>
+				      <div class="modal-body">
+				        <p>Enter event information here.</p>
+						<form class="form-horizontal" role="form">
+						  <div class="form-group">
+						    <label for="text" class="col-sm-2 control-label">Label : </label>
+						    <div class="col-sm-10">
+						      <input type="text" class="form-control" id="label" name="label" placeholder="name ..." ng-model="label">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="type" class="col-sm-2 control-label">Type : </label>
+						    <div class="col-sm-10">
+						    	<select class="form-control" id="type" name="type" placeholder="type ..." ng-model="type">
+								  <option>CAT VISUAL INVIVO INTRA</option>
+								  <option>CAT VISUAL INVIVO EXTRA</option>
+								  <option>CAT VISUAL INVITRO INTRA</option>
+								</select>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="notes" class="col-sm-2 control-label">Notes : </label>
+						  	<div class="col-sm-10">
+						  	  <textarea class="form-control" cols="40" id="notes" name="notes" ng-model="notes" rows="5"></textarea>
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="type" class="col-sm-2 control-label">Setup : </label>
+						  	<div class="col-sm-10">
+						  	  <select class="form-control" id="setup" name="setup" placeholder="setup ..." ng-model="setup">
+						  	  	<option ng-repeat="setup in lstSetup.objects" value="{{setup.resource_uri}}" ng-selected="{{setup}}">{{setup.label}} - {{setup.place}} - {{setup.room}}</option>
+						  	  </select>
+						  	</div>
+						  </div>
+						</form>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" ng-click="close()" class="btn btn-primary" data-dismiss="modal">OK</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
