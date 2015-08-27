@@ -282,7 +282,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }).then(function(modal) {
           modal.element.modal();
           modal.close.then(function(result) {
-            $scope.createNeuron($numberCol, result.text, result.type, result.link_electrode);
+            $scope.createNeuron($numberCol, result.text, result.type, result.link_electrode, result.properties);
           });
         });
       });
@@ -685,7 +685,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.toJSON();
     };
 
-    $scope.createNeuron = function($numberCol, $text, $type, $electrode){
+    $scope.createNeuron = function($numberCol, $text, $type, $electrode, $properties){
       angular.element(window).spin();
       $rootScope.spin = 1;
 
@@ -705,7 +705,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-      $scope.addNeuron($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode);
+      $scope.addNeuron($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode, $properties);
     };
 
     $scope.createProtocol = function($numberCol, $text, $type, $neuron){
@@ -843,7 +843,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       );
     };
 
-    $scope.addNeuron = function($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode){
+    $scope.addNeuron = function($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties){
       if(angular.element.isEmptyObject($scope.neuronObj)) {
         $idNeuron = 1;
       } else {
@@ -889,7 +889,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               {
                 label : $text,
                 type : $value.resource_uri,
-                //properties : 
+                properties: $properties,
               });
           }
         });
@@ -1546,6 +1546,7 @@ mod_tlv.controller('AddNeuronController', [
   $scope.type = null;
   $scope.title = title;
   $scope.link_electrode = null;
+  $scope.properties = null;
   $scope.neuronObj = neuronObj;
   $scope.electrodeObjList = electrodeObjList;
   
@@ -1564,12 +1565,12 @@ mod_tlv.controller('AddNeuronController', [
   };
 
   $scope.close = function() {
-    //$link_electrode = angular.element('#link_electrode').val();
     $link_electrode = $scope.link_electrode;
     close({
       text: $scope.text,
       type: $scope.type,
       link_electrode: $link_electrode,
+      properties: $scope.properties,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1579,12 +1580,12 @@ mod_tlv.controller('AddNeuronController', [
     //  Manually hide the modal.
     $element.modal('hide');
     //  Now call close, returning control to the caller.
-    //$link_electrode = angular.element('#link_electrode').val();
     $link_electrode = $scope.link_electrode;
     close({
       text: $scope.text,
       type: $scope.type,
       link_electrode: $link_electrode,
+      properties: $scope.properties,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
