@@ -622,6 +622,16 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.neuronObj[key].vPlacement = $vPlacement;
         }
       });
+      angular.forEach($scope.cellObj, function(value, key) {
+        $scope.cellObj[key].label = $text;
+        CellType.get(function($data){
+          angular.forEach($data.objects, function($value){
+            if($value.name == $type){
+              $scope.cellObj[key].type = $value.resource_uri;
+            }
+          });
+        });
+      });
     };
 
     $scope.editProtocol = function($id, $text, $start, $end, $type){
@@ -1030,7 +1040,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $scope.neuronObj.splice($key, 1);
             }
           });
-          
           Cell.get(function($dataC){
             angular.forEach($scope.electrodeObj, function($value, $key) {
               if($value.id == $nbNeuron){
