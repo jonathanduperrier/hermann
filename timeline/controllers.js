@@ -5,13 +5,14 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'eventServices',
                                          'electrodeServices',
                                          'neuronServices',
+                                         'CellService',
                                          'protocolServices',
                                          'hermann.experiments',
                                          'CellTypeService',
                                          'DeviceTypeService'
                                          ]);
 mod_tlv.controller('timeLineVisualController', 
-function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, electrode, neuron, protocol, $routeParams, Experiment) {
+function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, electrode, neuron, Cell, CellType, protocol, $routeParams, Experiment) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
@@ -695,7 +696,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
       $scope.addNeuron($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode);
-      $scope.toJSON();
     };
 
     $scope.createProtocol = function($numberCol, $text, $type, $neuron){
@@ -872,33 +872,42 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $diffTSNeuron = $scope.heightMinEpoch;
       }
 
-      $scope.neuronObj.push (
-          {
-              id : $idNeuron,
-              timeline : "/notebooks/timeline/" + $numberCol,
-              text : $text,
-              start : $startNeuron,
-              startFormat : $startFormat,
-              type : $type,
-              color : "#FFE500",
-              vPlacement : $vPlacement,
-              TimeLineExp : '#/timeline' + $TLexp,
-              UrlExp : window.location.hash,
-              TimeLineColor : $TLcolor,
-              TimeLineName : $TLName,
-              end : $endNeuron, 
-              endFormat : $endFormat,
-              epoch_height : $diffTSNeuron,
-              electrode : $electrode,
+      var $idcell = '';
+      CellType.get(function($data){
+        angular.forEach($data.objects, function($value){
+          if($value.name == $type){
+            $scope.cellObj.push (
+              {
+                label : $text,
+                type : $value.resource_uri,
+                //properties : 
+              });
+            $idcell = $value.resource_uri;
           }
-      );
-      $scope.cellObj.push (
-          {
-            label : $text,
-            type : $type,
-            //properties : 
-          }
+        });
+        $scope.neuronObj.push (
+            {
+                id : $idNeuron,
+                timeline : "/notebooks/timeline/" + $numberCol,
+                text : $text,
+                start : $startNeuron,
+                startFormat : $startFormat,
+                type : $type,
+                color : "#FFE500",
+                vPlacement : $vPlacement,
+                TimeLineExp : '#/timeline' + $TLexp,
+                UrlExp : window.location.hash,
+                TimeLineColor : $TLcolor,
+                TimeLineName : $TLName,
+                end : $endNeuron, 
+                endFormat : $endFormat,
+                epoch_height : $diffTSNeuron,
+                electrode : $electrode,
+                idcell: $idcell,
+            }
         );
+        $scope.toJSON();
+      });
     };
 
     $scope.addProtocol = function($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, $scl_coef, $endProtocol, $endFormat, $neuron){
@@ -1056,21 +1065,22 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         events.put( $scope.jsonContentEvent, function(){} );
         electrode.put( $scope.jsonContentElectrode, function(){} ).$promise.then(function(val) {
           $rootScope.electrodeObj = val.objects;
-          neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
-            Cell.put($scope.jsonContentCell, function(){} );
+            Cell.put($scope.jsonContentCell, function(){} ).$promise.then(function(val1){
+              neuron.put( $scope.jsonContentNeuron, function(){} ).$promise.then(function(val2) {
 
-            $rootScope.neuronObj = val2.objects;
-            protocol.put( $scope.jsonContentProtocol, function(val3){
-              $rootScope.protocolObj = val3.objects;
-              if($rootScope.spin == 1){
-                setTimeout(function(){ angular.element(window).spin(); }, 3500);
-              }
-              $rootScope.spin = 0;
+                $rootScope.neuronObj = val2.objects;
+                protocol.put( $scope.jsonContentProtocol, function(val3){
+                  $rootScope.protocolObj = val3.objects;
+                  if($rootScope.spin == 1){
+                    setTimeout(function(){ angular.element(window).spin(); }, 3500);
+                  }
+                  $rootScope.spin = 0;
+                });
+              });
             });
           });
         });
-      });
-    };
+      }
 
     $scope.fromJSON = function() {
       $scope.fromJsonTimeLine();
