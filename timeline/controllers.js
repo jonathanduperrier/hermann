@@ -872,7 +872,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $diffTSNeuron = $scope.heightMinEpoch;
       }
 
-      var $idcell = '';
       CellType.get(function($data){
         angular.forEach($data.objects, function($value){
           if($value.name == $type){
@@ -882,7 +881,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 type : $value.resource_uri,
                 //properties : 
               });
-            $idcell = $value.resource_uri;
           }
         });
         $scope.neuronObj.push (
@@ -903,7 +901,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 endFormat : $endFormat,
                 epoch_height : $diffTSNeuron,
                 electrode : $electrode,
-                idcell: $idcell,
+                idcell: '/neuralstructures/cell/' + $idNeuron,
             }
         );
         $scope.toJSON();
@@ -996,7 +994,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       neuron.get(function($data){
         $i=0;
         angular.forEach($data.objects, function($value){
-          if($value.electrode == "/notebooks/electrode/"+$nbElectrode){
+          if($value.electrode == "/notebooks/electrode/"+$nbElectrode) {
             $scope.tabNeur[$i] = $value;
             $i++;
           }
@@ -1016,6 +1014,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
     $scope.removeNeuron = function($nbNeuron){
       $scope.tabProtocol = [];
+      $scope.tabCell = [];
       protocol.get(function($data){
         $i=0;
         angular.forEach($data.objects, function($value){
@@ -1031,7 +1030,15 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $scope.neuronObj.splice($key, 1);
             }
           });
-          $scope.toJSON();
+          
+          Cell.get(function($dataC){
+            angular.forEach($scope.electrodeObj, function($value, $key) {
+              if($value.id == $nbNeuron){
+                $scope.cellObj.splice($key, 1);
+              }
+            });
+            $scope.toJSON();
+          });
         } else {
           bootbox.alert("You must remove dependant ptotocol of this neuron before remove it.");
         }
