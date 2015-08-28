@@ -437,6 +437,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $neuron = value.neuron;
         }
       });
+      angular.forEach($scope.cellObj, function(value, key){
+        if(value.id == $nbNeuron){
+          $neuron_properties = value.properties;
+        }
+      });
 //  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
 //  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
 
@@ -450,6 +455,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           epoch_type: $neuron_type,
           epoch_start: $neuron_start,
           epoch_end: $neuron_end,
+          properties: $neuron_properties,//neuron/cell
           type_epoch: "neuron",
           link_epoch: $neuron,
           epochObj: $scope.neuronObj,
@@ -466,7 +472,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.showConfirmRemoveEpoch($neuron_id, "neuron");
           } else if (result.stop_epoch == true){
             $date_end = new Date();
-            $scope.editNeuron($nbNeuron, result.text, to_start, $date_end, result.type);
+            $scope.editNeuron($nbNeuron, result.text, to_start, $date_end, result.type, result.properties);
             $scope.toJSON();
           } else {
             if(result.type == null){
@@ -478,7 +484,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               } else {
                 to_end = "";
               }
-              $scope.editNeuron($nbNeuron, result.text, to_start, to_end, result.type);
+              $scope.editNeuron($nbNeuron, result.text, to_start, to_end, result.type, result.properties);
               $scope.toJSON();
             }
           }
@@ -597,7 +603,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.editNeuron = function($id, $text, $start, $end, $type){
+    $scope.editNeuron = function($id, $text, $start, $end, $type, $properties){
       var $vPlInit = $scope.dateStartExp0/1e3|0; 
       var $vPl = $start/1e3|0; 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes*/
@@ -628,6 +634,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           angular.forEach($data.objects, function($value){
             if($value.name == $type){
               $scope.cellObj[key].type = $value.resource_uri;
+              $scope.cellObj[key].properties = $properties;
             }
           });
         });
@@ -887,6 +894,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           if($value.name == $type){
             $scope.cellObj.push (
               {
+                id : $idNeuron,
                 label : $text,
                 type : $value.resource_uri,
                 properties: $properties,
@@ -1231,6 +1239,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           if( value != null ){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
+
               $startEpoch = new Date(value.start);
               $startFormat = $startEpoch.format('dd/mm/yyyy - HH:MM');
               if(value.end != null){
@@ -1241,7 +1250,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                    //get properties
+                    $idcell = $jsonEpoch[key].idcell;
+                    $text = value.text;
+                    $type = value.type;
+  //      electrode.get(function(){}).$promise.then(function($data){
+                    Cell.get(function($){}).$promise.then(function($dataC){
+                      angular.forEach($dataC.objects, function($value, $key) {
+                        if($idcell == $value.resource_uri){
+                          $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $diffTSEpoch, $scl_coef, null, null, $link_epoch, $value.properties);
+                        }
+                      });
+                    });
+
                   break;
                   case "protocol":
                     $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
@@ -1253,7 +1274,17 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch);
+                  //get properties
+                    $idcell = $jsonEpoch[key].idcell;
+                    $text = value.text;
+                    $type = value.type;
+                    Cell.get(function($){}).$promise.then(function($dataC){
+                      angular.forEach($dataC.objects, function($value, $key) {
+                        if($idcell == $value.resource_uri){
+                          $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $diffTSEpoch, $scl_coef, null, null, $link_epoch, $value.properties);
+                        }
+                      });
+                    });
                   break;
                   case "protocol":
                     $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $diffTSEpoch, $scl_coef, null, null, $link_epoch);
@@ -1642,8 +1673,8 @@ mod_tlv.controller('AddProtocolController', [
 }]);
 
 mod_tlv.controller('EditEpochController', [
-  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'DeviceType', 'CellType', 'close', 
-  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, DeviceType, CellType, close) {
+  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'properties', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'DeviceType', 'CellType', 'close', 
+  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, properties, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, DeviceType, CellType, close) {
 
   $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
   $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -1678,6 +1709,7 @@ mod_tlv.controller('EditEpochController', [
   }
   $scope.type = epoch_type;
   $scope.title = title;
+  $scope.properties = properties;
   $scope.del_epoch = false;
   $scope.stop_epoch = false;
   $scope.link_epoch = link_epoch;
@@ -1692,6 +1724,7 @@ mod_tlv.controller('EditEpochController', [
   if($scope.type_epoch == "neuron"){
     $scope.lstType = CellType.get();
   }
+
   /*if($scope.type_epoch == "protocol"){
     $tabLstType = ["type1", "type2", "type3", "type4", "type5"]
 
@@ -1704,6 +1737,7 @@ mod_tlv.controller('EditEpochController', [
     });
     $scope.lstType = '{ "objects" : ' + angular.toJson($scope.lstTypeObj) + '}';
   }*/
+  
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
@@ -1713,6 +1747,7 @@ mod_tlv.controller('EditEpochController', [
       epoch_start: $scope.epoch_start,
       epoch_end: $scope.epoch_end,
       type: $scope.type,
+      properties: $scope.properties,
       del_epoch: $scope.del_epoch,
       stop_epoch: $scope.stop_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
@@ -1730,6 +1765,7 @@ mod_tlv.controller('EditEpochController', [
       epoch_start: $scope.epoch_start,
       epoch_end: $scope.epoch_end,
       type: $scope.type,
+      properties: $scope.properties,
       link_epoch: $link_epoch,
       type_epoch: $scope.type_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
