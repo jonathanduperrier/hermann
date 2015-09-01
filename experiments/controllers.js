@@ -199,6 +199,9 @@ mod_exp.controller('EditExperimentController', [
     });
 
 
+  $scope.beforeClose = function() {
+    $scope.close();
+  };
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {

@@ -16,7 +16,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
-    $scope.epochObj = [];
     $scope.electrodeObj = [];
     $scope.neuronObj = [];
     $scope.cellObj = [];
@@ -356,30 +355,28 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 //  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
 
       ModalService.showModal({
-        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
-        controller: "EditEpochController",
+        templateUrl: "timeline/modal_dlg_edit_electrode.tpl.html",
+        controller: "EditElectrodeController",
         inputs: {
           title: "Edit Electrode information",
-          epoch_id: $electrode_id,
-          epoch_text: $electrode_text,
-          epoch_type: $electrode_type,
-          epoch_start: $electrode_start,
-          epoch_end: $electrode_end,
-          type_epoch: "electrode",
-          link_epoch: $electrode,
-          epochObj: $scope.electrodeObj,
-          epochObjList: $scope.electrodeObjList,
+          electrode_id: $electrode_id,
+          electrode_text: $electrode_text,
+          electrode_type: $electrode_type,
+          electrode_start: $electrode_start,
+          electrode_end: $electrode_end,
+          electrodeObj: $scope.electrodeObj,
+          electrodeObjList: $scope.electrodeObjList,
         }
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
 
-          from_start = result.epoch_start.split("/");
+          from_start = result.electrode_start.split("/");
           to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
 
-          if(result.del_epoch == true){
+          if(result.del_electrode == true){
             $scope.showConfirmRemoveEpoch($electrode_id, "electrode");
-          } else if (result.stop_epoch == true){
+          } else if (result.stop_electrode == true){
             $date_end = new Date();
             $scope.editElectrode($nbElectrode, result.text, to_start, $date_end, result.type);
             $scope.toJSON();
@@ -387,8 +384,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             if(result.type == null){
               bootbox.alert("Please choose type to save electrode !");
             } else {
-              if(result.epoch_end != ""){
-                from_end = result.epoch_end.split("/");
+              if(result.electrode_end != ""){
+                from_end = result.electrode_end.split("/");
                 to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
               } else {
                 to_end = "";
@@ -406,7 +403,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       var $electrodeObjExp = [];
 
       $restriction = "A neuron must be linked to an electrode";
-      $type_epoch = "neuron";
       $exp = $scope.getExpFromTimeline($numberCol);
 
 
@@ -434,7 +430,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $neuron_type = value.type;
           $neuron_start = value.start;
           $neuron_end = value.end;
-          $neuron = value.neuron;
+          $electrode = value.electrode;
         }
       });
       angular.forEach($scope.cellObj, function(value, key){
@@ -446,31 +442,30 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 //  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
 
       ModalService.showModal({
-        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
-        controller: "EditEpochController",
+        templateUrl: "timeline/modal_dlg_edit_neuron.tpl.html",
+        controller: "EditNeuronController",
         inputs: {
           title: "Edit Neuron information",
-          epoch_id: $neuron_id,
-          epoch_text: $neuron_text,
-          epoch_type: $neuron_type,
-          epoch_start: $neuron_start,
-          epoch_end: $neuron_end,
-          properties: $neuron_properties,//neuron/cell
-          type_epoch: "neuron",
-          link_epoch: $neuron,
-          epochObj: $scope.neuronObj,
-          epochObjList: $scope.neuronObjList,
+          neuron_id: $neuron_id,
+          neuron_text: $neuron_text,
+          neuron_type: $neuron_type,
+          neuron_start: $neuron_start,
+          neuron_end: $neuron_end,
+          properties: $neuron_properties,
+          link_electrode: $electrode,
+          neuronObj: $scope.neuronObj,
+          neuronObjList: $scope.neuronObjList,
         }
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
 
-          from_start = result.epoch_start.split("/");
+          from_start = result.neuron_start.split("/");
           to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
 
-          if(result.del_epoch == true){
+          if(result.del_neuron == true){
             $scope.showConfirmRemoveEpoch($neuron_id, "neuron");
-          } else if (result.stop_epoch == true){
+          } else if (result.stop_neuron == true){
             $date_end = new Date();
             $scope.editNeuron($nbNeuron, result.text, to_start, $date_end, result.type, result.properties);
             $scope.toJSON();
@@ -478,8 +473,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             if(result.type == null){
               bootbox.alert("Please choose type to save neuron !");
             } else {
-              if(result.epoch_end != ""){
-                from_end = result.epoch_end.split("/");
+              if(result.neuron_end != ""){
+                from_end = result.neuron_end.split("/");
                 to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
               } else {
                 to_end = "";
@@ -496,8 +491,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       var $exp = "";
       var $protocolObjExp = [];
 
-      $restriction = "A protocole must be linked to a protocol";
-      $type_epoch = "protocol";
+      $restriction = "A protocol must be linked to an electrode";
       $exp = $scope.getExpFromTimeline($numberCol);
       $i = 0;
       angular.forEach($scope.protocolObj, function($value, $key) {
@@ -522,7 +516,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $protocol_type = value.type;
           $protocol_start = value.start;
           $protocol_end = value.end;
-          $protocol = value.protocol;
+          $neuron = value.neuron;
         }
       });
 
@@ -531,30 +525,29 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 //  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
 
       ModalService.showModal({
-        templateUrl: "timeline/modal_dlg_edit_epoch.tpl.html",
-        controller: "EditEpochController",
+        templateUrl: "timeline/modal_dlg_edit_protocol.tpl.html",
+        controller: "EditProtocolController",
         inputs: {
           title: "Edit Protocol information",
-          epoch_id: $protocol_id,
-          epoch_text: $protocol_text,
-          epoch_type: $protocol_type,
-          epoch_start: $protocol_start,
-          epoch_end: $protocol_end,
-          type_epoch: "protocol",
-          link_epoch: $protocol,
-          epochObj: $scope.protocolObj,
-          epochObjList: $scope.protocolObjList,
+          protocol_id: $protocol_id,
+          protocol_text: $protocol_text,
+          protocol_type: $protocol_type,
+          protocol_start: $protocol_start,
+          protocol_end: $protocol_end,
+          link_neuron: $neuron,
+          protocolObj: $scope.protocolObj,
+          protocolObjList: $scope.protocolObjList,
         }
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
 
-          from_start = result.epoch_start.split("/");
+          from_start = result.protocol_start.split("/");
           to_start = new Date(from_start[1]+"/"+from_start[0]+"/"+from_start[2]);;
 
-          if(result.del_epoch == true){
+          if(result.del_protocol == true){
             $scope.showConfirmRemoveEpoch($protocol_id, "protocol");
-          } else if (result.stop_epoch == true){
+          } else if (result.stop_protocol == true){
             $date_end = new Date();
             $scope.editProtocol($nbProtocol, result.text, to_start, $date_end, result.type);
             $scope.toJSON();
@@ -562,8 +555,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             if(result.type == null){
               bootbox.alert("Please choose type to save protocol !");
             } else {
-              if(result.epoch_end != ""){
-                from_end = result.epoch_end.split("/");
+              if(result.protocol_end != ""){
+                from_end = result.protocol_end.split("/");
                 to_end = new Date(from_end[1]+"/"+from_end[0]+"/"+from_end[2]);
               } else {
                 to_end = "";
@@ -1672,9 +1665,11 @@ mod_tlv.controller('AddProtocolController', [
   };
 }]);
 
-mod_tlv.controller('EditEpochController', [
-  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'properties', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'DeviceType', 'CellType', 'close', 
-  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, properties, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, DeviceType, CellType, close) {
+
+
+mod_tlv.controller('EditElectrodeController', [
+  '$scope', '$element', 'title', 'electrode_text', 'electrode_type', 'electrode_start', 'electrode_end', 'electrode_id', 'electrodeObj', 'electrodeObjList', 'DeviceType', 'close', 
+  function($scope, $element, title, electrode_text, electrode_type, electrode_start, electrode_end, electrode_id, electrodeObj, electrodeObjList, DeviceType, close) {
 
   $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
   $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -1682,61 +1677,40 @@ mod_tlv.controller('EditEpochController', [
   $scope.selectHourOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
   $scope.selectMinOpt = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
 
-  $scope.text = epoch_text;
-  $scope.epoch_id = epoch_id;
-  $d = epoch_start.getDate();
+  $scope.text = electrode_text;
+  $scope.electrode_id = electrode_id;
+  $d = electrode_start.getDate();
   $scope.start_day = $d > 9 ? "" + $d: "0" + $d;
-  $m = epoch_start.getMonth() + 1;
+  $m = electrode_start.getMonth() + 1;
   $scope.start_month = $m > 9 ? "" + $m: "0" + $m;
-  $y = epoch_start.getFullYear();
+  $y = electrode_start.getFullYear();
   $scope.start_year = $y > 9 ? "" + $y: "0" + $y;
-  $h = epoch_start.getHours();
+  $h = electrode_start.getHours();
   $scope.start_hour = $h > 9 ? "" + $h: "0" + $h;
-  $min = epoch_start.getMinutes();
+  $min = electrode_start.getMinutes();
   $scope.start_min = $min > 9 ? "" + $min: "0" + $min;
 
-  if(epoch_end != null){
-    $d = epoch_end.getDate();
+  if(electrode_end != null){
+    $d = electrode_end.getDate();
     $scope.end_day = $d > 9 ? "" + $d: "0" + $d;
-    $m = epoch_end.getMonth() + 1;
+    $m = electrode_end.getMonth() + 1;
     $scope.end_month = $m > 9 ? "" + $m: "0" + $m;
-    $y = epoch_end.getFullYear();
+    $y = electrode_end.getFullYear();
     $scope.end_year = $y > 9 ? "" + $y: "0" + $y;
-    $h = epoch_end.getHours();
+    $h = electrode_end.getHours();
     $scope.end_hour = $h > 9 ? "" + $h: "0" + $h;
-    $min = epoch_end.getMinutes();
+    $min = electrode_end.getMinutes();
     $scope.end_min = $min > 9 ? "" + $min: "0" + $min;
   }
-  $scope.type = epoch_type;
+  $scope.type = electrode_type;
   $scope.title = title;
-  $scope.properties = properties;
-  $scope.del_epoch = false;
-  $scope.stop_epoch = false;
-  $scope.link_epoch = link_epoch;
-  $scope.type_epoch = type_epoch;
-  $scope.epochObj = epochObj;
-  $scope.epochObjList = epochObjList;
+  $scope.del_electrode = false;
+  $scope.stop_electrode = false;
+  $scope.electrodeObj = electrodeObj;
+  $scope.electrodeObjList = electrodeObjList;
   $scope.lstTypeObj = [];
   
-  if($scope.type_epoch == "electrode"){
-    $scope.lstType = DeviceType.get();
-  }
-  if($scope.type_epoch == "neuron"){
-    $scope.lstType = CellType.get();
-  }
-
-  /*if($scope.type_epoch == "protocol"){
-    $tabLstType = ["type1", "type2", "type3", "type4", "type5"]
-
-    angular.forEach($tabLstType, function($value){
-      $scope.lstTypeObj.push (
-        {
-          name: $value,
-        }
-      );
-    });
-    $scope.lstType = '{ "objects" : ' + angular.toJson($scope.lstTypeObj) + '}';
-  }*/
+  $scope.lstType = DeviceType.get();
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
@@ -1744,12 +1718,11 @@ mod_tlv.controller('EditEpochController', [
     $scope.getDateData();
     close({
       text: $scope.text,
-      epoch_start: $scope.epoch_start,
-      epoch_end: $scope.epoch_end,
+      electrode_start: $scope.electrode_start,
+      electrode_end: $scope.electrode_end,
       type: $scope.type,
-      properties: $scope.properties,
-      del_epoch: $scope.del_epoch,
-      stop_epoch: $scope.stop_epoch,
+      del_electrode: $scope.del_electrode,
+      stop_electrode: $scope.stop_electrode,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1762,12 +1735,9 @@ mod_tlv.controller('EditEpochController', [
     //  Now call close, returning control to the caller.
     close({
       text: $scope.text,
-      epoch_start: $scope.epoch_start,
-      epoch_end: $scope.epoch_end,
+      electrode_start: $scope.electrode_start,
+      electrode_end: $scope.electrode_end,
       type: $scope.type,
-      properties: $scope.properties,
-      link_epoch: $link_epoch,
-      type_epoch: $scope.type_epoch,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1777,7 +1747,7 @@ mod_tlv.controller('EditEpochController', [
     $year = $scope.start_year;
     $hour = $scope.start_hour;
     $min = $scope.start_min;
-    $scope.epoch_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+    $scope.electrode_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
 
     $day = $scope.end_day;
     $month = $scope.end_month;
@@ -1785,29 +1755,282 @@ mod_tlv.controller('EditEpochController', [
     $hour = $scope.end_hour;
     $min = $scope.end_min;
     if(($day === undefined) | ($month === undefined) | ($year === undefined) | ($hour === undefined) | ($min === undefined)){
-      $scope.epoch_end = "";
+      $scope.electrode_end = "";
     } else {
-      $scope.epoch_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+      $scope.electrode_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
     }
   };
 
   $scope.delete = function(){
-    $scope.del_epoch = true;
+    $scope.del_electrode = true;
     $scope.close();
   };
 
   $scope.stop = function(){
-    $scope.stop_epoch = true;
+    $scope.stop_electrode = true;
     $scope.close();
   };
 
-  $scope.displayDatePicker = function($epoch_id, $start_end) {
+  $scope.displayDatePicker = function($electrode_id, $start_end) {
     if($start_end == "start"){
-      angular.element('#datetimepicker_start_'+$epoch_id).datetimepicker({
+      angular.element('#datetimepicker_start_'+$electrode_id).datetimepicker({
           locale: 'en-gb'
       });
     } else if ($start_end == "end"){
-      angular.element('#datetimepicker_end_'+$epoch_id).datetimepicker({
+      angular.element('#datetimepicker_end_'+$electrode_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    }
+  };
+}]);
+
+
+mod_tlv.controller('EditNeuronController', [
+  '$scope', '$element', 'title', 'neuron_text', 'neuron_type', 'neuron_start', 'neuron_end', 'properties', 'neuron_id', 'neuronObj', 'neuronObjList', 'link_electrode', 'CellType', 'close', 
+  function($scope, $element, title, neuron_text, neuron_type, neuron_start, neuron_end, properties, neuron_id, neuronObj, neuronObjList, link_electrode, CellType, close) {
+
+  $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
+  $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+  $scope.selectYearOpt = ['2014', '2015', '2016', '2016', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031'];
+  $scope.selectHourOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
+  $scope.selectMinOpt = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
+
+  $scope.text = neuron_text;
+  $scope.neuron_id = neuron_id;
+  $d = neuron_start.getDate();
+  $scope.start_day = $d > 9 ? "" + $d: "0" + $d;
+  $m = neuron_start.getMonth() + 1;
+  $scope.start_month = $m > 9 ? "" + $m: "0" + $m;
+  $y = neuron_start.getFullYear();
+  $scope.start_year = $y > 9 ? "" + $y: "0" + $y;
+  $h = neuron_start.getHours();
+  $scope.start_hour = $h > 9 ? "" + $h: "0" + $h;
+  $min = neuron_start.getMinutes();
+  $scope.start_min = $min > 9 ? "" + $min: "0" + $min;
+
+  if(neuron_end != null){
+    $d = neuron_end.getDate();
+    $scope.end_day = $d > 9 ? "" + $d: "0" + $d;
+    $m = neuron_end.getMonth() + 1;
+    $scope.end_month = $m > 9 ? "" + $m: "0" + $m;
+    $y = neuron_end.getFullYear();
+    $scope.end_year = $y > 9 ? "" + $y: "0" + $y;
+    $h = neuron_end.getHours();
+    $scope.end_hour = $h > 9 ? "" + $h: "0" + $h;
+    $min = neuron_end.getMinutes();
+    $scope.end_min = $min > 9 ? "" + $min: "0" + $min;
+  }
+  $scope.type = neuron_type;
+  $scope.title = title;
+  $scope.properties = properties;
+  $scope.del_neuron = false;
+  $scope.stop_neuron = false;
+  $scope.link_electrode = link_electrode;
+  $scope.neuronObj = neuronObj;
+  $scope.neuronObjList = neuronObjList;
+  $scope.lstTypeObj = [];
+  
+  $scope.lstType = CellType.get();
+  
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    $scope.getDateData();
+    close({
+      text: $scope.text,
+      neuron_start: $scope.neuron_start,
+      neuron_end: $scope.neuron_end,
+      type: $scope.type,
+      properties: $scope.properties,
+      del_neuron: $scope.del_neuron,
+      stop_neuron: $scope.stop_neuron,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    $scope.getDateData();
+    //  Now call close, returning control to the caller.
+    close({
+      text: $scope.text,
+      neuron_start: $scope.neuron_start,
+      neuron_end: $scope.neuron_end,
+      type: $scope.type,
+      properties: $scope.properties,
+      link_electrode: $link_electrode,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  $scope.getDateData = function() {
+    $day = $scope.start_day;
+    $month = $scope.start_month;
+    $year = $scope.start_year;
+    $hour = $scope.start_hour;
+    $min = $scope.start_min;
+    $scope.neuron_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+
+    $day = $scope.end_day;
+    $month = $scope.end_month;
+    $year = $scope.end_year;
+    $hour = $scope.end_hour;
+    $min = $scope.end_min;
+    if(($day === undefined) | ($month === undefined) | ($year === undefined) | ($hour === undefined) | ($min === undefined)){
+      $scope.neuron_end = "";
+    } else {
+      $scope.neuron_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+    }
+  };
+
+  $scope.delete = function(){
+    $scope.del_neuron = true;
+    $scope.close();
+  };
+
+  $scope.stop = function(){
+    $scope.stop_neuron = true;
+    $scope.close();
+  };
+
+  $scope.displayDatePicker = function($neuron_id, $start_end) {
+    if($start_end == "start"){
+      angular.element('#datetimepicker_start_'+$neuron_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    } else if ($start_end == "end"){
+      angular.element('#datetimepicker_end_'+$neuron_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    }
+  };
+}]);
+
+
+mod_tlv.controller('EditProtocolController', [
+  '$scope', '$element', 'title', 'protocol_text', 'protocol_type', 'protocol_start', 'protocol_end', 'protocol_id', 'protocolObj', 'protocolObjList', 'link_neuron', 'close', 
+  function($scope, $element, title, protocol_text, protocol_type, protocol_start, protocol_end, protocol_id, protocolObj, protocolObjList, link_neuron, close) {
+
+  $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
+  $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+  $scope.selectYearOpt = ['2014', '2015', '2016', '2016', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030', '2031'];
+  $scope.selectHourOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
+  $scope.selectMinOpt = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
+
+  $scope.text = protocol_text;
+  $scope.protocol_id = protocol_id;
+  $d = protocol_start.getDate();
+  $scope.start_day = $d > 9 ? "" + $d: "0" + $d;
+  $m = protocol_start.getMonth() + 1;
+  $scope.start_month = $m > 9 ? "" + $m: "0" + $m;
+  $y = protocol_start.getFullYear();
+  $scope.start_year = $y > 9 ? "" + $y: "0" + $y;
+  $h = protocol_start.getHours();
+  $scope.start_hour = $h > 9 ? "" + $h: "0" + $h;
+  $min = protocol_start.getMinutes();
+  $scope.start_min = $min > 9 ? "" + $min: "0" + $min;
+
+  if(protocol_end != null){
+    $d = protocol_end.getDate();
+    $scope.end_day = $d > 9 ? "" + $d: "0" + $d;
+    $m = protocol_end.getMonth() + 1;
+    $scope.end_month = $m > 9 ? "" + $m: "0" + $m;
+    $y = protocol_end.getFullYear();
+    $scope.end_year = $y > 9 ? "" + $y: "0" + $y;
+    $h = protocol_end.getHours();
+    $scope.end_hour = $h > 9 ? "" + $h: "0" + $h;
+    $min = protocol_end.getMinutes();
+    $scope.end_min = $min > 9 ? "" + $min: "0" + $min;
+  }
+  $scope.type = protocol_type;
+  $scope.title = title;
+  $scope.del_protocol = false;
+  $scope.stop_protocol = false;
+  $scope.link_neuron = link_neuron;
+  $scope.protocolObj = protocolObj;
+  $scope.protocolObjList = protocolObjList;
+  $scope.lstTypeObj = [];
+
+  $tabLstType = ["type1", "type2", "type3", "type4", "type5"]
+
+  angular.forEach($tabLstType, function($value){
+    $scope.lstTypeObj.push (
+      {
+        name: $value,
+      }
+    );
+  });
+  $scope.lstType = '{ "objects" : ' + angular.toJson($scope.lstTypeObj) + '}';
+    
+  //  This close function doesn't need to use jQuery or bootstrap, because
+  //  the button has the 'data-dismiss' attribute.
+  $scope.close = function() {
+    $scope.getDateData();
+    close({
+      text: $scope.text,
+      protocol_start: $scope.protocol_start,
+      protocol_end: $scope.protocol_end,
+      type: $scope.type,
+      del_protocol: $scope.del_protocol,
+      stop_protocol: $scope.stop_protocol,
+      link_neuron: $link_neuron,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+  $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    $scope.getDateData();
+    //  Now call close, returning control to the caller.
+    close({
+      text: $scope.text,
+      protocol_start: $scope.protocol_start,
+      protocol_end: $scope.protocol_end,
+      type: $scope.type,
+      link_neuron: $link_neuron,
+    }, 100); // close, but give 500ms for bootstrap to animate
+  };
+
+  $scope.getDateData = function() {
+    $day = $scope.start_day;
+    $month = $scope.start_month;
+    $year = $scope.start_year;
+    $hour = $scope.start_hour;
+    $min = $scope.start_min;
+    $scope.protocol_start = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+
+    $day = $scope.end_day;
+    $month = $scope.end_month;
+    $year = $scope.end_year;
+    $hour = $scope.end_hour;
+    $min = $scope.end_min;
+    if(($day === undefined) | ($month === undefined) | ($year === undefined) | ($hour === undefined) | ($min === undefined)){
+      $scope.protocol_end = "";
+    } else {
+      $scope.protocol_end = $day+"/"+$month+"/"+$year+" "+$hour+":"+$min;
+    }
+  };
+
+  $scope.delete = function(){
+    $scope.del_protocol = true;
+    $scope.close();
+  };
+
+  $scope.stop = function(){
+    $scope.stop_protocol = true;
+    $scope.close();
+  };
+
+  $scope.displayDatePicker = function($protocol_id, $start_end) {
+    if($start_end == "start"){
+      angular.element('#datetimepicker_start_'+$protocol_id).datetimepicker({
+          locale: 'en-gb'
+      });
+    } else if ($start_end == "end"){
+      angular.element('#datetimepicker_end_'+$protocol_id).datetimepicker({
           locale: 'en-gb'
       });
     }
