@@ -844,6 +844,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.addNeuron = function($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties, $doNotSave){
+      CellType.get(function($data){
+        
       if(angular.element.isEmptyObject($scope.neuronObj)) {
         $idNeuron = 1;
       } else {
@@ -882,7 +884,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $diffTSNeuron = $scope.heightMinEpoch;
       }
 
-      CellType.get(function($data){
+      
         angular.forEach($data.objects, function($value){
           if($value.name == $type){
             $scope.cellObj.push (
@@ -912,7 +914,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 endFormat : $endFormat,
                 epoch_height : $diffTSNeuron,
                 electrode : $electrode,
-                idcell: '/neuralstructures/cell/' + $idNeuron,
+                idcell : '/neuralstructures/cell/' + $idNeuron,
             }
         );
         if($doNotSave == 0){
@@ -1180,11 +1182,15 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.functionFromJsonEpoch(data, $scale, "electrode");
 
         $scope.response = neuron.get({}, function(data){
-          $scope.functionFromJsonEpoch(data, $scale, "neuron");
+          
+          $scope.response = Cell.get({}, function($dataC){
+            $scope.functionFromJsonEpoch(data, $scale, "neuron", $dataC);
 
             $scope.response = protocol.get({}, function(data){
               $scope.functionFromJsonEpoch(data, $scale, "protocol");
             });
+
+          });
         });
       });
     };
@@ -1203,7 +1209,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       }
     };
 
-    $scope.functionFromJsonEpoch = function(data, $scale, $type_epoch){
+    $scope.functionFromJsonEpoch = function(data, $scale, $type_epoch, $dataC){
         $scope.jsonEpoch = angular.fromJson(data.objects);
         $timeStampEvtMax = 0;
         $timeStampEvtMin = 0;
@@ -1234,11 +1240,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             break;
           }
           $scope.getDiffTS(value.timeline, value.start);
+          $scope.idcell = value.idcell;
 
           if( value != null ){
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
-
               $startEpoch = new Date(value.start);
               $startFormat = $startEpoch.format('dd/mm/yyyy - HH:MM');
               if(value.end != null){
@@ -1249,20 +1255,16 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
                   break;
                   case "neuron":
-                    Cell.get(function(){}).$promise.then(function($dataC){
-                      $scope.idcell = $scope.jsonEpoch[key].idcell;
-                      $text = value.text;
-                      $type = value.type;
-                      $timeline = value.timeline;
-                      $start = value.start;
-                      $scope.getDiffTS($timeline, $start);
-                      angular.forEach($dataC.objects, function($value, $key) {
-                        if($scope.idcell == $value.resource_uri){
-                          $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, $value.properties, 1);
-                        }
-                      });
+                    $text = value.text;
+                    $type = value.type;
+                    $timeline = value.timeline;
+                    $start = value.start;
+                    $scope.getDiffTS($timeline, $start);
+                    angular.forEach($dataC.objects, function($value, $key) {
+                      if($scope.idcell == $value.resource_uri){
+                        $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, $value.properties, 1);
+                      }
                     });
-
                   break;
                   case "protocol":
                     $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
@@ -1274,18 +1276,15 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                   case "neuron":
-                    Cell.get(function(){}).$promise.then(function($dataC){
-                      $scope.idcell = $scope.jsonEpoch[key].idcell;
-                      $text = value.text;
-                      $type = value.type;
-                      $timeline = value.timeline;
-                      $start = value.start;
-                      $scope.getDiffTS($timeline, $start);
-                      angular.forEach($dataC.objects, function($value, $key) {
-                        if($scope.idcell == $value.resource_uri){
-                          $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, $value.properties, 1);
-                        }
-                      });
+                    $text = value.text;
+                    $type = value.type;
+                    $timeline = value.timeline;
+                    $start = value.start;
+                    $scope.getDiffTS($timeline, $start);
+                    angular.forEach($dataC.objects, function($value, $key) {
+                      if($scope.idcell == $value.resource_uri){
+                        $scope.addNeuron($numberCol, $text, $startEpoch, $startFormat, $type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, $value.properties, 1);
+                      }
                     });
                   break;
                   case "protocol":
