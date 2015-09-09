@@ -280,7 +280,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }).then(function(modal) {
           modal.element.modal();
           modal.close.then(function(result) {
-            $scope.createNeuron($numberCol, result.text, result.type, result.link_electrode, result.properties);
+            $scope.createNeuron($numberCol, result.label, result.type, result.link_electrode, result.properties);
           });
         });
       });
@@ -424,23 +424,21 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       angular.forEach($scope.neuronObj, function(value, key) {
         if(value.id == $nbNeuron){
           $neuron_id = value.id;
-          $neuron_text = value.text;
+          $neuron_label = value.label;
           $neuron_type = value.type;
           $neuron_start = value.start;
           $neuron_end = value.end;
           $electrode = value.electrode;
+          $neuron_properties = value.properties;
         }
       });
-//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
-//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
-
       ModalService.showModal({
         templateUrl: "timeline/modal_dlg_edit_neuron.tpl.html",
         controller: "EditNeuronController",
         inputs: {
           title: "Edit Neuron information",
           neuron_id: $neuron_id,
-          neuron_text: $neuron_text,
+          neuron_label: $neuron_label,
           neuron_type: $neuron_type,
           neuron_start: $neuron_start,
           neuron_end: $neuron_end,
@@ -460,7 +458,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.showConfirmRemoveEpoch($neuron_id, "neuron");
           } else if (result.stop_neuron == true){
             $date_end = new Date();
-            $scope.editNeuron($nbNeuron, result.text, to_start, $date_end, result.type, result.properties, 0);
+            $scope.editNeuron($nbNeuron, result.label, to_start, $date_end, result.type, result.properties);
           } else {
             if(result.type == null){
               bootbox.alert("Please choose type to save neuron !");
@@ -471,7 +469,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               } else {
                 to_end = "";
               }
-              $scope.editNeuron($nbNeuron, result.text, to_start, to_end, result.type, result.properties, 0);
+              $scope.editNeuron($nbNeuron, result.label, to_start, to_end, result.type, result.properties);
             }
           }
         });
@@ -586,7 +584,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.editNeuron = function($id, $text, $start, $end, $type, $properties, $doNotSave){
+    $scope.editNeuron = function($id, $label, $start, $end, $type, $properties){
       var $vPlInit = $scope.dateStartExp0/1e3|0; 
       var $vPl = $start/1e3|0; 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
@@ -599,7 +597,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       }
       angular.forEach($scope.neuronObj, function(value, key) {
         if(value.id == $id){
-          $scope.neuronObj[key].text = $text;
+          $scope.neuronObj[key].label = $label;
           $scope.neuronObj[key].start = $start;
           $scope.neuronObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
           if($end != ""){
@@ -609,6 +607,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.neuronObj[key].type = $type;
           $scope.neuronObj[key].epoch_height = $diffTSNeuron;
           $scope.neuronObj[key].vPlacement = $vPlacement;
+          $scope.neuronObj[key].properties = $properties;
         }
       });
       $scope.toJSON();
@@ -665,7 +664,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.toJSON();
     };
 
-    $scope.createNeuron = function($numberCol, $text, $type, $electrode, $properties){
+    $scope.createNeuron = function($numberCol, $label, $type, $electrode, $properties){
       angular.element(window).spin();
       $rootScope.spin = 1;
 
@@ -683,7 +682,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       promise.then(function(result) {
         $scope.nbEpoch = result;
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addNeuron($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode, $properties, 0);
+        $scope.addNeuron($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode, $properties);
       });
     };
 
@@ -737,7 +736,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $date_start = new Date($value.start);
           $id = $resource_uri_splitted[3];
           if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
-            $scope.editNeuron($id, $value.text, $date_start, $date_end, $value.type, "", 1);
+            $scope.editNeuron($id, $value.label, $date_start, $date_end, $value.type, $value.properties);
             $scope.nbNeuron++;
           }
         });
@@ -823,55 +822,62 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       );
     };
 
-    $scope.addNeuron = function($numberCol, $text, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties){
+    $scope.addNeuron = function($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties){
       CellType.get(function($data){
-        
-      if(angular.element.isEmptyObject($scope.neuronObj)) {
-        $idNeuron = 1;
-      } else {
-        angular.forEach($scope.neuronObj, function(value){
-          if($scope.neuronObj.id > $idNeuron){
-            $idNeuron = $scope.neuronObj.id;
+        angular.forEach($data.objects, function($value){
+          if($value.resource_uri == $type){
+            $type_uri = $value.resource_uri;
+            $type_name = $value.name;
           }
         });
-        $idNeuron++;
-      }
-      var $i=0;
-      var $TLexp = "";
-      var $TLcolor = "";
-      var $TLName = "";
-      angular.forEach($scope.timeLineObj, function($value, $key){
-        if($numberCol == $scope.timeLineObj[$key].id){
-          $TLexp = $scope.timeLineObj[$key].experiment;
-          $TLcolor = $scope.timeLineObj[$key].color;
-          $TLName =  $scope.timeLineObj[$key].name;
-        }
-        if(($vPlacement+150) > $scope.timeLineObj[$key].height){
-          $scope.timeLineObj[$key].height = $vPlacement+150;
-          angular.element("#graduation").height($vPlacement+150);
-        }
-        $i++;
-      });
 
-      if($endNeuron != null){
-        $startNeuronTS = $startNeuron.valueOf();
-        $endNeuronTS = $endNeuron.valueOf();
-        $diffTSNeuron = (($endNeuronTS/1e3|0) - ($startNeuronTS/1e3|0)) / $scl_coef;
-        if($diffTSNeuron < ($scope.heightMinEpoch+1)){
+        if(angular.element.isEmptyObject($scope.neuronObj)) {
+          $idNeuron = 1;
+        } else {
+          angular.forEach($scope.neuronObj, function(value){
+            if($scope.neuronObj.id > $idNeuron){
+              $idNeuron = $scope.neuronObj.id;
+            }
+          });
+          $idNeuron++;
+        }
+        var $i=0;
+        var $TLexp = "";
+        var $TLcolor = "";
+        var $TLName = "";
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          if($numberCol == $scope.timeLineObj[$key].id){
+            $TLexp = $scope.timeLineObj[$key].experiment;
+            $TLcolor = $scope.timeLineObj[$key].color;
+            $TLName =  $scope.timeLineObj[$key].name;
+          }
+          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
+            $scope.timeLineObj[$key].height = $vPlacement+150;
+            angular.element("#graduation").height($vPlacement+150);
+          }
+          $i++;
+        });
+
+        if($endNeuron != null){
+          $startNeuronTS = $startNeuron.valueOf();
+          $endNeuronTS = $endNeuron.valueOf();
+          $diffTSNeuron = (($endNeuronTS/1e3|0) - ($startNeuronTS/1e3|0)) / $scl_coef;
+          if($diffTSNeuron < ($scope.heightMinEpoch+1)){
+            $diffTSNeuron = $scope.heightMinEpoch;
+          }
+        } else {
           $diffTSNeuron = $scope.heightMinEpoch;
         }
-      } else {
-        $diffTSNeuron = $scope.heightMinEpoch;
-      }
 
         $scope.neuronObj.push (
             {
                 id : $idNeuron,
                 timeline : "/notebooks/timeline/" + $numberCol,
-                text : $text,
+                label : $label,
                 start : $startNeuron,
                 startFormat : $startFormat,
-                type : $type,
+                type : $type_uri,
+                type_name : $type_name,
                 color : "#FFE500",
                 vPlacement : $vPlacement,
                 TimeLineExp : '#/timeline' + $TLexp,
@@ -882,6 +888,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 endFormat : $endFormat,
                 epoch_height : $diffTSNeuron,
                 electrode : $electrode,
+                properties : $properties,
             }
         );
         $scope.toJSON();
@@ -1200,7 +1207,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, value.properties);
                   break;
                   case "protocol":
                     $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
@@ -1212,7 +1219,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
+                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, value.properties);
                   break;
                   case "protocol":
                     $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
@@ -1501,7 +1508,7 @@ mod_tlv.controller('AddNeuronController', [
 
   $scope.lstTypeNeuron = CellType.get();
 
-  $scope.text = null;
+  $scope.label = null;
   $scope.type = null;
   $scope.title = title;
   $scope.link_electrode = null;
@@ -1526,7 +1533,7 @@ mod_tlv.controller('AddNeuronController', [
   $scope.close = function() {
     $link_electrode = $scope.link_electrode;
     close({
-      text: $scope.text,
+      label: $scope.label,
       type: $scope.type,
       link_electrode: $link_electrode,
       properties: $scope.properties,
@@ -1541,7 +1548,7 @@ mod_tlv.controller('AddNeuronController', [
     //  Now call close, returning control to the caller.
     $link_electrode = $scope.link_electrode;
     close({
-      text: $scope.text,
+      label: $scope.label,
       type: $scope.type,
       link_electrode: $link_electrode,
       properties: $scope.properties,
@@ -1721,8 +1728,8 @@ mod_tlv.controller('EditElectrodeController', [
 
 
 mod_tlv.controller('EditNeuronController', [
-  '$scope', '$element', 'title', 'neuron_text', 'neuron_type', 'neuron_start', 'neuron_end', 'properties', 'neuron_id', 'neuronObj', 'neuronObjList', 'link_electrode', 'CellType', 'close', 
-  function($scope, $element, title, neuron_text, neuron_type, neuron_start, neuron_end, properties, neuron_id, neuronObj, neuronObjList, link_electrode, CellType, close) {
+  '$scope', '$element', 'title', 'neuron_label', 'neuron_type', 'neuron_start', 'neuron_end', 'properties', 'neuron_id', 'neuronObj', 'neuronObjList', 'link_electrode', 'CellType', 'close', 
+  function($scope, $element, title, neuron_label, neuron_type, neuron_start, neuron_end, properties, neuron_id, neuronObj, neuronObjList, link_electrode, CellType, close) {
 
   $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
   $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -1730,7 +1737,7 @@ mod_tlv.controller('EditNeuronController', [
   $scope.selectHourOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
   $scope.selectMinOpt = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
 
-  $scope.text = neuron_text;
+  $scope.label = neuron_label;
   $scope.neuron_id = neuron_id;
   $d = neuron_start.getDate();
   $scope.start_day = $d > 9 ? "" + $d: "0" + $d;
@@ -1755,7 +1762,14 @@ mod_tlv.controller('EditNeuronController', [
     $min = neuron_end.getMinutes();
     $scope.end_min = $min > 9 ? "" + $min: "0" + $min;
   }
-  $scope.type = neuron_type;
+
+  CellType.get(function($data){
+    angular.forEach($data.objects, function($value){
+      if($value.resource_uri == neuron_type){
+        $scope.type = $value.name;
+      }
+    });
+  }); 
   $scope.title = title;
   $scope.properties = properties;
   $scope.del_neuron = false;
@@ -1764,22 +1778,29 @@ mod_tlv.controller('EditNeuronController', [
   $scope.neuronObj = neuronObj;
   $scope.neuronObjList = neuronObjList;
   $scope.lstTypeObj = [];
-  
   $scope.lstType = CellType.get();
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
-    $scope.getDateData();
-    close({
-      text: $scope.text,
-      neuron_start: $scope.neuron_start,
-      neuron_end: $scope.neuron_end,
-      type: $scope.type,
-      properties: $scope.properties,
-      del_neuron: $scope.del_neuron,
-      stop_neuron: $scope.stop_neuron,
-    }, 100); // close, but give 500ms for bootstrap to animate
+    CellType.get(function($data){
+      angular.forEach($data.objects, function($value){
+        if($value.name == $scope.type){
+          $type_uri = $value.resource_uri;
+        }
+      });
+
+      $scope.getDateData();
+      close({
+        label: $scope.label,
+        neuron_start: $scope.neuron_start,
+        neuron_end: $scope.neuron_end,
+        type: $type_uri,
+        properties: $scope.properties,
+        del_neuron: $scope.del_neuron,
+        stop_neuron: $scope.stop_neuron,
+      }, 100); // close, but give 500ms for bootstrap to animate
+    });
   };
 
   //  This cancel function must use the bootstrap, 'modal' function because
@@ -1787,16 +1808,24 @@ mod_tlv.controller('EditNeuronController', [
   $scope.cancel = function() {
     //  Manually hide the modal.
     $element.modal('hide');
-    $scope.getDateData();
-    //  Now call close, returning control to the caller.
-    close({
-      text: $scope.text,
-      neuron_start: $scope.neuron_start,
-      neuron_end: $scope.neuron_end,
-      type: $scope.type,
-      properties: $scope.properties,
-      link_electrode: $link_electrode,
-    }, 100); // close, but give 500ms for bootstrap to animate
+
+    CellType.get(function($data){
+      angular.forEach($data.objects, function($value){
+        if($value.name == $scope.type){
+          $type_uri = $value.resource_uri;
+        }
+      });
+      $scope.getDateData();
+      //  Now call close, returning control to the caller.
+      close({
+        label: $scope.label,
+        neuron_start: $scope.neuron_start,
+        neuron_end: $scope.neuron_end,
+        type: $scope.type,
+        properties: $scope.properties,
+        link_electrode: $link_electrode,
+      }, 100); // close, but give 500ms for bootstrap to animate
+    });
   };
 
   $scope.getDateData = function() {
