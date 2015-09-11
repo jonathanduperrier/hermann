@@ -12,7 +12,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'SupplierService'
                                          ]);
 mod_tlv.controller('timeLineVisualController', 
-function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, electrode, neuron, CellType, protocol, $routeParams, Experiment) {
+function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, electrode, neuron, CellType, DeviceType, protocol, $routeParams, Experiment) {
     $scope.nbEvent = [];
     $scope.timeLineObj = [];
     $scope.eventObj = [];
