@@ -9,24 +9,74 @@
 				        <p>Enter electrode information here.</p>
 						<form class="form-horizontal" role="form">
 						  <div class="form-group">
-						    <label for="text" class="col-sm-2 control-label">Text : </label>
+						    <label for="label" class="col-sm-2 control-label">Label : </label>
 						    <div class="col-sm-10">
-						      <input type="text" class="form-control" id="text" name="text" placeholder="name ..." ng-model="text">
+						      <input type="label" class="form-control" id="label" name="label" placeholder="label ..." ng-model="label">
 						    </div>
 						  </div>
 						  <div class="form-group">
 						    <label for="type" class="col-sm-2 control-label">Type : </label>
 						    <div class="col-sm-10">
 						    	<select class="form-control" id="type" name="type" placeholder="type ..." ng-model="type">
-								  <option ng-repeat="type in lstTypeElectrode.objects" value="{{type.name}}" >{{type.name}}</option>
+								  <option ng-repeat="type in lstTypeElectrode.objects" value="{{type.resource_uri}}" >{{type.resource_uri}}</option>
 								</select>
 						    </div>
 						  </div>
 						  <div class="form-group">
-						  	<label for="device" class="col-sm-2 control-label">Device : </label>
-						  	<label>
-						  		
-						  	</label>
+						  	<label for="model" class="col-sm-2 control-label">Model : </label>
+						  	<div class="col-sm-10">
+								<input type="model" class="form-control" id="model" name="model" ng-model="model">
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="version" class="col-sm-2 control-label">Version : </label>
+						  	<div class="col-sm-10">
+								<input type="version" class="form-control" id="version" name="version" ng-model="version">
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="serial_or_id" class="col-sm-2 control-label">Serial or Id : </label>
+						  	<div class="col-sm-10">
+								<input type="serial_or_id" class="form-control" id="serial_or_id" name="serial_or_id" ng-model="serial_or_id">
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="id_manufacturer" class="col-sm-2 control-label">Manufacturer : </label>
+						  	<div class="col-sm-10">
+						    	<select class="form-control" id="id_manufacturer" name="id_manufacturer" ng-model="id_manufacturer">
+								  <option ng-repeat="id_manufacturer in letManufacturersElectrode.objects" value="{{id_manufacturer.resource_uri}}" >{{id_manufacturer.resource_uri}}</option>
+								</select>
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="impedance" class="col-sm-2 control-label">Impedance : </label>
+						  	<div class="col-sm-10">
+						  		<input type="impedance" class="form-control" id="impedance" name="impedance" ng-model="impedance">
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="internal_diameter" class="col-sm-2 control-label">Internal diameter</label>
+						  	<div class="col-sm-10">
+						  		<input type="internal_diameter" class="form-control" id="internal_diameter" name="internal_diameter" ng-model="internal_diameter">
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="row" class="col-sm-2 control-label">Row : </label>
+						  	<div class="col-sm-10">
+						  		<input type="row" class="form-control" id="row" name="row" ng-model="row">
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="columns" class="col-sm-2 control-label">Column : </label>
+						  	<div class="col-sm-10">
+						  		<input type="columns" class="form-control" id="columns" name="columns" ng-model="columns">
+						  	</div>
+						  </div>
+						  <div class="form-group">
+						  	<label for="step" class="col-sm-2 control-label">Step : </label>
+						  	<div class="col-sm-10">
+						  		<input type="step" class="form-control" id="step" name="step" ng-model="step">
+						  	</div>
 						  </div>
 						  <span style="color:red;">{{msgAlert}}</span>
 						</div>

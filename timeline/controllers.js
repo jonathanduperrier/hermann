@@ -8,7 +8,8 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'protocolServices',
                                          'hermann.experiments',
                                          'CellTypeService',
-                                         'DeviceTypeService'
+                                         'DeviceTypeService',
+                                         'SupplierService'
                                          ]);
 mod_tlv.controller('timeLineVisualController', 
 function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, electrode, neuron, CellType, protocol, $routeParams, Experiment) {
@@ -242,7 +243,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
-          $scope.createElectrode($numberCol, result.text, result.type);
+          $scope.createElectrode($numberCol, result.label, result.type, result.model, result.version, result.serial_or_id, result.id_manufacturer, result.impedance, result.internal_diameter, result.row, result.columns, result.step);
         });
       });
     };
@@ -343,7 +344,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       angular.forEach($scope.electrodeObj, function(value, key) {
         if(value.id == $nbElectrode){
           $electrode_id = value.id;
-          $electrode_text = value.text;
+          $electrode_label = value.text;
           $electrode_type = value.type;
           $electrode_start = value.start;
           $electrode_end = value.end;
@@ -359,7 +360,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         inputs: {
           title: "Edit Electrode information",
           electrode_id: $electrode_id,
-          electrode_text: $electrode_text,
+          electrode_label: $electrode_label,
           electrode_type: $electrode_type,
           electrode_start: $electrode_start,
           electrode_end: $electrode_end,
@@ -377,7 +378,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.showConfirmRemoveEpoch($electrode_id, "electrode");
           } else if (result.stop_electrode == true){
             $date_end = new Date();
-            $scope.editElectrode($nbElectrode, result.text, to_start, $date_end, result.type);
+            $scope.editElectrode($nbElectrode, result.label, to_start, $date_end, result.type);
             $scope.toJSON();
           } else {
             if(result.type == null){
@@ -389,7 +390,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               } else {
                 to_end = "";
               }
-              $scope.editElectrode($nbElectrode, result.text, to_start, to_end, result.type);
+              $scope.editElectrode($nbElectrode, result.label, to_start, to_end, result.type);
               $scope.toJSON();
             }
           }
@@ -640,7 +641,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.createElectrode = function($numberCol, $text, $type){
+    $scope.createElectrode = function($numberCol, $text, $type, $model, $version, $serial_or_id, $id_manufacturer, $impedance, $internal_diameter, $row, $columns, $step){
         angular.element(window).spin();
         $rootScope.spin = 1;
       
@@ -660,7 +661,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addElectrode($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null);
+        $scope.addElectrode($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $id_manufacturer, $impedance, $internal_diameter, $row, $columns, $step);
         $scope.toJSON();
     };
 
@@ -762,64 +763,82 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.addElectrode = function($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat){
-      if(angular.element.isEmptyObject($scope.electrodeObj)) {
-        $idElectrode = 1;
-      } else {
-        angular.forEach($scope.electrodeObj, function(value){
-          if($scope.electrodeObj.id > $idElectrode){
-            $idElectrode = $scope.electrodeObj.id;
+    $scope.addElectrode = function($numberCol, $label, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat, $model, $version, $serial_or_id, $id_manufacturer, $impedance, $internal_diameter, $row, $columns, $step){
+      DeviceType.get(function($data){
+        angular.forEach($data.objects, function($value){
+          if($value.resource_uri == $type){
+            $type_name = $value.name;
           }
         });
-        $idElectrode++;
-      }
-      var $i=0;
-      var $TLexp = "";
-      var $TLcolor = "";
-      var $TLName = "";
-      angular.forEach($scope.timeLineObj, function($value, $key){
-        if($numberCol == $scope.timeLineObj[$key].id){
-          $TLexp = $scope.timeLineObj[$key].experiment;
-          $TLcolor = $scope.timeLineObj[$key].color;
-          $TLName =  $scope.timeLineObj[$key].name;
-        }
-        if(($vPlacement+150) > $scope.timeLineObj[$key].height){
-          $scope.timeLineObj[$key].height = $vPlacement+150;
-          angular.element("#graduation").height($vPlacement+150);
-        }
-        $i++;
-      });
 
-      if($endElectrode != null){
-        $startElectrodeTS = $startElectrode.valueOf();
-        $endElectrodeTS = $endElectrode.valueOf();
-        $diffTSElectrode = (($endElectrodeTS/1e3|0) - ($startElectrodeTS/1e3|0)) / $scl_coef;
-        if($diffTSElectrode < ($scope.heightMinEpoch+1)){
+        if(angular.element.isEmptyObject($scope.electrodeObj)) {
+          $idElectrode = 1;
+        } else {
+          angular.forEach($scope.electrodeObj, function(value){
+            if($scope.electrodeObj.id > $idElectrode){
+              $idElectrode = $scope.electrodeObj.id;
+            }
+          });
+          $idElectrode++;
+        }
+        var $i=0;
+        var $TLexp = "";
+        var $TLcolor = "";
+        var $TLName = "";
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          if($numberCol == $scope.timeLineObj[$key].id){
+            $TLexp = $scope.timeLineObj[$key].experiment;
+            $TLcolor = $scope.timeLineObj[$key].color;
+            $TLName =  $scope.timeLineObj[$key].name;
+          }
+          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
+            $scope.timeLineObj[$key].height = $vPlacement+150;
+            angular.element("#graduation").height($vPlacement+150);
+          }
+          $i++;
+        });
+
+        if($endElectrode != null){
+          $startElectrodeTS = $startElectrode.valueOf();
+          $endElectrodeTS = $endElectrode.valueOf();
+          $diffTSElectrode = (($endElectrodeTS/1e3|0) - ($startElectrodeTS/1e3|0)) / $scl_coef;
+          if($diffTSElectrode < ($scope.heightMinEpoch+1)){
+            $diffTSElectrode = $scope.heightMinEpoch;
+          }
+        } else {
           $diffTSElectrode = $scope.heightMinEpoch;
         }
-      } else {
-        $diffTSElectrode = $scope.heightMinEpoch;
-      }
 
-      $scope.electrodeObj.push (
-        {
-            id : $idElectrode,
-            timeline : "/notebooks/timeline/" + $numberCol,
-            text : $text,
-            start : $startElectrode,
-            startFormat : $startFormat,
-            type : $type,
-            color : "#FFE500",
-            vPlacement : $vPlacement,
-            TimeLineExp : '#/timeline' + $TLexp,
-            UrlExp : window.location.hash,
-            TimeLineColor : $TLcolor,
-            TimeLineName : $TLName,
-            end : $endElectrode, 
-            endFormat : $endFormat,
-            epoch_height : $diffTSElectrode,
-        }
-      );
+        $scope.electrodeObj.push (
+          {
+              id : $idElectrode,
+              timeline : "/notebooks/timeline/" + $numberCol,
+              label : $label,
+              start : $startElectrode,
+              startFormat : $startFormat,
+              type : $type,
+              type_name : $type_name,
+              color : "#FFE500",
+              vPlacement : $vPlacement,
+              TimeLineExp : '#/timeline' + $TLexp,
+              UrlExp : window.location.hash,
+              TimeLineColor : $TLcolor,
+              TimeLineName : $TLName,
+              end : $endElectrode, 
+              endFormat : $endFormat,
+              epoch_height : $diffTSElectrode,
+              model: $model,
+              version: $version,
+              serial_or_id: $serial_or_id,
+              id_manufacturer: $id_manufacturer,
+              impedance: $impedance,
+              internal_diameter: $internal_diameter,
+              row: $row,
+              columns: $columns,
+              step: $step,
+          }
+        );
+      });
     };
 
     $scope.addNeuron = function($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties){
@@ -1204,7 +1223,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $endFormat = $endEpoch.format('dd/mm/yyyy - HH:MM');
                 switch($type_epoch){
                   case "electrode":
-                    $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
                   break;
                   case "neuron":
                     $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, value.properties);
@@ -1216,7 +1235,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               } else {
                 switch($type_epoch){
                   case "electrode":
-                    $scope.addElectrode($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
+                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                   case "neuron":
                     $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, value.properties);
@@ -1463,12 +1482,23 @@ mod_tlv.controller('EditEventController', [
 }]);
 
 mod_tlv.controller('AddElectrodeController', [
-  '$scope', '$element', 'title', 'electrodeObj', 'DeviceType', 'close', 
-  function($scope, $element, title, electrodeObj, DeviceType, close) {
+  '$scope', '$element', 'title', 'electrodeObj', 'DeviceType', 'SupplierService', 'close', 
+  function($scope, $element, title, electrodeObj, DeviceType, SupplierService, close) {
 
   $scope.lstTypeElectrode = DeviceType.get();
-  $scope.text = null;
+  $scope.letManufacturersElectrode = SupplierService.get();
+  $scope.label = null;
   $scope.type = null;
+  $scope.model = null;
+  $scope.version = null;
+  $scope.serial_or_id = null;
+  $scope.id_manufacturer = null;
+  $scope.impedance = null;
+  $scope.internal_diameter = null;
+  $scope.row = null;
+  $scope.columns = null;
+  $scope.step = null;
+
   $scope.title = title;
   $scope.electrodeObj = electrodeObj;
   
@@ -1484,8 +1514,17 @@ mod_tlv.controller('AddElectrodeController', [
 
   $scope.close = function() {
     close({
-      text: $scope.text,
+      label: $scope.label,
       type: $scope.type,
+      model: $scope.model,
+      version: $scope.version,
+      serial_or_id: $scope.serial_or_id,
+      id_manufacturer: $scope.id_manufacturer,
+      impedance: $scope.impedance,
+      internal_diameter: $scope.internal_diameter,
+      row: $scope.row,
+      columns: $scope.columns,
+      step: $scope.step,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -1496,8 +1535,17 @@ mod_tlv.controller('AddElectrodeController', [
     $element.modal('hide');
     //  Now call close, returning control to the caller.
     close({
-      text: $scope.text,
+      label: $scope.label,
       type: $scope.type,
+      model: $scope.model,
+      version: $scope.version,
+      serial_or_id: $scope.serial_or_id,
+      id_manufacturer: $scope.id_manufacturer,
+      impedance: $scope.impedance,
+      internal_diameter: $scope.internal_diameter,
+      row: $scope.row,
+      columns: $scope.columns,
+      step: $scope.step,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
@@ -1610,8 +1658,8 @@ mod_tlv.controller('AddProtocolController', [
 
 
 mod_tlv.controller('EditElectrodeController', [
-  '$scope', '$element', 'title', 'electrode_text', 'electrode_type', 'electrode_start', 'electrode_end', 'electrode_id', 'electrodeObj', 'electrodeObjList', 'DeviceType', 'close', 
-  function($scope, $element, title, electrode_text, electrode_type, electrode_start, electrode_end, electrode_id, electrodeObj, electrodeObjList, DeviceType, close) {
+  '$scope', '$element', 'title', 'electrode_label', 'electrode_type', 'electrode_start', 'electrode_end', 'electrode_id', 'electrodeObj', 'electrodeObjList', 'DeviceType', 'close', 
+  function($scope, $element, title, electrode_label, electrode_type, electrode_start, electrode_end, electrode_id, electrodeObj, electrodeObjList, DeviceType, close) {
 
   $scope.selectDayOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
   $scope.selectMonthOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -1619,7 +1667,7 @@ mod_tlv.controller('EditElectrodeController', [
   $scope.selectHourOpt = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
   $scope.selectMinOpt = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'];
 
-  $scope.text = electrode_text;
+  $scope.label = electrode_label;
   $scope.electrode_id = electrode_id;
   $d = electrode_start.getDate();
   $scope.start_day = $d > 9 ? "" + $d: "0" + $d;
@@ -1659,7 +1707,7 @@ mod_tlv.controller('EditElectrodeController', [
   $scope.close = function() {
     $scope.getDateData();
     close({
-      text: $scope.text,
+      label: $scope.label,
       electrode_start: $scope.electrode_start,
       electrode_end: $scope.electrode_end,
       type: $scope.type,
@@ -1676,7 +1724,7 @@ mod_tlv.controller('EditElectrodeController', [
     $scope.getDateData();
     //  Now call close, returning control to the caller.
     close({
-      text: $scope.text,
+      label: $scope.label,
       electrode_start: $scope.electrode_start,
       electrode_end: $scope.electrode_end,
       type: $scope.type,

@@ -70,3 +70,12 @@ DeviceTypeService.factory('DeviceType', ['$resource',
       get: {method:'GET', params:{format:'json'}, isArray:false}
     });
   }]);
+
+var SupplierService = angular.module('SupplierService', ['ngResource']);
+
+SupplierService.factory('SupplierService', ['$resource',
+  function($resource){
+    return $resource( base_url + 'people/supplier/', {}, {
+      get: {method:'GET', params:{format:'json'}, isArray:false}
+    });
+  }]);
