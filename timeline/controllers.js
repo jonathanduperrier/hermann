@@ -662,7 +662,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
         $scope.addElectrode($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $id_manufacturer, $impedance, $internal_diameter, $row, $columns, $step);
-        $scope.toJSON();
     };
 
     $scope.createNeuron = function($numberCol, $label, $type, $electrode, $properties){
@@ -838,6 +837,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               step: $step,
           }
         );
+        $scope.toJSON();
       });
     };
 
