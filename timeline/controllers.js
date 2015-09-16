@@ -712,7 +712,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       promise.then(function(result) {
         $scope.nbEpoch = result;
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addNeuron($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode, $properties);
+        $scope.addNeuron($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode, $properties, 1);
       });
     };
 
@@ -874,7 +874,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.addNeuron = function($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties){
+    $scope.addNeuron = function($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties, $creation){
       CellType.get(function($data){
         angular.forEach($data.objects, function($value){
           if($value.resource_uri == $type){
@@ -943,7 +943,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 properties : $properties,
             }
         );
-        $scope.toJSON();
+        if($creation == 1){
+          $scope.toJSON();
+        }
       });
     };
 
@@ -1259,7 +1261,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, value.properties);
+                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, value.properties, 0);
                   break;
                   case "protocol":
                     $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
@@ -1271,7 +1273,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, value.properties);
+                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, value.properties, 0);
                   break;
                   case "protocol":
                     $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
