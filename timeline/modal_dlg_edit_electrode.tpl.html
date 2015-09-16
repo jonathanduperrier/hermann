@@ -94,38 +94,39 @@
 						  <div class="form-group">
 						  	<label for="impedance" class="col-sm-2 control-label">Impedance : </label>
 						  	<div class="col-sm-10">
-						  		<input type="number" class="form-control" id="impedance" name="impedance" ng-model="impedance" value="{{impedance}}">
+						  		<input type="text" class="form-control" id="impedance" name="impedance" ng-model="impedance" value="{{impedance}}">
 						  	</div>
 						  </div>
 						  <div class="form-group">
 						  	<label for="internal_diameter" class="col-sm-2 control-label">Internal diameter</label>
 						  	<div class="col-sm-10">
-						  		<input type="number" class="form-control" id="internal_diameter" name="internal_diameter" ng-model="internal_diameter" value="{{internal_diameter}}">
+						  		<input type="text" class="form-control" id="internal_diameter" name="internal_diameter" ng-model="internal_diameter" value="{{internal_diameter}}">
 						  	</div>
 						  </div>
 						  <div class="form-group">
 						  	<label for="rows" class="col-sm-2 control-label">Rows : </label>
 						  	<div class="col-sm-10">
-						  		<input type="number" class="form-control" id="rows" name="rows" ng-model="rows" value="{{rows}}">
+						  		<input type="text" class="form-control" id="rows" name="rows" ng-model="rows" value="{{rows}}">
 						  	</div>
 						  </div>
 						  <div class="form-group">
 						  	<label for="columns" class="col-sm-2 control-label">Column : </label>
 						  	<div class="col-sm-10">
-						  		<input type="number" class="form-control" id="columns" name="columns" ng-model="columns" value="{{columns}}">
+						  		<input type="text" class="form-control" id="columns" name="columns" ng-model="columns" value="{{columns}}">
 						  	</div>
 						  </div>
 						  <div class="form-group">
 						  	<label for="step" class="col-sm-2 control-label">Step : </label>
 						  	<div class="col-sm-10">
-						  		<input type="number" class="form-control" id="step" name="step" ng-model="step" value="{{step}}">
+						  		<input type="text" class="form-control" id="step" name="step" ng-model="step" value="{{step}}">
 						  	</div>
 						  </div>
+						  <span style="color:red;">{{msgAlert}}</span>
 						</form>
 				      </div>
 				      <div class="modal-footer">
 				        <button type="button" ng-click="stop()" class="btn btn-danger" data-dismiss="modal">Stop</button>
-				        <button type="button" ng-click="close()" class="btn btn-primary" data-dismiss="modal">OK</button>
+				        <button type="button" ng-click="beforeClose()" class="btn btn-primary">OK</button>
 				        <button type="button" ng-click="delete()" class="btn">Delete</button>
 				      </div>
 				    </div>

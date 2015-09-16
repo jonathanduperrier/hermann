@@ -1537,8 +1537,34 @@ mod_tlv.controller('AddElectrodeController', [
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
+    if($scope.type == ""){$scope.type = null};
+    if($scope.label == ""){$scope.label = null};
+    if($scope.model == ""){$scope.model = null};
+    if($scope.version == ""){$scope.version = null};
+    if($scope.impedance == ""){$scope.impedance = null};
+    if($scope.internal_diameter == ""){$scope.internal_diameter = null};
+    if($scope.rows == ""){$scope.rows = null};
+    if($scope.columns == ""){$scope.columns = null};
+    if($scope.step == ""){$scope.step = null};
+
     if($scope.type == null){
       $scope.msgAlert = "Please choose type to create electrode !";
+    } else if($scope.label == null) {
+      $scope.msgAlert = "Label field is required";
+    } else if($scope.model == null) {
+      $scope.msgAlert = "Model field is required";
+    } else if($scope.version == null) {
+      $scope.msgAlert = "Version field is required";
+    } else if((!$.isNumeric($scope.impedance)) & ($scope.impedance != null)) {
+      $scope.msgAlert = "Impedance field must be a number";
+    } else if((!$.isNumeric($scope.internal_diameter)) & ($scope.internal_diameter != null)) {
+      $scope.msgAlert = "Internal Diameter field must be a number";
+    } else if((!$.isNumeric($scope.rows)) & ($scope.rows != null)) {
+      $scope.msgAlert = "Rows field must be a number";
+    } else if((!$.isNumeric($scope.columns)) & ($scope.columns != null)) {
+      $scope.msgAlert = "Columns field must be a number";
+    } else if((!$.isNumeric($scope.step)) & ($scope.step != null)) {
+      $scope.msgAlert = "Step field must be a number";
     } else {
       $scope.close();
     }
@@ -1750,6 +1776,41 @@ mod_tlv.controller('EditElectrodeController', [
   
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
+
+  $scope.beforeClose = function() {
+    if($scope.type == ""){$scope.type = null};
+    if($scope.label == ""){$scope.label = null};
+    if($scope.model == ""){$scope.model = null};
+    if($scope.version == ""){$scope.version = null};
+    if($scope.impedance == ""){$scope.impedance = null};
+    if($scope.internal_diameter == ""){$scope.internal_diameter = null};
+    if($scope.rows == ""){$scope.rows = null};
+    if($scope.columns == ""){$scope.columns = null};
+    if($scope.step == ""){$scope.step = null};
+
+    if($scope.type == null){
+      $scope.msgAlert = "Please choose type to create electrode !";
+    } else if($scope.label == null) {
+      $scope.msgAlert = "Label field is required";
+    } else if($scope.model == null) {
+      $scope.msgAlert = "Model field is required";
+    } else if($scope.version == null) {
+      $scope.msgAlert = "Version field is required";
+    } else if((!$.isNumeric($scope.impedance)) & ($scope.impedance != null)) {
+      $scope.msgAlert = "Impedance field must be a number";
+    } else if((!$.isNumeric($scope.internal_diameter)) & ($scope.internal_diameter != null)) {
+      $scope.msgAlert = "Internal Diameter field must be a number";
+    } else if((!$.isNumeric($scope.rows)) & ($scope.rows != null)) {
+      $scope.msgAlert = "Rows field must be a number";
+    } else if((!$.isNumeric($scope.columns)) & ($scope.columns != null)) {
+      $scope.msgAlert = "Columns field must be a number";
+    } else if((!$.isNumeric($scope.step)) & ($scope.step != null)) {
+      $scope.msgAlert = "Step field must be a number";
+    } else {
+      $scope.close();
+    }
+  };
+
   $scope.close = function() {
     $scope.getDateData();
     close({
