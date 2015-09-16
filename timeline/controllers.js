@@ -691,7 +691,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addElectrode($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step);
+        $scope.addElectrode($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, 1);
     };
 
     $scope.createNeuron = function($numberCol, $label, $type, $electrode, $properties){
@@ -792,7 +792,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.addElectrode = function($numberCol, $label, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step){
+    $scope.addElectrode = function($numberCol, $label, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, $creation){
       DeviceType.get(function($data){
         angular.forEach($data.objects, function($value){
           if($value.resource_uri == $type){
@@ -868,7 +868,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               step: $step,
           }
         );
-        $scope.toJSON();
+        if($creation == 1){
+          $scope.toJSON();
+        }
       });
     };
 
@@ -1254,7 +1256,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $endFormat = $endEpoch.format('dd/mm/yyyy - HH:MM');
                 switch($type_epoch){
                   case "electrode":
-                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step);
+                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
                   break;
                   case "neuron":
                     $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, value.properties);
@@ -1266,7 +1268,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               } else {
                 switch($type_epoch){
                   case "electrode":
-                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step);
+                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
                   break;
                   case "neuron":
                     $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, value.properties);
