@@ -17,7 +17,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.timeLineObj = [];
     $scope.eventObj = [];
     $scope.electrodeObj = [];
-    $scope.itemObj = [];
     $scope.neuronObj = [];
     $scope.protocolObj = [];
     $rootScope.electrodeObj = [];
@@ -107,7 +106,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
         $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
-        $scope.toJSON();
+        //$scope.toJSON();
+        events.post($scope.eventObjUnique);
     };
 
     $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement){
@@ -134,9 +134,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             angular.element("#graduation").height($vPlacement+150);
           }
           $i++;
-        });        
-        $scope.eventObj.push (
-            {
+        });
+
+        $scope.eventObjUnique = {
                 id : $idEvent,
                 timeline : "/notebooks/timeline/" + $numberCol,
                 text : $text,
@@ -148,8 +148,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 TimeLineExp : '#/timeline' + $TLexp,
                 UrlExp : window.location.hash,
                 TimeLineColor : $TLcolor,
-            }
-        );
+            };
+
+        $scope.eventObj.push ( $scope.eventObjUnique );
     };
 
     $scope.showConfirmRemoveEvent = function($nbEvent) {
@@ -737,7 +738,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
       $scope.addProtocol($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, 60, null, null, $neuron);
-      $scope.toJSON();
+      //$scope.toJSON();
+      protocol.post( $scope.protocolObjUnique ).$promise.then(function($data){
+        $scope.stopSpin();
+      });
     };
 
     $scope.getExistingElectrodeOnTimeLine = function($numberCol){
@@ -838,7 +842,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $diffTSElectrode = $scope.heightMinEpoch;
         }
 
-        $scope.electrodeObj.push (
+        $scope.electrodeObjUnique =
           {
               id : $idElectrode,
               timeline : "/notebooks/timeline/" + $numberCol,
@@ -866,10 +870,14 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               rows: $rows,
               columns: $columns,
               step: $step,
-          }
-        );
+          };
+          $scope.electrodeObj.push ( $scope.electrodeObjUnique );
+
         if($creation == 1){
-          $scope.toJSON();
+          //$scope.toJSON();
+          electrode.post($scope.electrodeObjUnique).$promise.then(function($data){
+            $scope.stopSpin();
+          });
         }
       });
     };
@@ -921,7 +929,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $diffTSNeuron = $scope.heightMinEpoch;
         }
 
-        $scope.neuronObj.push (
+        $scope.neuronObjUnique =
             {
                 id : $idNeuron,
                 timeline : "/notebooks/timeline/" + $numberCol,
@@ -941,10 +949,13 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 epoch_height : $diffTSNeuron,
                 electrode : $electrode,
                 properties : $properties,
-            }
-        );
+           };
+        $scope.neuronObj.push ( $scope.neuronObjUnique );
         if($creation == 1){
-          $scope.toJSON();
+          //$scope.toJSON();
+          neuron.post($scope.neuronObjUnique).$promise.then(function($data){
+            $scope.stopSpin();
+          });
         }
       });
     };
@@ -988,7 +999,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $diffTSProtocol = $scope.heightMinEpoch;
       }
 
-      $scope.protocolObj.push (
+      $scope.protocolObjUnique =
           {
               id : $idProtocol,
               timeline : "/notebooks/timeline/" + $numberCol,
@@ -1006,8 +1017,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               endFormat : $endFormat,
               epoch_height : $diffTSProtocol,
               neuron : $neuron,
-          }
-      );
+          };
+        $scope.protocolObj.push ( $scope.protocolObjUnique );
     };
 
     $scope.showConfirmRemoveEpoch = function($nbEpoch, $type_epoch) {
@@ -1359,6 +1370,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.toJSON();
         });
       });
+    };
+    $scope.stopSpin = function() {
+      if($rootScope.spin == 1){
+        setTimeout(function(){ angular.element(window).spin(); }, 3500);
+      }
+      $rootScope.spin = 0;
     };
 });
 
