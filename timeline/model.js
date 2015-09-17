@@ -16,7 +16,8 @@ eventServices.factory('events', ['$resource',
     return $resource( base_url + 'notebooks/event/', {}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
       put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
-      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
+      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
+      del: { method: 'DELETE', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
     });
   }]);
 
@@ -27,7 +28,8 @@ electrodeServices.factory('electrode', ['$resource',
     return $resource( base_url + 'notebooks/electrode/', {}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
       put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
-      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
+      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
+      del: { method: 'DELETE', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
     });
   }]);
 
@@ -38,7 +40,8 @@ neuronServices.factory('neuron', ['$resource',
     return $resource( base_url + 'notebooks/neuron/', {}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
       put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
-      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
+      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
+      del: { method: 'DELETE', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
     });
   }]);
 
@@ -49,7 +52,8 @@ protocolServices.factory('protocol', ['$resource',
     return $resource( base_url + 'notebooks/protocol/', {}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
       put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
-      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
+      post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },
+      del: { method: 'DELETE', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } }
     });
   }]);
 
