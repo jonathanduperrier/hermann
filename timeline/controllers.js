@@ -1117,10 +1117,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $rootScope.neuronObj = val2.objects;
               protocol.put( $scope.jsonContentProtocol, function(){}).$promise.then(function(val3) {
                 $rootScope.protocolObj = val3.objects;
-                if($rootScope.spin == 1){
-                  setTimeout(function(){ angular.element(window).spin(); }, 3500);
-                }
-                $rootScope.spin = 0;
+                $scope.stopSpin();
               });
             });
           });
