@@ -369,8 +369,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $electrode_step = value.step;
         }
       });
-//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
-//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
 
       ModalService.showModal({
         templateUrl: "timeline/modal_dlg_edit_electrode.tpl.html",
@@ -538,9 +536,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }
       });
 
-//  '$scope', '$element', 'title', 'epoch_text', 'epoch_type', 'epoch_start', 'epoch_end', 'epoch_id', 'epochObj', 'epochObjList', 'type_epoch', 'link_epoch', 'close', 
-//  function($scope, $element, title, epoch_text, epoch_type, epoch_start, epoch_end, epoch_id, epochObj, epochObjList, type_epoch, link_epoch, close) {
-
       ModalService.showModal({
         templateUrl: "timeline/modal_dlg_edit_protocol.tpl.html",
         controller: "EditProtocolController",
@@ -599,7 +594,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       }
       angular.forEach($scope.electrodeObj, function(value, key) {
         if((value.id == $id)){
-          $scope.electrodeObj[key].text = $text;
+          $scope.electrodeObj[key].label = $text;
           $scope.electrodeObj[key].start = $start;
           $scope.electrodeObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
           if($end != ""){
@@ -681,6 +676,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.protocolObj[key].type = $type;
           $scope.protocolObj[key].epoch_height = $diffTSProtocol;
           $scope.protocolObj[key].vPlacement = $vPlacement;
+          id_protocol = $id;
           $scope.jsonContentProtocol = angular.toJson($scope.protocolObj[key]);
           protocol.put({id:id_protocol}, $scope.jsonContentProtocol);
         }
@@ -781,6 +777,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $idProtocol = 1;
       } else {
         angular.forEach($scope.protocolObj, function(value){
+
           if($scope.protocolObj.id > $idProtocol){
             $idProtocol = $scope.protocolObj.id;
           }
@@ -1397,7 +1394,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
         $scope.jsonContentExp = angular.toJson(data);
         Experiment.put({id:$routeParams.eID}, $scope.jsonContentExp, function(){}).$promise.then(function(val) {
-          $scope.toJSON();
+          //$scope.toJSON();
         });
       });
     };
@@ -2146,17 +2143,8 @@ mod_tlv.controller('EditProtocolController', [
   $scope.protocolObjList = protocolObjList;
   $scope.lstTypeObj = [];
 
-  $tabLstType = ["type1", "type2", "type3", "type4", "type5"]
+  $scope.lstType = ["Type 1", "Type 2", "Type 3", "Type 4", "Type 5"]
 
-  angular.forEach($tabLstType, function($value){
-    $scope.lstTypeObj.push (
-      {
-        name: $value,
-      }
-    );
-  });
-  $scope.lstType = '{ "objects" : ' + angular.toJson($scope.lstTypeObj) + '}';
-    
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.close = function() {
@@ -2168,7 +2156,7 @@ mod_tlv.controller('EditProtocolController', [
       type: $scope.type,
       del_protocol: $scope.del_protocol,
       stop_protocol: $scope.stop_protocol,
-      link_neuron: $link_neuron,
+      link_neuron: $scope.link_neuron,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -2184,7 +2172,7 @@ mod_tlv.controller('EditProtocolController', [
       protocol_start: $scope.protocol_start,
       protocol_end: $scope.protocol_end,
       type: $scope.type,
-      link_neuron: $link_neuron,
+      link_neuron: $scope.link_neuron,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
