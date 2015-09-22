@@ -407,7 +407,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           } else if (result.stop_electrode == true){
             $date_end = new Date();
             $scope.editElectrode($nbElectrode, result.label, to_start, $date_end, result.type, result.model, result.version, result.serial_or_id, result.manufacturer, result.impedance, result.internal_diameter, result.rows, result.columns, result.step);
-            $scope.toJSON();
+            //$scope.toJSON();
           } else {
             if(result.type == null){
               bootbox.alert("Please choose type to save electrode !");
@@ -419,7 +419,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 to_end = "";
               }
               $scope.editElectrode($nbElectrode, result.label, to_start, to_end, result.type, result.model, result.version, result.serial_or_id, result.manufacturer, result.impedance, result.internal_diameter, result.rows, result.columns, result.step);
-              $scope.toJSON();
+              //$scope.toJSON();
             }
           }
         });
@@ -567,7 +567,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           } else if (result.stop_protocol == true){
             $date_end = new Date();
             $scope.editProtocol($nbProtocol, result.text, to_start, $date_end, result.type);
-            $scope.toJSON();
+            //$scope.toJSON();
           } else {
             if(result.type == null){
               bootbox.alert("Please choose type to save protocol !");
@@ -579,7 +579,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 to_end = "";
               }
               $scope.editProtocol($nbProtocol, result.text, to_start, to_end, result.type);
-              $scope.toJSON();
+              //$scope.toJSON();
             }
           }
         });
@@ -617,9 +617,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.electrodeObj[key].rows = $rows;
           $scope.electrodeObj[key].columns = $columns;
           $scope.electrodeObj[key].step = $step;
-
           $scope.electrodeObj[key].epoch_height = $diffTSElectrode;
           $scope.electrodeObj[key].vPlacement = $vPlacement;
+          id_electrode = $id;
+          $scope.jsonContentElectrode = angular.toJson($scope.electrodeObj[key]);
+          electrode.put({id:id_electrode}, $scope.jsonContentElectrode);
         }
       });
     };
@@ -648,9 +650,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.neuronObj[key].epoch_height = $diffTSNeuron;
           $scope.neuronObj[key].vPlacement = $vPlacement;
           $scope.neuronObj[key].properties = $properties;
+          id_neuron = $id;
+          $scope.jsonContentNeuron = angular.toJson($scope.neuronObj[key]);
+          neuron.put({id:id_neuron}, $scope.jsonContentNeuron);
         }
       });
-      $scope.toJSON();
+      //$scope.toJSON();
     };
 
     $scope.editProtocol = function($id, $text, $start, $end, $type){
@@ -676,6 +681,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.protocolObj[key].type = $type;
           $scope.protocolObj[key].epoch_height = $diffTSProtocol;
           $scope.protocolObj[key].vPlacement = $vPlacement;
+          $scope.jsonContentProtocol = angular.toJson($scope.protocolObj[key]);
+          protocol.put({id:id_protocol}, $scope.jsonContentProtocol);
         }
       });
     };
@@ -797,7 +804,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $id = $resource_uri_splitted[3];
           if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
             $scope.editElectrode($id, $value.text, $date_start, $date_end, $value.type, $value.model, $value.version, $value.serial_or_id, $value.manufacturer, $value.impedance, $value.internal_diameter, $value.rows, $value.columns, $value.step);
-            $scope.toJSON();
+            //$scope.toJSON();
             $scope.nbElectrode++;
           }
         });
@@ -832,7 +839,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $id = $resource_uri_splitted[3];
           if(($value.timeline == "/notebooks/timeline/" + $numberCol) & ($value.end == null)){
             $scope.editProtocol($id, $value.text, $date_start, $date_end, $value.type);
-            $scope.toJSON();
+            //$scope.toJSON();
             $scope.nbProtocol++;
           }
         });
@@ -1072,7 +1079,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $scope.electrodeObj.splice($key, 1);
             }
           });
-          $scope.toJSON();
+          id_electrode = $nbElectrode;
+          electrode.del({id:id_electrode});
+          //$scope.toJSON();
         } else {
           bootbox.alert("You must remove dependant neurons of this electrode before remove it.");
         }
@@ -1096,7 +1105,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $scope.neuronObj.splice($key, 1);
             }
           });
-          $scope.toJSON();
+          id_neuron = $nbNeuron;
+          neuron.del({id:id_neuron});
+          //$scope.toJSON();
         } else {
           bootbox.alert("You must remove dependant protocol of this neuron before remove it.");
         }
@@ -1109,7 +1120,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.protocolObj.splice($key, 1);
         }
       });
-      $scope.toJSON();
+      id_protocol = $nbProtocol;
+      protocol.del({id:id_protocol});
+      //$scope.toJSON();
     };
 
     $scope.toJSON = function() { //convert object to JSON and save it in database
