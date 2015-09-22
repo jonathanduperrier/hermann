@@ -105,12 +105,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         var $dateFormat = $dateEvent.format('dd/mm/yyyy - HH:MM');
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addEvent($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
-        //$scope.toJSON();
-        events.post($scope.eventObjUnique);
-    };
 
-    $scope.addEvent = function($numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement){
+        //get id event
         if(angular.element.isEmptyObject($scope.eventObj)) {
           $idEvent = 1;
         } else {
@@ -121,6 +117,13 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           });
           $idEvent++;
         }
+
+        $scope.addEvent($idEvent, $numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
+        //$scope.toJSON();
+        events.post($scope.eventObjUnique);
+    };
+
+    $scope.addEvent = function($idEvent, $numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement){
         var $i=0;
         var $TLexp = "";
         var $TLcolor = "";
@@ -168,13 +171,15 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.removeEvent = function($nbEvent){
-        angular.element('#event_' + $nbEvent).remove();        
+        $('#event_' + $nbEvent).remove();        
         angular.forEach($scope.eventObj, function($value, $key) {
           if($value.id == $nbEvent){
             $scope.eventObj.splice($key, 1);
           }
         });
-        $scope.toJSON();
+        id_event = $nbEvent;
+        events.del({id:id_event});
+        //$scope.toJSON();
     };
 
     $scope.showDlgEditEvent = function($nbEvent, $date){
@@ -211,7 +216,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               from_date = result.evt_date.split("/");
               to_date = new Date(from_date[1]+"/"+from_date[0]+"/"+from_date[2]);
               $scope.editEvent($nbEvent, result.text, to_date, result.type);
-              $scope.toJSON();
+              //$scope.toJSON();
             }
           }
         });
@@ -228,6 +233,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.eventObj[key].dateFormat = $date.format('dd/mm/yyyy - HH:MM');
           $scope.eventObj[key].type = $type;
           $scope.eventObj[key].vPlacement = $vPlacement;
+          id_event = $id;
+          $scope.jsonContentEvent = angular.toJson($scope.eventObj[key]);
+          events.put({id:id_event}, $scope.jsonContentEvent);
         }
       });
     };
@@ -1191,7 +1199,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               $numberCol = $nCol[3];
               $dateEvt = new Date(value.date);
               $dateFormat = $dateEvt.format('dd/mm/yyyy - HH:MM');
-              $scope.addEvent($numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt);
+
+              $resource_uri_splitted = value.resource_uri.split('/');
+              $idEvent = $resource_uri_splitted[3];
+              $scope.addEvent($idEvent, $numberCol, value.text, $dateEvt, $dateFormat, value.type, $diffTSEvt);
           }
           $i++;
         });
