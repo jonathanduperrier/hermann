@@ -700,7 +700,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addElectrode($numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, 1);
+
+        if(angular.element.isEmptyObject($scope.electrodeObj)) {
+          $idElectrode = 1;
+        } else {
+          angular.forEach($scope.electrodeObj, function(value){
+            if($scope.electrodeObj.id > $idElectrode){
+              $idElectrode = $scope.electrodeObj.id;
+            }
+          });
+          $idElectrode++;
+        }
+
+        $scope.addElectrode($idElectrode, $numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, 1);
     };
 
     $scope.createNeuron = function($numberCol, $label, $type, $electrode, $properties){
@@ -718,10 +730,22 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
       var promise = $scope.defered.promise;
       $scope.getExistingNeuronOnTimeLine($numberCol);
+
+      if(angular.element.isEmptyObject($scope.neuronObj)) {
+        $idNeuron = 1;
+      } else {
+        angular.forEach($scope.neuronObj, function(value){
+          if($scope.neuronObj.id > $idNeuron){
+            $idNeuron = $scope.neuronObj.id;
+          }
+        });
+        $idNeuron++;
+      }
+
       promise.then(function(result) {
         $scope.nbEpoch = result;
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-        $scope.addNeuron($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode, $properties, 1);
+        $scope.addNeuron($idNeuron, $numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, 60, null, null, $electrode, $properties, 1);
       });
     };
 
@@ -745,7 +769,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-      $scope.addProtocol($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, 60, null, null, $neuron);
+
+      if(angular.element.isEmptyObject($scope.protocolObj)) {
+        $idProtocol = 1;
+      } else {
+        angular.forEach($scope.protocolObj, function(value){
+          if($scope.protocolObj.id > $idProtocol){
+            $idProtocol = $scope.protocolObj.id;
+          }
+        });
+        $idProtocol++;
+      }
+
+      $scope.addProtocol($idProtocol, $numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, 60, null, null, $neuron);
       //$scope.toJSON();
       protocol.post( $scope.protocolObjUnique ).$promise.then(function($data){
         $scope.stopSpin();
@@ -804,7 +840,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.addElectrode = function($numberCol, $label, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, $creation){
+    $scope.addElectrode = function($idElectrode, $numberCol, $label, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, $creation){
       DeviceType.get(function($data){
         angular.forEach($data.objects, function($value){
           if($value.resource_uri == $type){
@@ -812,16 +848,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           }
         });
 
-        if(angular.element.isEmptyObject($scope.electrodeObj)) {
-          $idElectrode = 1;
-        } else {
-          angular.forEach($scope.electrodeObj, function(value){
-            if($scope.electrodeObj.id > $idElectrode){
-              $idElectrode = $scope.electrodeObj.id;
-            }
-          });
-          $idElectrode++;
-        }
         var $i=0;
         var $TLexp = "";
         var $TLcolor = "";
@@ -890,7 +916,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.addNeuron = function($numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties, $creation){
+    $scope.addNeuron = function($idNeuron, $numberCol, $label, $startNeuron, $startFormat, $type, $vPlacement, $scl_coef, $endNeuron, $endFormat, $electrode, $properties, $creation){
       CellType.get(function($data){
         angular.forEach($data.objects, function($value){
           if($value.resource_uri == $type){
@@ -899,16 +925,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           }
         });
 
-        if(angular.element.isEmptyObject($scope.neuronObj)) {
-          $idNeuron = 1;
-        } else {
-          angular.forEach($scope.neuronObj, function(value){
-            if($scope.neuronObj.id > $idNeuron){
-              $idNeuron = $scope.neuronObj.id;
-            }
-          });
-          $idNeuron++;
-        }
         var $i=0;
         var $TLexp = "";
         var $TLcolor = "";
@@ -968,17 +984,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       });
     };
 
-    $scope.addProtocol = function($numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, $scl_coef, $endProtocol, $endFormat, $neuron){
-      if(angular.element.isEmptyObject($scope.protocolObj)) {
-        $idProtocol = 1;
-      } else {
-        angular.forEach($scope.protocolObj, function(value){
-          if($scope.protocolObj.id > $idProtocol){
-            $idProtocol = $scope.protocolObj.id;
-          }
-        });
-        $idProtocol++;
-      }
+    $scope.addProtocol = function($idProtocol, $numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, $scl_coef, $endProtocol, $endFormat, $neuron){
+
       var $i=0;
       var $TLexp = "";
       var $TLcolor = "";
@@ -1268,6 +1275,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.getDiffTS(value.timeline, value.start);
 
           if( value != null ){
+              $resource_uri_splitted = value.resource_uri.split('/');
+              $idEpoch = $resource_uri_splitted[3];
               $nCol = value.timeline.split('/');
               $numberCol = $nCol[3];
               $startEpoch = new Date(value.start);
@@ -1277,25 +1286,25 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $endFormat = $endEpoch.format('dd/mm/yyyy - HH:MM');
                 switch($type_epoch){
                   case "electrode":
-                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
+                    $scope.addElectrode($idEpoch, $numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, value.properties, 0);
+                    $scope.addNeuron($idEpoch, $numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch, value.properties, 0);
                   break;
                   case "protocol":
-                    $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
+                    $scope.addProtocol($idEpoch, $numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, $endEpoch, $endFormat, $link_epoch);
                   break;
                 }
               } else {
                 switch($type_epoch){
                   case "electrode":
-                    $scope.addElectrode($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
+                    $scope.addElectrode($idEpoch, $numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, value.model, value.version, value.serial_or_id, value.manufacturer, value.notes, value.impedance, value.internal_diameter, value.rows, value.columns, value.step, 0);
                   break;
                   case "neuron":
-                    $scope.addNeuron($numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, value.properties, 0);
+                    $scope.addNeuron($idEpoch, $numberCol, value.label, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch, value.properties, 0);
                   break;
                   case "protocol":
-                    $scope.addProtocol($numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
+                    $scope.addProtocol($idEpoch, $numberCol, value.text, $startEpoch, $startFormat, value.type, $scope.diffTSEpoch, $scl_coef, null, null, $link_epoch);
                   break;
                 }
             }
