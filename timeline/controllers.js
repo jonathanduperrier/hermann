@@ -107,15 +107,14 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
 
         //get id event
+        $tabIdEvent = [];
         if(angular.element.isEmptyObject($scope.eventObj)) {
           $idEvent = 1;
         } else {
           angular.forEach($scope.eventObj, function(value){
-            if($scope.eventObj.id > $idEvent){
-              $idEvent = $scope.eventObj.id;
-            }
+            $tabIdEvent.push(parseInt(value.id));
           });
-          $idEvent++;
+          $idEvent = Math.max.apply(Math, $tabIdEvent) + 1;
         }
 
         $scope.addEvent($idEvent, $numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
@@ -704,15 +703,14 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
 
+        $tabIdElectrode = [];
         if(angular.element.isEmptyObject($scope.electrodeObj)) {
           $idElectrode = 1;
         } else {
           angular.forEach($scope.electrodeObj, function(value){
-            if($scope.electrodeObj.id > $idElectrode){
-              $idElectrode = $scope.electrodeObj.id;
-            }
+            $tabIdElectrode.push(parseInt(value.id));
           });
-          $idElectrode++;
+          $idElectrode = Math.max.apply(Math, $tabIdElectrode) + 1;
         }
 
         $scope.addElectrode($idElectrode, $numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, 1);
@@ -734,15 +732,14 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       var promise = $scope.defered.promise;
       $scope.getExistingNeuronOnTimeLine($numberCol);
 
+      $tabIdNeuron = [];
       if(angular.element.isEmptyObject($scope.neuronObj)) {
         $idNeuron = 1;
       } else {
         angular.forEach($scope.neuronObj, function(value){
-          if($scope.neuronObj.id > $idNeuron){
-            $idNeuron = $scope.neuronObj.id;
-          }
+          $tabIdNeuron.push(parseInt(value.id));
         });
-        $idNeuron++;
+        $idNeuron = Math.max.apply(Math, $tabIdNeuron) + 1;
       }
 
       promise.then(function(result) {
@@ -773,16 +770,14 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
       $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
 
+      $tabIdProtocol = [];
       if(angular.element.isEmptyObject($scope.protocolObj)) {
         $idProtocol = 1;
       } else {
         angular.forEach($scope.protocolObj, function(value){
-
-          if($scope.protocolObj.id > $idProtocol){
-            $idProtocol = $scope.protocolObj.id;
-          }
+          $tabIdProtocol.push(parseInt(value.id));
         });
-        $idProtocol++;
+        $idProtocol = Math.max.apply(Math, $tabIdProtocol) + 1;
       }
 
       $scope.addProtocol($idProtocol, $numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, 60, null, null, $neuron);
