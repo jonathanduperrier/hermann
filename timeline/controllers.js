@@ -1795,7 +1795,8 @@ mod_tlv.controller('EditElectrodeController', [
     $min = electrode_end.getMinutes();
     $scope.end_min = $min > 9 ? "" + $min: "0" + $min;
   }
-  $scope.type = electrode_type;
+  //$scope.type = electrode_type;
+  $scope.type = {resource_uri: electrode_type };
   $scope.title = title;
   $scope.model = model;
   $scope.version = version;

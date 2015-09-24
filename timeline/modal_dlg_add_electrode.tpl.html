@@ -17,8 +17,8 @@
 						  <div class="form-group">
 						    <label for="type" class="col-sm-2 control-label">Type : </label>
 						    <div class="col-sm-10">
-						    	<select class="form-control" id="type" name="type" placeholder="type ..." ng-model="type">
-								  <option ng-repeat="type in lstTypeElectrode.objects" value="{{type.resource_uri}}" >{{type.resource_uri}}</option>
+						    	<select class="form-control" id="type" name="type" placeholder="type ..." ng-model="type" ng-options="obj.name for obj in lstTypeElectrode.objects track by obj.resource_uri">
+								  <!-- <option ng-repeat="type in lstTypeElectrode.objects" value="{{type.resource_uri}}" >{{type.resource_uri}}</option> -->
 								</select>
 						    </div>
 						  </div>
