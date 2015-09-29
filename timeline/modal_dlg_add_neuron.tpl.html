@@ -28,7 +28,7 @@
 						  		<select class="form-control" id="link_electrode" name="link_electrode" ng-model="link_electrode">
 						  			<option value="null" selected="selected">Choose Electrode</option>
 						  			<option ng-repeat="electrodeObjList in electrodeObjList track by $index"
-						  			 value="{{electrodeObjList.resource_uri}}">{{electrodeObjList.text}} - {{electrodeObjList.startFormat}}</option>
+						  			 value="{{electrodeObjList.resource_uri}}">{{electrodeObjList.label}} - {{electrodeObjList.startFormat}}</option>
 						  		</select>
 							</div>
 						  </div>

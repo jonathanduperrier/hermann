@@ -31,7 +31,7 @@
 						  	<div class="col-sm-10">
 						  		<select class="form-control" id="link_neuron" name="link_neuron" ng-model="link_neuron">
 						  			<option value="null">Choose Neuron</option>
-						  			<option ng-repeat="neuronObjList in neuronObjList track by $index" value="{{neuronObjList.resource_uri}}">{{neuronObjList.text}} - {{neuronObjList.startFormat}}</option>
+						  			<option ng-repeat="neuronObjList in neuronObjList track by $index" value="{{neuronObjList.resource_uri}}">{{neuronObjList.label}} - {{neuronObjList.startFormat}}</option>
 						  		</select>
 							</div>
 						  </div>

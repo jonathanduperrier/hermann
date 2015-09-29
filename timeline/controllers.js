@@ -601,6 +601,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.electrodeObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           }
           $scope.electrodeObj[key].type = $type;
+          $scope.electrodeObj[key].type_name = $type.name;
           //$model, $version, $serial_or_id, $manufacturer, $impedance, $internal_diameter, $rows, $columns, $step
           $scope.electrodeObj[key].model = $model;
           $scope.electrodeObj[key].version = $version;
@@ -641,6 +642,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
           }
           $scope.neuronObj[key].type = $type;
+          $scope.neuronObj[key].type_name = $type.name;
           $scope.neuronObj[key].epoch_height = $diffTSNeuron;
           $scope.neuronObj[key].vPlacement = $vPlacement;
           $scope.neuronObj[key].properties = $properties;
@@ -840,10 +842,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.addElectrode = function($idElectrode, $numberCol, $label, $startElectrode, $startFormat, $type, $vPlacement, $scl_coef, $endElectrode, $endFormat, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, $creation){
-      DeviceType.get(function($data){
+      DeviceType.get({name:$type.name}, function($data){
         angular.forEach($data.objects, function($value){
           if($value.resource_uri == $type){
             $type_name = $value.name;
+            //$type_name = $data.objects[0].name;
           }
         });
 
