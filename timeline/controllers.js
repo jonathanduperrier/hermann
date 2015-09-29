@@ -622,34 +622,41 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.editNeuron = function($id, $label, $start, $end, $type, $properties){
-      var $vPlInit = $scope.dateStartExp0/1e3|0; 
-      var $vPl = $start/1e3|0; 
-      $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
-
-      $startNeuronTS = $start.valueOf();
-      $endNeuronTS = $end.valueOf();
-      $diffTSNeuron = (($endNeuronTS/1e3|0) - ($startNeuronTS/1e3|0)) / $scl_coef;
-      if($diffTSNeuron < ($scope.heightMinEpoch+1)){
-        $diffTSNeuron = $scope.heightMinEpoch;
-      }
-      angular.forEach($scope.neuronObj, function(value, key) {
-        if(value.id == $id){
-          $scope.neuronObj[key].label = $label;
-          $scope.neuronObj[key].start = $start;
-          $scope.neuronObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
-          if($end != ""){
-            $scope.neuronObj[key].end = $end;
-            $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+      CellType.get(function($data){
+        angular.forEach($data.objects, function($value){
+          if($value.resource_uri == $type){
+            $type_name = $value.name;
           }
-          $scope.neuronObj[key].type = $type;
-          $scope.neuronObj[key].type_name = $type.name;
-          $scope.neuronObj[key].epoch_height = $diffTSNeuron;
-          $scope.neuronObj[key].vPlacement = $vPlacement;
-          $scope.neuronObj[key].properties = $properties;
-          id_neuron = $id;
-          $scope.jsonContentNeuron = angular.toJson($scope.neuronObj[key]);
-          neuron.put({id:id_neuron}, $scope.jsonContentNeuron);
+        });
+        var $vPlInit = $scope.dateStartExp0/1e3|0; 
+        var $vPl = $start/1e3|0; 
+        $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes
+
+        $startNeuronTS = $start.valueOf();
+        $endNeuronTS = $end.valueOf();
+        $diffTSNeuron = (($endNeuronTS/1e3|0) - ($startNeuronTS/1e3|0)) / $scl_coef;
+        if($diffTSNeuron < ($scope.heightMinEpoch+1)){
+          $diffTSNeuron = $scope.heightMinEpoch;
         }
+        angular.forEach($scope.neuronObj, function(value, key) {
+          if(value.id == $id){
+            $scope.neuronObj[key].label = $label;
+            $scope.neuronObj[key].start = $start;
+            $scope.neuronObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
+            if($end != ""){
+              $scope.neuronObj[key].end = $end;
+              $scope.neuronObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+            }
+            $scope.neuronObj[key].type = $type;
+            $scope.neuronObj[key].type_name = $type_name;
+            $scope.neuronObj[key].epoch_height = $diffTSNeuron;
+            $scope.neuronObj[key].vPlacement = $vPlacement;
+            $scope.neuronObj[key].properties = $properties;
+            id_neuron = $id;
+            $scope.jsonContentNeuron = angular.toJson($scope.neuronObj[key]);
+            neuron.put({id:id_neuron}, $scope.jsonContentNeuron);
+          }
+        });
       });
       //$scope.toJSON();
     };
