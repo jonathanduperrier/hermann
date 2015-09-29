@@ -29,6 +29,9 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
                 $rootScope.username = username;
                 $location.path( '/experiment' );
             }
+        },
+        function(reason) {
+            bootbox.alert('Failled to connect. Please verify your username or password');
         });
     };
 
