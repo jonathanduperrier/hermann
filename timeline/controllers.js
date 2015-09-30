@@ -581,43 +581,51 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.editElectrode = function($id, $text, $start, $end, $type, $model, $version, $serial_or_id, $manufacturer, $impedance, $internal_diameter, $rows, $columns, $step){
-      var $vPlInit = $scope.dateStartExp0/1e3|0; 
-      var $vPl = $start/1e3|0; 
-      $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes*/
-
-      $startElectrodeTS = $start.valueOf();
-      $endElectrodeTS = $end.valueOf();
-      $diffTSElectrode = (($endElectrodeTS/1e3|0) - ($startElectrodeTS/1e3|0)) / $scl_coef;
-      if($diffTSElectrode < ($scope.heightMinEpoch+1)){
-        $diffTSElectrode = $scope.heightMinEpoch;
-      }
-      angular.forEach($scope.electrodeObj, function(value, key) {
-        if((value.id == $id)){
-          $scope.electrodeObj[key].label = $text;
-          $scope.electrodeObj[key].start = $start;
-          $scope.electrodeObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
-          if($end != ""){
-            $scope.electrodeObj[key].end = $end;
-            $scope.electrodeObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+      DeviceType.get(function($data){
+        angular.forEach($data.objects, function($value){
+          if($value.resource_uri == $type){
+            $type_name = $value.name;
+            //$type_name = $data.objects[0].name;
           }
-          $scope.electrodeObj[key].type = $type;
-          $scope.electrodeObj[key].type_name = $type.name;
-          //$model, $version, $serial_or_id, $manufacturer, $impedance, $internal_diameter, $rows, $columns, $step
-          $scope.electrodeObj[key].model = $model;
-          $scope.electrodeObj[key].version = $version;
-          $scope.electrodeObj[key].serial_or_id = $serial_or_id;
-          $scope.electrodeObj[key].manufacturer = $manufacturer;
-          $scope.electrodeObj[key].impedance = $impedance;
-          $scope.electrodeObj[key].internal_diameter = $internal_diameter;
-          $scope.electrodeObj[key].rows = $rows;
-          $scope.electrodeObj[key].columns = $columns;
-          $scope.electrodeObj[key].step = $step;
-          $scope.electrodeObj[key].epoch_height = $diffTSElectrode;
-          $scope.electrodeObj[key].vPlacement = $vPlacement;
-          id_electrode = $id;
-          $scope.jsonContentElectrode = angular.toJson($scope.electrodeObj[key]);
-          electrode.put({id:id_electrode}, $scope.jsonContentElectrode);
+        });
+        var $vPlInit = $scope.dateStartExp0/1e3|0; 
+        var $vPl = $start/1e3|0; 
+        $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes*/
+
+        $startElectrodeTS = $start.valueOf();
+        $endElectrodeTS = $end.valueOf();
+        $diffTSElectrode = (($endElectrodeTS/1e3|0) - ($startElectrodeTS/1e3|0)) / $scl_coef;
+        if($diffTSElectrode < ($scope.heightMinEpoch+1)){
+          $diffTSElectrode = $scope.heightMinEpoch;
         }
+        angular.forEach($scope.electrodeObj, function(value, key) {
+          if((value.id == $id)){
+            $scope.electrodeObj[key].label = $text;
+            $scope.electrodeObj[key].start = $start;
+            $scope.electrodeObj[key].startFormat = $start.format('dd/mm/yyyy - HH:MM');
+            if($end != ""){
+              $scope.electrodeObj[key].end = $end;
+              $scope.electrodeObj[key].endFormat = $end.format('dd/mm/yyyy - HH:MM');
+            }
+            $scope.electrodeObj[key].type = $type.resource_uri;
+            $scope.electrodeObj[key].type_name = $type_name;
+            //$model, $version, $serial_or_id, $manufacturer, $impedance, $internal_diameter, $rows, $columns, $step
+            $scope.electrodeObj[key].model = $model;
+            $scope.electrodeObj[key].version = $version;
+            $scope.electrodeObj[key].serial_or_id = $serial_or_id;
+            $scope.electrodeObj[key].manufacturer = $manufacturer.resource_uri;
+            $scope.electrodeObj[key].impedance = $impedance;
+            $scope.electrodeObj[key].internal_diameter = $internal_diameter;
+            $scope.electrodeObj[key].rows = $rows;
+            $scope.electrodeObj[key].columns = $columns;
+            $scope.electrodeObj[key].step = $step;
+            $scope.electrodeObj[key].epoch_height = $diffTSElectrode;
+            $scope.electrodeObj[key].vPlacement = $vPlacement;
+            id_electrode = $id;
+            $scope.jsonContentElectrode = angular.toJson($scope.electrodeObj[key]);
+            electrode.put({id:id_electrode}, $scope.jsonContentElectrode);
+          }
+        });
       });
     };
 
