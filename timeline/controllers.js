@@ -403,7 +403,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.showConfirmRemoveEpoch($electrode_id, "electrode");
           } else if (result.stop_electrode == true){
             $date_end = new Date();
-            $scope.editElectrode($nbElectrode, result.label, to_start, $date_end, result.type, result.model, result.version, result.serial_or_id, result.manufacturer, result.impedance, result.internal_diameter, result.rows, result.columns, result.step);
+            $scope.editElectrode($nbElectrode, result.label, to_start, $date_end, result.type.resource_uri, result.model, result.version, result.serial_or_id, result.manufacturer.resource_uri, result.impedance, result.internal_diameter, result.rows, result.columns, result.step);
             //$scope.toJSON();
           } else {
             if(result.type == null){
@@ -415,7 +415,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
               } else {
                 to_end = "";
               }
-              $scope.editElectrode($nbElectrode, result.label, to_start, to_end, result.type, result.model, result.version, result.serial_or_id, result.manufacturer, result.impedance, result.internal_diameter, result.rows, result.columns, result.step);
+              $scope.editElectrode($nbElectrode, result.label, to_start, to_end, result.type.resource_uri, result.model, result.version, result.serial_or_id, result.manufacturer.resource_uri, result.impedance, result.internal_diameter, result.rows, result.columns, result.step);
               //$scope.toJSON();
             }
           }
@@ -613,7 +613,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.electrodeObj[key].model = $model;
             $scope.electrodeObj[key].version = $version;
             $scope.electrodeObj[key].serial_or_id = $serial_or_id;
-            $scope.electrodeObj[key].manufacturer = $manufacturer.resource_uri;
+            $scope.electrodeObj[key].manufacturer = $manufacturer;
             $scope.electrodeObj[key].impedance = $impedance;
             $scope.electrodeObj[key].internal_diameter = $internal_diameter;
             $scope.electrodeObj[key].rows = $rows;
@@ -729,8 +729,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           });
           $idElectrode = Math.max.apply(Math, $tabIdElectrode) + 1;
         }
-
-        $scope.addElectrode($idElectrode, $numberCol, $text, $startElectrode, $startFormat, $type, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $manufacturer, $notes, $impedance, $internal_diameter, $rows, $columns, $step, 1);
+        $scope.addElectrode($idElectrode, $numberCol, $text, $startElectrode, $startFormat, $type.resource_uri, $vPlacement, 60, null, null, $model, $version, $serial_or_id, $manufacturer.resource_uri, $notes, $impedance, $internal_diameter, $rows, $columns, $step, 1);
     };
 
     $scope.createNeuron = function($numberCol, $label, $type, $electrode, $properties){
