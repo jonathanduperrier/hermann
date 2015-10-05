@@ -73,15 +73,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         angular.element("#graduation").height($height-60);
     };
 
-    $scope.removeTimeline = function($numberCol){
-       angular.element('#timeline_' + $numberCol).remove();
-        angular.forEach($scope.timeLineObj, function($value, $key) {
-          if($value.id == $numberCol){
-            $scope.timeLineObj.splice($key, 1);
-          }
-        });
-    };
-
     $scope.showDlgAddEvent = function($numberCol, $date){
       $date = new Date($date);
       ModalService.showModal({
@@ -131,26 +122,26 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $TLexp = $scope.timeLineObj[$key].experiment;
             $TLcolor = $scope.timeLineObj[$key].color;
           }
-          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
+          //if(($vPlacement+150) > $scope.timeLineObj[$key].height){
             $scope.timeLineObj[$key].height = $vPlacement+150;
             angular.element("#graduation").height($vPlacement+150);
-          }
+          //}
           $i++;
         });
 
         $scope.eventObjUnique = {
-                id : $idEvent,
-                timeline : "/notebooks/timeline/" + $numberCol,
-                text : $text,
-                date : $dateEvent,
-                dateFormat : $dateFormat,
-                type : $type,
-                color : "#FFFFFF",
-                vPlacement : $vPlacement,
-                TimeLineExp : '#/timeline' + $TLexp,
-                UrlExp : window.location.hash,
-                TimeLineColor : $TLcolor,
-            };
+            id : $idEvent,
+            timeline : "/notebooks/timeline/" + $numberCol,
+            text : $text,
+            date : $dateEvent,
+            dateFormat : $dateFormat,
+            type : $type,
+            color : "#FFFFFF",
+            vPlacement : $vPlacement,
+            TimeLineExp : '#/timeline' + $TLexp,
+            UrlExp : window.location.hash,
+            TimeLineColor : $TLcolor,
+        };
 
         $scope.eventObj.push ( $scope.eventObjUnique );
     };
