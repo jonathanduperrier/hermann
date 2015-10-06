@@ -111,6 +111,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.addEvent($idEvent, $numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
         //$scope.toJSON();
         events.post($scope.eventObjUnique);
+        $scope.displayZoomEvent(1);
     };
 
     $scope.addEvent = function($idEvent, $numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement){
@@ -792,6 +793,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       protocol.post( $scope.protocolObjUnique ).$promise.then(function($data){
         $scope.stopSpin();
       });
+      $scope.displayZoomEvent(1);
     };
 
     $scope.getExistingElectrodeOnTimeLine = function($numberCol){
@@ -919,6 +921,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           electrode.post($scope.electrodeObjUnique).$promise.then(function($data){
             $scope.stopSpin();
           });
+          $scope.displayZoomEvent(1);
         }
       });
     };
@@ -987,6 +990,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           neuron.post($scope.neuronObjUnique).$promise.then(function($data){
             $scope.stopSpin();
           });
+          $scope.displayZoomEvent(1);
         }
       });
     };
