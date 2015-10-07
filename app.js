@@ -8,7 +8,8 @@ var mainApp = angular.module('mainApp', [
 	'mod_tlv',
 	'hermann.experiments',
 	'hermann.login',
-	'hermann.people'
+	'hermann.people',
+  'hermann.electrode',
 ]);
 
 mainApp.factory('errorHttpInterceptor', ['$q', function ($q) {
@@ -51,6 +52,10 @@ mainApp.config(['$routeProvider', '$httpProvider',
           when('/timeline/experiment/:eID', {
             templateUrl: 'timeline/timeline_visual.tpl.html',
             controller: 'timeLineVisualController'
+          }).
+          when('/electrode_list', {
+            templateUrl: 'electrode/electrode_list.tpl.html',
+            controller: 'ListElectrode'
           }).
           otherwise({
             redirectTo: '/experiment'
