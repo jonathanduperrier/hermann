@@ -11,21 +11,21 @@
                         <th>Type</th>
                         <th>Model</th>
                         <th>Version</th>
-                        <th>Serial or Id</th>
+                        <th>Serial/Id</th>
                         <th>Manufacturer</th>
                         <th>Notes</th>
                     </tr>
                 </thead>
                 <tr ng-repeat="elec in electrode.objects | filter:query | orderBy:Label">
-                    <td>{{exp.label}}</td>
-                    <td>{{exp.start}}</td>
-                    <td>{{exp.end}}</td>
-                    <td>{{exp.type}}</td>
-                    <td>{{exp.model}}</td>
-                    <td>{{exp.version}}</td>
-                    <td>{{exp.serial_or_id}}</td>
-                    <td>{{exp.manufacturer}}</td>
-                    <td>{{exp.notes}}</td>
+                    <td>{{elec.label}}</td>
+                    <td>{{elec.start}}</td>
+                    <td>{{elec.end}}</td>
+                    <td>{{elec.type}}</td>
+                    <td>{{elec.model}}</td>
+                    <td>{{elec.version}}</td>
+                    <td>{{elec.serial_or_id}}</td>
+                    <td>{{elec.manufacturer}}</td>
+                    <td>{{elec.notes}}</td>
                 </tr>
             </table>
         </div>
