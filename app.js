@@ -10,6 +10,8 @@ var mainApp = angular.module('mainApp', [
 	'hermann.login',
 	'hermann.people',
   'hermann.electrode',
+  'hermann.neuron',
+  'hermann.protocol',
 ]);
 
 mainApp.factory('errorHttpInterceptor', ['$q', function ($q) {
@@ -56,6 +58,14 @@ mainApp.config(['$routeProvider', '$httpProvider',
           when('/electrode_list', {
             templateUrl: 'electrode/electrode_list.tpl.html',
             controller: 'ListElectrode'
+          }).
+          when('/neuron_list', {
+            templateUrl: 'neuron/neuron_list.tpl.html',
+            controller: 'ListNeuron'
+          }).
+          when('/protocol_list', {
+            templateUrl: 'protocol/protocol_list.tpl.html',
+            controller: 'ListProtocol'
           }).
           otherwise({
             redirectTo: '/experiment'

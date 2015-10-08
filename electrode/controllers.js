@@ -13,6 +13,5 @@ mod_exp.controller('ListElectrode', [
   '$scope', 'electrode' ,'ModalService',
   function($scope, electrode, ModalService) {
   	$scope.electrode = electrode.get();
-
-
-}]);
+  }
+]);
