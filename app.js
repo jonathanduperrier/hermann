@@ -67,9 +67,17 @@ mainApp.config(['$routeProvider', '$httpProvider',
             templateUrl: 'neuron/neuron_list.tpl.html',
             controller: 'ListNeuron'
           }).
+          when('/neuron/:eID', {
+            templateUrl: 'neuron/neuron_detail.tpl.html',
+            controller: 'DetailNeuron'
+          }).
           when('/protocol_list', {
             templateUrl: 'protocol/protocol_list.tpl.html',
             controller: 'ListProtocol'
+          }).
+          when('/protocol/:eID', {
+            templateUrl: 'protocol/protocol_detail.tpl.html',
+            controller: 'DetailProtocol'
           }).
           otherwise({
             redirectTo: '/experiment'

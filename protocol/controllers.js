@@ -38,3 +38,9 @@ mod_exp.controller('ListProtocol', [
     };
   }
 ]);
+
+mod_exp.controller('DetailProtocol', ['$scope', '$routeParams', 'timeLine', 'neuron', 'protocol', 'Experiment', function($scope, $routeParams, timeLine, neuron, protocol, Experiment){
+  $scope.prot = protocol.get( {id: $routeParams.eID}, function(data){
+
+  });
+}]);
