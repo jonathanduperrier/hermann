@@ -13,6 +13,7 @@
                         <th>Version</th>
                         <th>Serial/Id</th>
                         <th>Manufacturer</th>
+                        <th>Experiment</th>
                     </tr>
                 </thead>
                 <tr ng-repeat="elec in electrode.objects | filter:query | orderBy:Label">
@@ -24,6 +25,7 @@
                     <td>{{elec.version}}</td>
                     <td>{{elec.serial_or_id}}</td>
                     <td>{{elec.manufacturer}}</td>
+                    <td>{{elec.experiment.label}}</td>
                 </tr>
             </table>
         </div>
