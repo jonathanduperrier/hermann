@@ -10,6 +10,7 @@
                         <th>End</th>
                         <th>Type</th>
                         <th>Electrode</th>
+                        <th>Experiment</th>
                     </tr>
                 </thead>
                 <tr ng-repeat="neur in neuron.objects | filter:query | orderBy:Label">
@@ -18,6 +19,7 @@
                     <td>{{neur.end}}</td>
                     <td>{{neur.type.name}}</td>
                     <td>{{neur.electrode.label}}</td>
+                    <td>{{neur.experiment.label}}</td>
                 </tr>
             </table>
         </div>

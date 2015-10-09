@@ -10,8 +10,8 @@ var mod_exp = angular.module( 'hermann.neuron', [
     ]);
 
 mod_exp.controller('ListNeuron', [
-  '$scope', 'neuron' ,'ModalService', 'CellType', 'electrode',
-  function($scope, neuron, ModalService, CellType, electrode) {
+  '$scope', 'neuron' ,'ModalService', 'CellType', 'electrode', 'timeLine', 'Experiment',
+  function($scope, neuron, ModalService, CellType, electrode, timeLine, Experiment) {
   	$scope.neuron = neuron.get({}, function(data){
       $scope.neuron.objects.forEach( function( neur ){
         var $type = neur.type.split('/');
@@ -20,6 +20,16 @@ mod_exp.controller('ListNeuron', [
         var $electrode = neur.electrode.split('/');
         var $idElectrode = $electrode[3];
         neur.electrode = electrode.get({id:$idElectrode});
+        //get timeline
+        var $timeline = neur.timeline.split('/');
+        var $idTimeline = parseInt($timeline[3]);
+        neur.timeline = timeLine.get({id:$idTimeline}, function(data){
+          var $exp = data.experiment;
+          //get experiment
+          var $experiment = $exp.split('/');
+          var $idExperiment = $experiment[2];
+          neur.experiment = Experiment.get({id:$idExperiment});
+        });
       });
     });
 }]);

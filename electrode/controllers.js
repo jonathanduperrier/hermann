@@ -22,7 +22,6 @@ mod_exp.controller('ListElectrode', [
         var $timeline = elec.timeline.split('/');
         var $idTimeline = parseInt($timeline[3]);
         elec.timeline = timeLine.get({id:$idTimeline}, function(data){
-
           var $exp = data.experiment;
           //get experiment
           var $experiment = $exp.split('/');
