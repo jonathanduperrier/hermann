@@ -30,5 +30,11 @@ mod_exp.controller('ListProtocol', [
         });
       });
     });
+    $scope.predicate = 'label';
+    $scope.reverse = false;
+    $scope.order = function(predicate) {
+      $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+      $scope.predicate = predicate;
+    };
   }
 ]);
