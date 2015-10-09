@@ -59,6 +59,10 @@ mainApp.config(['$routeProvider', '$httpProvider',
             templateUrl: 'electrode/electrode_list.tpl.html',
             controller: 'ListElectrode'
           }).
+          when('/electrode/:eID', {
+            templateUrl: 'electrode/electrode_detail.tpl.html',
+            controller: 'DetailElectrode'
+          }).
           when('/neuron_list', {
             templateUrl: 'neuron/neuron_list.tpl.html',
             controller: 'ListNeuron'

@@ -38,3 +38,23 @@ mod_exp.controller('ListElectrode', [
     };
   }
 ]);
+
+mod_exp.controller('DetailElectrode', ['$scope', '$routeParams', 'timeLine', 'electrode', 'Experiment', function($scope, $routeParams, timeLine, electrode, Experiment){
+    $scope.elec = electrode.get( {id: $routeParams.eID}, function(data){
+        var $type = $scope.elec.type.split('/');
+        $scope.elec.type = $type[3];
+        var $manufacturer = $scope.elec.manufacturer.split('/');
+        $scope.elec.manufacturer = $manufacturer[3];
+        //get timeline
+        var $timeline = $scope.elec.timeline.split('/');
+        var $idTimeline = parseInt($timeline[3]);
+        $scope.elec.timeline = timeLine.get({id:$idTimeline}, function(data){
+          var $exp = data.experiment;
+          //get experiment
+          var $experiment = $exp.split('/');
+          var $idExperiment = $experiment[2];
+          $scope.elec.experiment = Experiment.get({id:$idExperiment});
+        });
+    });
+  }
+]);
