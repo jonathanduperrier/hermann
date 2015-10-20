@@ -20,7 +20,7 @@ mod_exp.controller('ListExperiment', [
     $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#f2f7ff','#f2f7ff', '#f2f7ff'];
 
     //var defered = $q.defer();
-    $scope.experiment = Experiment.get();    
+    $scope.experiment = Experiment.get();
     $scope.showDlgAddExperiment = function($http, $q){
       ModalService.showModal({
         templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
@@ -34,6 +34,7 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to create experiment !");
           } else {
+
             $scope.createExp(result.label, result.type, result.notes, result.setup);
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
@@ -55,7 +56,8 @@ mod_exp.controller('ListExperiment', [
                 timeLine.post($scope.timeLineObj[$i])
                 .$promise.then(function(val) {
                   if($i==nb_create_timeline){
-                    angular.element('a[href$="#/timeline"]:first').attr("href", app_url + '#/timeline' + $scope.resource_uri)
+                    $scope.experiment = Experiment.get();//reload experiments
+                    //angular.element('a[href$="#/timeline"]:first').attr("href", app_url + '#/timeline' + $scope.resource_uri);
                   }
                 });
                 setTimeout(function(){ angular.element(window).spin(); }, 3500);
@@ -66,6 +68,7 @@ mod_exp.controller('ListExperiment', [
         });
       });
     };
+
     $scope.createExp = function($label, $type, $notes, $setup){
       var $date = new Date();
       var $expSend = {
@@ -84,7 +87,7 @@ mod_exp.controller('ListExperiment', [
           start: $date,
           notes: $notes,
           setup: $setup,
-          researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
+          researchers: [$scope.researcher_uri], // à corriger par l'utilisateur courant
         }
       );
     };

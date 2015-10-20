@@ -1392,16 +1392,18 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
     $scope.stopExperiment = function() {
       $scope.experiment = Experiment.get({id: $routeParams.eID}, function(data){
+
         //data.object
-        angular.forEach(data.objects, function($value){
-          if($value.id == $routeParams.eID){
+        //angular.forEach(data.objects, function($value){
+          if(data.id == $routeParams.eID){
             var $dateEnd = new Date();
-            $value.end = $dateEnd;
+            data.end = $dateEnd;
           }
-        });
+        //});
         $scope.jsonContentExp = angular.toJson(data);
         Experiment.put({id:$routeParams.eID}, $scope.jsonContentExp, function(){}).$promise.then(function(val) {
           //$scope.toJSON();
+          angular.element(".btnAddEvtEpoch  button").remove();
         });
       });
     };
