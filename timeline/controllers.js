@@ -90,6 +90,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.createEvent = function($numberCol, $text, $type){
+        angular.element(window).spin();
+        $rootScope.spin = 1;
+        
         var $dateEvent = new Date();
         var $vPlInit = $scope.dateStartExp0/1e3|0; 
         var $vPl = $dateEvent/1e3|0; 
@@ -110,8 +113,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
         $scope.addEvent($idEvent, $numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement);
         //$scope.toJSON();
-        events.post($scope.eventObjUnique);
-        $scope.displayZoomEvent(1);
+        events.post($scope.eventObjUnique).$promise.then(function($data){
+          $scope.displayZoomEvent(1);
+          $scope.stopSpin();
+        });
     };
 
     $scope.addEvent = function($idEvent, $numberCol, $text, $dateEvent, $dateFormat, $type, $vPlacement){
@@ -791,9 +796,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $scope.addProtocol($idProtocol, $numberCol, $text, $startProtocol, $startFormat, $type, $vPlacement, 60, null, null, $neuron);
       //$scope.toJSON();
       protocol.post( $scope.protocolObjUnique ).$promise.then(function($data){
+        $scope.displayZoomEvent(1);
         $scope.stopSpin();
       });
-      $scope.displayZoomEvent(1);
     };
 
     $scope.getExistingElectrodeOnTimeLine = function($numberCol){
@@ -919,9 +924,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         if($creation == 1){
           //$scope.toJSON();
           electrode.post($scope.electrodeObjUnique).$promise.then(function($data){
+            $scope.displayZoomEvent(1);
             $scope.stopSpin();
           });
-          $scope.displayZoomEvent(1);
         }
       });
     };
@@ -988,9 +993,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         if($creation == 1){
           //$scope.toJSON();
           neuron.post($scope.neuronObjUnique).$promise.then(function($data){
+            $scope.displayZoomEvent(1);
             $scope.stopSpin();
           });
-          $scope.displayZoomEvent(1);
         }
       });
     };
@@ -1612,6 +1617,8 @@ mod_tlv.controller('AddElectrodeController', [
       $scope.msgAlert = "Model field is required";
     } else if($scope.version == null) {
       $scope.msgAlert = "Version field is required";
+    } else if($scope.manufacturer == null) {
+      $scope.msgAlert = "Manufacurer field is required";
     } else if((!$.isNumeric($scope.impedance)) & ($scope.impedance != null)) {
       $scope.msgAlert = "Impedance field must be a number";
     } else if((!$.isNumeric($scope.internal_diameter)) & ($scope.internal_diameter != null)) {
