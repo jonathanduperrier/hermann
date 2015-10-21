@@ -351,6 +351,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $electrode_id = value.id;
           $electrode_label = value.label;
           $electrode_type = value.type;
+          //$electrode_type = value.type_name;
           $electrode_start = value.start;
           $electrode_end = value.end;
           $electrode_model = value.model;
@@ -585,6 +586,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             //$type_name = $data.objects[0].name;
           }
         });
+
         var $vPlInit = $scope.dateStartExp0/1e3|0; 
         var $vPl = $start/1e3|0; 
         $vPlacement = (($vPl - $vPlInit)/60); //1px = 60 secondes*/
@@ -622,6 +624,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $scope.jsonContentElectrode = angular.toJson($scope.electrodeObj[key]);
             electrode.put({id:id_electrode}, $scope.jsonContentElectrode);
           }
+        });
+
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          $scope.timeLineObj[$key].height = $vPlacement+$diffTSElectrode+150;
+          angular.element("#graduation").height($vPlacement+$diffTSElectrode+150);
+          $i++;
         });
       });
     };
@@ -662,8 +670,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             neuron.put({id:id_neuron}, $scope.jsonContentNeuron);
           }
         });
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          $scope.timeLineObj[$key].height = $vPlacement+$diffTSNeuron+150;
+          angular.element("#graduation").height($vPlacement+$diffTSNeuron+150);
+          $i++;
+        });
       });
-      //$scope.toJSON();
     };
 
     $scope.editProtocol = function($id, $text, $start, $end, $type){
@@ -693,6 +705,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $scope.jsonContentProtocol = angular.toJson($scope.protocolObj[key]);
           protocol.put({id:id_protocol}, $scope.jsonContentProtocol);
         }
+      });
+      angular.forEach($scope.timeLineObj, function($value, $key){
+        $scope.timeLineObj[$key].height = $vPlacement+$diffTSProtocol+150;
+        angular.element("#graduation").height($vPlacement+$diffTSProtocol+150);
+        $i++;
       });
     };
 
@@ -866,18 +883,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         var $TLexp = "";
         var $TLcolor = "";
         var $TLName = "";
-        angular.forEach($scope.timeLineObj, function($value, $key){
-          if($numberCol == $scope.timeLineObj[$key].id){
-            $TLexp = $scope.timeLineObj[$key].experiment;
-            $TLcolor = $scope.timeLineObj[$key].color;
-            $TLName =  $scope.timeLineObj[$key].name;
-          }
-          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
-            $scope.timeLineObj[$key].height = $vPlacement+150;
-            angular.element("#graduation").height($vPlacement+150);
-          }
-          $i++;
-        });
 
         if($endElectrode != null){
           $startElectrodeTS = $startElectrode.valueOf();
@@ -889,6 +894,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         } else {
           $diffTSElectrode = $scope.heightMinEpoch;
         }
+
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          if($numberCol == $scope.timeLineObj[$key].id){
+            $TLexp = $scope.timeLineObj[$key].experiment;
+            $TLcolor = $scope.timeLineObj[$key].color;
+            $TLName =  $scope.timeLineObj[$key].name;
+          }
+          if(($vPlacement+$diffTSElectrode+150) > $scope.timeLineObj[$key].height){
+            $scope.timeLineObj[$key].height = $vPlacement+$diffTSElectrode+150;
+            angular.element("#graduation").height($vPlacement+$diffTSElectrode+150);
+          }
+          $i++;
+        });
 
         $scope.electrodeObjUnique =
           {
@@ -944,18 +962,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         var $TLexp = "";
         var $TLcolor = "";
         var $TLName = "";
-        angular.forEach($scope.timeLineObj, function($value, $key){
-          if($numberCol == $scope.timeLineObj[$key].id){
-            $TLexp = $scope.timeLineObj[$key].experiment;
-            $TLcolor = $scope.timeLineObj[$key].color;
-            $TLName =  $scope.timeLineObj[$key].name;
-          }
-          if(($vPlacement+150) > $scope.timeLineObj[$key].height){
-            $scope.timeLineObj[$key].height = $vPlacement+150;
-            angular.element("#graduation").height($vPlacement+150);
-          }
-          $i++;
-        });
 
         if($endNeuron != null){
           $startNeuronTS = $startNeuron.valueOf();
@@ -967,6 +973,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         } else {
           $diffTSNeuron = $scope.heightMinEpoch;
         }
+
+        angular.forEach($scope.timeLineObj, function($value, $key){
+          if($numberCol == $scope.timeLineObj[$key].id){
+            $TLexp = $scope.timeLineObj[$key].experiment;
+            $TLcolor = $scope.timeLineObj[$key].color;
+            $TLName =  $scope.timeLineObj[$key].name;
+          }
+          if(($vPlacement+$diffTSNeuron+150) > $scope.timeLineObj[$key].height){
+            $scope.timeLineObj[$key].height = $vPlacement+$diffTSNeuron+150;
+            angular.element("#graduation").height($vPlacement+$diffTSNeuron+150);
+          }
+          $i++;
+        });
 
         $scope.neuronObjUnique =
             {
@@ -1006,18 +1025,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       var $TLexp = "";
       var $TLcolor = "";
       var $TLName = "";
-      angular.forEach($scope.timeLineObj, function($value, $key){
-        if($numberCol == $scope.timeLineObj[$key].id){
-          $TLexp = $scope.timeLineObj[$key].experiment;
-          $TLcolor = $scope.timeLineObj[$key].color;
-          $TLName =  $scope.timeLineObj[$key].name;
-        }
-        if(($vPlacement+150) > $scope.timeLineObj[$key].height){
-          $scope.timeLineObj[$key].height = $vPlacement+150;
-          angular.element("#graduation").height($vPlacement+150);
-        }
-        $i++;
-      });
 
       if($endProtocol != null){
         $startProtocolTS = $startProtocol.valueOf();
@@ -1029,6 +1036,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       } else {
         $diffTSProtocol = $scope.heightMinEpoch;
       }
+
+      angular.forEach($scope.timeLineObj, function($value, $key){
+        if($numberCol == $scope.timeLineObj[$key].id){
+          $TLexp = $scope.timeLineObj[$key].experiment;
+          $TLcolor = $scope.timeLineObj[$key].color;
+          $TLName =  $scope.timeLineObj[$key].name;
+        }
+        if(($vPlacement+$diffTSProtocol+150) > $scope.timeLineObj[$key].height){
+          $scope.timeLineObj[$key].height = $vPlacement+$diffTSProtocol+150;
+          angular.element("#graduation").height($vPlacement+$diffTSProtocol+150);
+        }
+        $i++;
+      });
 
       $scope.protocolObjUnique =
           {
