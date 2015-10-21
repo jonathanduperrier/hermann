@@ -901,9 +901,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $TLcolor = $scope.timeLineObj[$key].color;
             $TLName =  $scope.timeLineObj[$key].name;
           }
-          if(($vPlacement+$diffTSElectrode+150) > $scope.timeLineObj[$key].height){
-            $scope.timeLineObj[$key].height = $vPlacement+$diffTSElectrode+150;
-            angular.element("#graduation").height($vPlacement+$diffTSElectrode+150);
+          if($scope.timeLineObj[$key].experiment == $scope.getExpFromTimeline($numberCol)){
+            if(($vPlacement+$diffTSElectrode+150) > $scope.timeLineObj[$key].height){
+              $scope.timeLineObj[$key].height = $vPlacement+$diffTSElectrode+150;
+              angular.element("#graduation").height($vPlacement+$diffTSElectrode+150);
+            }
           }
           $i++;
         });
@@ -980,9 +982,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             $TLcolor = $scope.timeLineObj[$key].color;
             $TLName =  $scope.timeLineObj[$key].name;
           }
-          if(($vPlacement+$diffTSNeuron+150) > $scope.timeLineObj[$key].height){
-            $scope.timeLineObj[$key].height = $vPlacement+$diffTSNeuron+150;
-            angular.element("#graduation").height($vPlacement+$diffTSNeuron+150);
+          if($scope.timeLineObj[$key].experiment == $scope.getExpFromTimeline($numberCol)){
+            if(($vPlacement+$diffTSNeuron+150) > $scope.timeLineObj[$key].height){
+              $scope.timeLineObj[$key].height = $vPlacement+$diffTSNeuron+150;
+              angular.element("#graduation").height($vPlacement+$diffTSNeuron+150);
+            }
           }
           $i++;
         });
@@ -1043,9 +1047,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
           $TLcolor = $scope.timeLineObj[$key].color;
           $TLName =  $scope.timeLineObj[$key].name;
         }
-        if(($vPlacement+$diffTSProtocol+150) > $scope.timeLineObj[$key].height){
-          $scope.timeLineObj[$key].height = $vPlacement+$diffTSProtocol+150;
-          angular.element("#graduation").height($vPlacement+$diffTSProtocol+150);
+        if($scope.timeLineObj[$key].experiment == $scope.getExpFromTimeline($numberCol)){
+          if(($vPlacement+$diffTSProtocol+150) > $scope.timeLineObj[$key].height){
+            $scope.timeLineObj[$key].height = $vPlacement+$diffTSProtocol+150;
+            angular.element("#graduation").height($vPlacement+$diffTSProtocol+150);
+          }
         }
         $i++;
       });
