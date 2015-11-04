@@ -16,7 +16,7 @@ mod_exp.controller('ListExperiment', [
   function($scope, Experiment, ModalService, timeLine, $q){
     $scope.timeLineObj = [];
     var nb_create_timeline = 7;
-    $scope.nameTimeLines = ['1 Alfaxan', '2 Esmeron', '3 phys', '4 Env', '5 Electrode', '6 Neuron', '7 Protocol'];
+    $scope.nameTimeLines = ['1 Anesthetic', '2 Paralytic', '3 Physiologic', '4 Environment', '5 Electrode', '6 Neuron', '7 Protocol'];
     $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#f2f7ff','#f2f7ff', '#f2f7ff'];
 
     //var defered = $q.defer();

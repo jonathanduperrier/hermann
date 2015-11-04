@@ -1,0 +1,60 @@
+<div style="display:block; width:1300px;">
+	<div id="graduation" class='timeline-column'>
+		<!--<div class="dateTypeEvent" id="date_beginning_exp">Begining of experiment : {{dateStartExp}}</div>-->
+		<!--<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{30+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if="eventObj.TimeLineExp == eventObj.UrlExp">
+			<div ng-click="toogleEvtLeft()" class="dateTypeEvent">
+				{{eventObj.dateFormat}}
+			</div>
+			<div class="textEventLeft">
+				{{eventObj.type}}<br />
+				{{eventObj.text}}
+			</div>
+		</div>-->
+	</div>
+	<div ng-repeat="tl in TLExp.objects | orderBy :'name'" number='{{tl.id}}' id='timeline_{{tl.id}}' class='timeline-column' style="background-color:{{tl.color}}; height:{{tl.height}}px;" >
+			<div class="btn-group btn-group-xs btnAddEvent btnAddEvtEpoch">
+				<button ng-click="showDlgAddEvent(tl.id, tl.date)" class="btn btn-default" ng-if='dateEndExp == ""'>
+					<span class="glyphicon glyphicon-plus-sign"></span>
+				</button>
+			</div>
+			<span class="timeline_name">{{tl.name}}</span>
+			<div class="btn-group btn-group-xs btnAddEvtEpoch" ng-if="tl.displayEpoch == 1 && tl.name == '5 Electrode' && dateEndExp == ''">
+				<button ng-click="showDlgAddElectrode(tl.id, tl.date, tl.name)" class="btn btn-default">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+			</div>
+			<div class="btn-group btn-group-xs btnAddEvtEpoch" ng-if="tl.displayEpoch == 1 && tl.name == '6 Neuron' && dateEndExp == ''">
+				<button ng-click="showDlgAddNeuron(tl.id, tl.date, tl.name)" class="btn btn-default">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+			</div>
+			<div class="btn-group btn-group-xs btnAddEvtEpoch" ng-if="tl.displayEpoch == 1 && tl.name == '7 Protocol' && dateEndExp == ''">
+				<button ng-click="showDlgAddProtocol(tl.id, tl.date, tl.name)" class="btn btn-default">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+			</div>
+
+
+	<div ng-repeat="evt in tl.events.objects" class="event event_{{evt.id}}" id="event_{{evt.id}}" style="top:{{30+evt.vPlacement}}px; background-color:{{evt.color}}; border:1px solid black;" ng-if="evt.timeline == '/notebooks/timeline/' + timeLineObj.id">
+		<div class="btn-group btn-group-xs btnDelEvent">
+			<button ng-click="showDlgEditEvent(evt.id)" class="btn btn-default">
+				<span class="glyphicon glyphicon glyphicon-edit"></span>
+			</button>
+		</div>
+		<div class="dateTypeEvent">
+			{{evt.type}}
+		</div>
+		<div class="textEvent">
+			{{evt.text}}
+		</div>
+	</div>
+	
+		<div electrode-dir></div>
+		<div neuron-dir></div>
+		<div protocol-dir></div>
+	</div>
+</div>
+
+  <div class="form-group" id="error_val_type" style="display:none;">
+  	<p>Select Type value before validate</p> 
+  </div>

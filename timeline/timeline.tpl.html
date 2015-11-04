@@ -1,7 +1,7 @@
 <div style="display:block; width:1300px;">
 	<div id="graduation" class='timeline-column'>
 		<!--<div class="dateTypeEvent" id="date_beginning_exp">Begining of experiment : {{dateStartExp}}</div>-->
-		<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{30+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if="eventObj.TimeLineExp == eventObj.UrlExp">
+		<!--<div ng-repeat="eventObj in eventObj track by $index" ng-click="eventZIndex(eventObj.id)" class="event event_{{eventObj.id}}" id="event_{{eventObj.id}}" style="top:{{30+eventObj.vPlacement}}px; background-color:{{eventObj.TimeLineColor}}; border:1px solid black;" ng-if="eventObj.TimeLineExp == eventObj.UrlExp">
 			<div ng-click="toogleEvtLeft()" class="dateTypeEvent">
 				{{eventObj.dateFormat}}
 			</div>
@@ -9,36 +9,28 @@
 				{{eventObj.type}}<br />
 				{{eventObj.text}}
 			</div>
-		</div>
+		</div>-->
 	</div>
-	<div ng-repeat="timeLineObj in timeLineObj | orderBy :'name'" ng-show="timeLineObj" number='{{timeLineObj.id}}' id='timeline_{{timeLineObj.id}}' class='timeline-column' style="background-color:{{timeLineObj.color}}; height:{{timeLineObj.height}}px;" >
-			<div class="btn-group btn-group-xs btnAddEvent btnAddEvtEpoch">
-				<button ng-click="showDlgAddEvent(timeLineObj.id, timeLineObj.date)" class="btn btn-default" ng-if='dateEndExp == ""'>
-					<span class="glyphicon glyphicon-plus-sign"></span>
-				</button>
-			</div>
-			<span class="timeline_name">{{timeLineObj.name}}</span>
-			<div class="btn-group btn-group-xs btnAddEvtEpoch" ng-if="timeLineObj.displayEpoch == 1 && timeLineObj.name == '5 Electrode' && dateEndExp == ''">
-				<button ng-click="showDlgAddElectrode(timeLineObj.id, timeLineObj.date, timeLineObj.name)" class="btn btn-default">
-					<span class="glyphicon glyphicon-plus"></span>
-				</button>
-			</div>
-			<div class="btn-group btn-group-xs btnAddEvtEpoch" ng-if="timeLineObj.displayEpoch == 1 && timeLineObj.name == '6 Neuron' && dateEndExp == ''">
-				<button ng-click="showDlgAddNeuron(timeLineObj.id, timeLineObj.date, timeLineObj.name)" class="btn btn-default">
-					<span class="glyphicon glyphicon-plus"></span>
-				</button>
-			</div>
-			<div class="btn-group btn-group-xs btnAddEvtEpoch" ng-if="timeLineObj.displayEpoch == 1 && timeLineObj.name == '7 Protocol' && dateEndExp == ''">
-				<button ng-click="showDlgAddProtocol(timeLineObj.id, timeLineObj.date, timeLineObj.name)" class="btn btn-default">
-					<span class="glyphicon glyphicon-plus"></span>
-				</button>
-			</div>
+	<div ng-repeat="tl in TLExp.objects | orderBy :'name'" number='{{tl.id}}' id='timeline_{{tl.id}}' class='timeline-column' style="background-color:{{tl.color}}; height:{{tl.height}}px;" >
+		<div class="btn-group btn-group-xs btnAddEvent btnAddEvtEpoch">
+			<button ng-click="showDlgEvent(tl, null)" class="btn btn-default" ng-if='dateEndExp == ""'>
+				<span class="glyphicon glyphicon-plus-sign"></span>
+			</button>
+		</div>
+		<span class="timeline_name">{{tl.name}}</span>
 
+		<div class="btn-group btn-group-xs btnAddEvtEpoch">
+			<button ng-click="showDlgAddEpoch(tl.id, tl.date)" class="btn btn-default">
+				<span class="glyphicon glyphicon-plus"></span>
+			</button>
+		</div>
 
+	
 		<div event-dir></div>
-		<div electrode-dir></div>
+		<div epoch-dir></div>
+ 		<!--<div electrode-dir></div>
 		<div neuron-dir></div>
-		<div protocol-dir></div>
+		<div protocol-dir></div> -->
 	</div>
 </div>
 
