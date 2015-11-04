@@ -1,6 +1,6 @@
-	<div ng-repeat="evt in tl.events.objects" class="event event_{{evt.id}}" id="event_{{evt.id}}" style="top:{{30+evt.vPlacement}}px; background-color:{{evt.color}}; border:1px solid black;" >
+	<div ng-repeat="evt in tl.events.objects" class="event" id="event_{{evt.id}}" style="top:{{30+evt.vPlacement}}px; background-color:{{evt.color}}; border:1px solid black;" >
 		<div class="btn-group btn-group-xs btnDelEvent">
-			<button ng-click="showDlgEditEvent(evt.id)" class="btn btn-default">
+			<button ng-click="showDlgEvent(tl, evt)" class="btn btn-default">
 				<span class="glyphicon glyphicon glyphicon-edit"></span>
 			</button>
 		</div>

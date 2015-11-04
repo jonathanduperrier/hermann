@@ -1,13 +1,13 @@
-	<div ng-repeat="electrodeObj in electrodeObj track by $index" ng-click="electrodeZIndex(electrodeObj.id)" class="epoch electrode_{{electrodeObj.id}}" ng-class="{'epoch_open' : electrodeObj.end == null, 'epoch_close' : electrodeObj.end != null}" id="electrode_{{electrodeObj.id}}" style="top:{{30+electrodeObj.vPlacement}}px; background-color:{{electrodeObj.color}}; border:1px solid black; height:{{electrodeObj.epoch_height}}px;" ng-if="electrodeObj.timeline == '/notebooks/timeline/' + timeLineObj.id">
+	<div ng-repeat="epc in tl.epochs.objects" class="epoch" id="epoch_{{epc.id}}" style="top:{{30+epc.vPlacement}}px; background-color:{{epc.color}}; border:1px solid black;" ng-class="{'epoch_open' : epc.end == null, 'epoch_close' : epc.end != null}"  >
 		<div class="btn-group btn-group-xs btnDelEvent">
-			<button ng-click="showDlgEditElectrode(electrodeObj.id, timeLineObj.name)" class="btn btn-default">
+			<button ng-click="showDlgEpoch(tl, epc)" class="btn btn-default">
 				<span class="glyphicon glyphicon glyphicon-edit"></span>
 			</button>
 		</div>
 		<div class="dateTypeEvent">
-			{{electrodeObj.type_name}}
+			{{epc.type}}
 		</div>
 		<div class="textEvent">
-			{{electrodeObj.label}}
+			{{epc.text}}
 		</div>
 	</div>
