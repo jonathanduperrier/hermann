@@ -151,6 +151,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         ],
     };
 
+    $scope.depend_choices = {
+        '6 Neuron': {
+            timeline: '5 Electrode',
+            timeline_key: null,
+            option_epochs: []
+        },
+        '7 Protocol': {
+            timeline: '6 Neuron',
+            timeline_key: null,
+            option_epochs: [] // {text:<parent.epoch.text>,resource_uri:<parent.epoch.uri>,closed}, {}
+        },
+    }
+
 
     $scope.stopSpin = function() {
       if($rootScope.spin == 1){
@@ -163,8 +176,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     // get the current experiment
     $scope.experiment = Experiment.get(
         {id:$routeParams.eID},
-        function(data){ 
-
+        function(data){
             // get timelines for this experiment only
             $scope.TLExp = timeLine.get(
                 {experiment__id: $scope.experiment.id}, 
@@ -172,6 +184,16 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     angular.forEach( $scope.TLExp.objects, function(value, key) {
                         $scope.TLExp_id[key] = $scope.TLExp.objects[key].id;
                         $scope.TLExp.objects[key].height = $scope.margin_bottom_timeline;
+                        $scope.TLExp.objects[key].key = key;
+                        // get dependency keys
+                        angular.forEach( $scope.depend_choices, function(dep, k) {
+                            if( dep.timeline == value.name ){
+                                console.log("depend choice: "+k);
+                                console.log("depend obj: "+dep);
+                                console.log("parent key:"+key);
+                                $scope.depend_choices[k].timeline_key = key;
+                            };
+                        });
 
                         // get events
                         $scope.TLExp.objects[key].events = events.get(
@@ -192,7 +214,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
                         // get epochs
                         $scope.TLExp.objects[key].epochs = epochs.get(
-                            {timeline__id: $scope.TLExp.objects[key].id}, 
+                            {timeline__id: $scope.TLExp.objects[key].id},
                             function(data){
                                 angular.forEach( $scope.TLExp.objects[key].epochs.objects, function(value2, key2) {
                                     //calculation of event placement on timeline
@@ -206,7 +228,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                 });
                             }
                         );
-
                     });
                 }
             );
@@ -215,9 +236,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
     //show dialog add event
     $scope.showDlgEvent = function( timeline, event ){
-        // ADD
         // if we are creating an event, we initialize it here
         if( event == null ){
+            // ADD
             dateStartExp = $scope.experiment.start.valueOf();
             dateEvent = new Date();
             event = {
@@ -230,13 +251,15 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 color : "#FFFFFF",
                 vPlacement : (((new Date(dateEvent)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
             };
+            template_url = "timeline/modal_dlg_add_event.tpl.html";
             // template add
-        }else{
+        } else {
             //EDIT
+            template_url = "timeline/modal_dlg_edit_event.tpl.html";
         }
 
         ModalService.showModal({
-            templateUrl: "timeline/modal_dlg_add_event.tpl.html",
+            templateUrl: template_url,
             controller: "ManageEventController",
             inputs: {
                 title: "Event information",
@@ -259,12 +282,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         angular.element(window).spin();
         $rootScope.spin = 1;
 
-        TLExp_key = $scope.TLExp_id.indexOf(timeline.id);
-
         // if event.id is null: POST
         events.post(event, function(data){
-            $scope.TLExp.objects[TLExp_key].events.objects.push(event);
-            $scope.TLExp.objects[TLExp_key].height = event.vPlacement + $scope.margin_bottom_timeline;
+            $scope.TLExp.objects[timeline.key].events.objects.push(event);
+            $scope.TLExp.objects[timeline.key].height = event.vPlacement + $scope.margin_bottom_timeline;
             $scope.stopSpin();
         });
         // if event.id is not null: PUT
@@ -273,7 +294,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
     //show dialog add epoch
     $scope.showDlgEpoch = function(timeline, epoch){
+        // check new epoch
         if( epoch == null ){
+            // ADD
             dateStartExp = $scope.experiment.start.valueOf();
             dateStartEpoch = new Date();
             epoch = {
@@ -288,14 +311,37 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 vPlacement : (((new Date(dateStartEpoch)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
                 depend : null,
             }
+            template_url = "timeline/modal_dlg_add_epoch.tpl.html";
+        } else {
+            // EDIT
+            template_url = "timeline/modal_dlg_edit_epoch.tpl.html";
+        }
+
+        // set dependencies
+        console.log(timeline.name +" "+timeline.id)
+        if( $scope.depend_choices[timeline.name] != undefined ){
+            console.log( "my parent is: "+$scope.TLExp.objects[ $scope.depend_choices[timeline.name].timeline_key ].name )
+            //console.log( $scope.TLExp.objects.indexOf( $scope.depend_choices[timeline.name].timeline ) )
+            // get all epochs in parent timeline
+            $scope.depend_choices[timeline.name].option_epochs = [];
+            angular.forEach( $scope.TLExp.objects[ $scope.depend_choices[timeline.name].timeline_key ].epochs.objects, 
+                function(epc, k) {
+                    opt = {
+                        text: epc.text,
+                        resource_uri: "/notebooks/epoch/"+epc.id,
+                        closed: epc.end==null ? false : true // if the epoch end date is null, it is an open epoch
+                    }
+                    $scope.depend_choices[timeline.name].option_epochs.push(opt)
+                }
+            );
         }
 
         ModalService.showModal({
-            templateUrl: "timeline/modal_dlg_add_epoch.tpl.html",
+            templateUrl: template_url,
             controller: "ManageEpochController",
             inputs: {
                 title: "Epoch information",
-                config_defaults: $scope.config_defaults,
+                depend_choices: $scope.depend_choices,
                 config_choices: $scope.config_choices,
                 timeline_name: timeline.name,
                 epoch: epoch,
@@ -312,10 +358,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.manageEpoch = function(timeline, epoch){
         angular.element(window).spin();
         $rootScope.spin = 1;
-
         TLExp_key = $scope.TLExp_id.indexOf(timeline.id);
-
         epochs.post(epoch, function(data){
+            console.log(data);
+            epoch.id = data.id;
             $scope.TLExp.objects[TLExp_key].epochs.objects.push(epoch);
             $scope.TLExp.objects[TLExp_key].height = epoch.vPlacement + $scope.margin_bottom_timeline;
             $scope.stopSpin();
@@ -375,12 +421,13 @@ mod_tlv.controller('ManageEventController', [
 }]);
 
 mod_tlv.controller('ManageEpochController', [
-    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'epoch',
-    function($scope, $element, title, close, config_choices, timeline_name, epoch) {
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, epoch) {
 
     $scope.epoch = epoch;
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
+    $scope.depend_selection = depend_choices[timeline_name];
 
     $scope.beforeClose = function() {
         $scope.close();
