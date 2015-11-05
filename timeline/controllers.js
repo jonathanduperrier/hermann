@@ -21,8 +21,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.margin_bottom_timeline = 150;
     $scope.scale_coef = 60;
 
-    $scope.TLExp_id = [];
-
     $scope.config_defaults = {
         'CAT VISUAL INVIVO INTRA': {
             '1 Anesthetic': {
@@ -182,15 +180,14 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 {experiment__id: $scope.experiment.id}, 
                 function(data){
                     angular.forEach( $scope.TLExp.objects, function(value, key) {
-                        $scope.TLExp_id[key] = $scope.TLExp.objects[key].id;
                         $scope.TLExp.objects[key].height = $scope.margin_bottom_timeline;
                         $scope.TLExp.objects[key].key = key;
                         // get dependency keys
                         angular.forEach( $scope.depend_choices, function(dep, k) {
                             if( dep.timeline == value.name ){
-                                console.log("depend choice: "+k);
+                                /*console.log("depend choice: "+k);
                                 console.log("depend obj: "+dep);
-                                console.log("parent key:"+key);
+                                console.log("parent key:"+key);*/
                                 $scope.depend_choices[k].timeline_key = key;
                             };
                         });
@@ -318,9 +315,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }
 
         // set dependencies
-        console.log(timeline.name +" "+timeline.id)
+        //console.log(timeline.name +" "+timeline.id)
         if( $scope.depend_choices[timeline.name] != undefined ){
-            console.log( "my parent is: "+$scope.TLExp.objects[ $scope.depend_choices[timeline.name].timeline_key ].name )
+            //console.log( "my parent is: "+$scope.TLExp.objects[ $scope.depend_choices[timeline.name].timeline_key ].name )
             //console.log( $scope.TLExp.objects.indexOf( $scope.depend_choices[timeline.name].timeline ) )
             // get all epochs in parent timeline
             $scope.depend_choices[timeline.name].option_epochs = [];
@@ -358,12 +355,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.manageEpoch = function(timeline, epoch){
         angular.element(window).spin();
         $rootScope.spin = 1;
-        TLExp_key = $scope.TLExp_id.indexOf(timeline.id);
+
         epochs.post(epoch, function(data){
-            console.log(data);
+            //console.log(data);
             epoch.id = data.id;
-            $scope.TLExp.objects[TLExp_key].epochs.objects.push(epoch);
-            $scope.TLExp.objects[TLExp_key].height = epoch.vPlacement + $scope.margin_bottom_timeline;
+            $scope.TLExp.objects[timeline.key].epochs.objects.push(epoch);
+            $scope.TLExp.objects[timeline.key].height = epoch.vPlacement + $scope.margin_bottom_timeline;
             $scope.stopSpin();
         });
     };
@@ -399,7 +396,11 @@ mod_tlv.controller('ManageEventController', [
     $scope.list_selection = config_choices[timeline_name];
 
     $scope.beforeClose = function() {
-        $scope.close();
+        if($scope.event.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else {
+            $scope.close();
+        }
     };
 
     $scope.close = function() {
@@ -430,7 +431,13 @@ mod_tlv.controller('ManageEpochController', [
     $scope.depend_selection = depend_choices[timeline_name];
 
     $scope.beforeClose = function() {
-        $scope.close();
+        if($scope.epoch.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else if(($scope.epoch.depend == null) && ((timeline_name == "6 Neuron") || (timeline_name == "7 Protocol"))) {
+            $scope.msgAlert = "Parent field is required";
+        } else {
+            $scope.close();
+        }
     };
 
     $scope.close = function() {
