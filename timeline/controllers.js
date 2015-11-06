@@ -248,21 +248,22 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 color : "#FFFFFF",
                 vPlacement : (((new Date(dateEvent)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
             };
-            template_url = "timeline/modal_dlg_add_event.tpl.html";
             // template add
+            $scope.edition = false;
         } else {
             //EDIT
-            template_url = "timeline/modal_dlg_edit_event.tpl.html";
+            $scope.edition = true;
         }
 
         ModalService.showModal({
-            templateUrl: template_url,
+            templateUrl: "timeline/modal_dlg_add_event.tpl.html",
             controller: "ManageEventController",
             inputs: {
                 title: "Event information",
                 config_defaults: $scope.config_defaults,
                 config_choices: $scope.config_choices,
                 timeline_name: timeline.name,
+                edition: $scope.edition,
                 event: event,
             }
         }).then(function(modal) {
