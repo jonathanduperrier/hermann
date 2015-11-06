@@ -27,7 +27,7 @@
 								<div class='col-sm-4'>
 									<div class="form-group">
 										<div class='input-group date' id='datetimepicker'>
-											<input type='text' class="form-control" value="{{event.dateFormat}}" />
+											<input type='text' class="form-control" id="date" name="date" value="{{dateFormat}}" readonly/>
 											<span class="input-group-addon">
 												<span class="glyphicon glyphicon-calendar"></span>
 											</span>
@@ -46,8 +46,9 @@
 									startView: 2,
 									minView: 0,
 									maxView: 1,
-									format: 'dd/mm/yyyy - hh:ii',
-									forceParse: true
+									format: 'yyyy/mm/dd hh:ii',
+									forceParse: true,
+									initialDate: new Date(event.date)
 							    });
 							</script>
 						</div>

@@ -243,7 +243,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 timeline : "/notebooks/timeline/" + timeline.id,
                 text : "",
                 date : dateEvent,
-                dateFormat : dateEvent.format('dd/mm/yyyy - HH:MM'),
+                dateFormat : dateEvent.format('dd/mm/yyyy HH:MM'),
                 type : $scope.config_defaults[$scope.experiment.type][timeline.name]['event'],
                 color : "#FFFFFF",
                 vPlacement : (((new Date(dateEvent)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
@@ -305,7 +305,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 id : null,
                 timeline : "/notebooks/timeline/" + timeline.id,
                 start : dateStartEpoch,
-                dateFormat : dateStartEpoch.format('dd/mm/yyyy - HH:MM'),
+                dateFormat : dateStartEpoch.format('dd/mm/yyyy HH:MM'),
                 end : null,
                 type : $scope.config_defaults[$scope.experiment.type][timeline.name]['epoch'],
                 text : "",
@@ -406,8 +406,11 @@ mod_tlv.controller('ManageEventController', [
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
     $scope.edition = edition;
+    $scope.dateFormat = new Date(event.date).format("yyyy/mm/dd HH:MM");
 
     $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        event.date = new Date($scope.dateFormat);
         if($scope.event.text == ""){
             $scope.msgAlert = "Text field is required";
         } else {
