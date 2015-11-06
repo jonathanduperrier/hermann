@@ -249,46 +249,50 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 vPlacement : (((new Date(dateEvent)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
             };
             // template add
-            $scope.edition = false;
+            edition = false;
         } else {
             //EDIT
-            $scope.edition = true;
+            edition = true;
         }
 
         ModalService.showModal({
-            templateUrl: "timeline/modal_dlg_add_event.tpl.html",
+            templateUrl: "timeline/modal_dlg_event.tpl.html",
             controller: "ManageEventController",
             inputs: {
                 title: "Event information",
                 config_defaults: $scope.config_defaults,
                 config_choices: $scope.config_choices,
                 timeline_name: timeline.name,
-                edition: $scope.edition,
+                edition: edition,
                 event: event,
             }
         }).then(function(modal) {
             modal.element.modal();
             modal.close.then( function(result) {
-                $scope.manageEvent( timeline, result.event );
+                $scope.manageEvent( timeline, result.event, edition );
             });
         });
     };
 
-
     //create event: display it in the timaline and insert it in the database
-    $scope.manageEvent = function( timeline, event ){
+    $scope.manageEvent = function( timeline, event, edition ){
         angular.element(window).spin();
         $rootScope.spin = 1;
 
         // if event.id is null: POST
-        events.post(event, function(data){
-            $scope.TLExp.objects[timeline.key].events.objects.push(event);
-            $scope.TLExp.objects[timeline.key].height = event.vPlacement + $scope.margin_bottom_timeline;
-            $scope.stopSpin();
-        });
-        // if event.id is not null: PUT
+        if(edition == false){
+            events.post(event, function(data){
+                $scope.TLExp.objects[timeline.key].events.objects.push(event);
+                $scope.TLExp.objects[timeline.key].height = event.vPlacement + $scope.margin_bottom_timeline;
+                $scope.stopSpin();
+            });
+        } else {
+            // if event.id is not null: PUT
+            events.put({id:event.id}, angular.toJson(event), function(){
+                $scope.stopSpin();
+            });
+        }
     };
-
 
     //show dialog add epoch
     $scope.showDlgEpoch = function(timeline, epoch){
@@ -309,10 +313,10 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 vPlacement : (((new Date(dateStartEpoch)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
                 depend : null,
             }
-            template_url = "timeline/modal_dlg_add_epoch.tpl.html";
+            edition = false;
         } else {
             // EDIT
-            template_url = "timeline/modal_dlg_edit_epoch.tpl.html";
+            edition = true;
         }
 
         // set dependencies
@@ -335,35 +339,41 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }
 
         ModalService.showModal({
-            templateUrl: template_url,
+            templateUrl: "timeline/modal_dlg_epoch.tpl.html",
             controller: "ManageEpochController",
             inputs: {
                 title: "Epoch information",
                 depend_choices: $scope.depend_choices,
                 config_choices: $scope.config_choices,
                 timeline_name: timeline.name,
+                edition: edition,
                 epoch: epoch,
             }
         }).then(function(modal) {
             modal.element.modal();
             modal.close.then(function(result) {
-                $scope.manageEpoch( timeline, result.epoch );
+                $scope.manageEpoch( timeline, result.epoch, edition );
             });
         });
     };
 
     //create epoch: display it in the timaline and insert it in the database
-    $scope.manageEpoch = function(timeline, epoch){
+    $scope.manageEpoch = function(timeline, epoch, edition){
         angular.element(window).spin();
         $rootScope.spin = 1;
-
-        epochs.post(epoch, function(data){
-            //console.log(data);
-            epoch.id = data.id;
-            $scope.TLExp.objects[timeline.key].epochs.objects.push(epoch);
-            $scope.TLExp.objects[timeline.key].height = epoch.vPlacement + $scope.margin_bottom_timeline;
-            $scope.stopSpin();
-        });
+        if(edition == false){
+            epochs.post(epoch, function(data){
+                //console.log(data);
+                epoch.id = data.id;
+                $scope.TLExp.objects[timeline.key].epochs.objects.push(epoch);
+                $scope.TLExp.objects[timeline.key].height = epoch.vPlacement + $scope.margin_bottom_timeline;
+                $scope.stopSpin();
+            });
+        } else {
+            epochs.put({id:epoch.id}, angular.toJson(epoch), function(){
+                $scope.stopSpin();
+            });
+        }
     };
 });
 
@@ -389,12 +399,13 @@ mod_tlv.directive('epochDir', function(){
 });
 
 mod_tlv.controller('ManageEventController', [
-    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'event',
-    function($scope, $element, title, close, config_choices, timeline_name, event) {
+    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
+    function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
 
     $scope.event = event;
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
+    $scope.edition = edition;
 
     $scope.beforeClose = function() {
         if($scope.event.text == ""){
@@ -423,13 +434,14 @@ mod_tlv.controller('ManageEventController', [
 }]);
 
 mod_tlv.controller('ManageEpochController', [
-    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'epoch',
-    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, epoch) {
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
 
     $scope.epoch = epoch;
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
     $scope.depend_selection = depend_choices[timeline_name];
+    $scope.edition = edition;
 
     $scope.beforeClose = function() {
         if($scope.epoch.text == ""){
