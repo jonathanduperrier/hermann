@@ -203,6 +203,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                             {timeline__id: $scope.TLExp.objects[key].id}, 
                             function(data){
                                 angular.forEach( $scope.TLExp.objects[key].events.objects, function(value2, key2) {
+                                    //hide reset start hour of experiment
+                                    angular.element(".resetstarthour").remove();
                                     //calculation of event placement on timeline
                                     timeStampStartExp = $scope.experiment.start.valueOf();
                                     timeStampEvt = $scope.TLExp.objects[key].events.objects[key2].date.valueOf();
@@ -220,6 +222,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                             {timeline__id: $scope.TLExp.objects[key].id},
                             function(data){
                                 angular.forEach( $scope.TLExp.objects[key].epochs.objects, function(value2, key2) {
+                                    //hide reset start hour of experiment
+                                    angular.element(".resetstarthour").remove();
                                     //calculation of event placement on timeline
                                     timeStampStartExp = $scope.experiment.start.valueOf();
                                     timeStampEpoch = $scope.TLExp.objects[key].epochs.objects[key2].start.valueOf();
@@ -283,6 +287,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     //create event: display it in the timaline and insert it in the database
     $scope.manageEvent = function( timeline, event, edition ){
         angular.element(window).spin();
+        angular.element(".resetstarthour").remove();
         $rootScope.spin = 1;
 
         // if event.id is null: POST
@@ -292,7 +297,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $scope.TLExp.objects[timeline.key].height = event.vPlacement + $scope.margin_bottom_timeline;
                 $scope.stopSpin();
             });
-        } else {            
+        } else {
             event.vPlacement = (((new Date(event.date.valueOf())/1e3|0) - (new Date($scope.experiment.start.valueOf())/1e3|0)) / $scope.scale_coef);
             events.put({id:event.id}, angular.toJson(event), function(){
                 $scope.stopSpin();
@@ -366,6 +371,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     //create epoch: display it in the timaline and insert it in the database
     $scope.manageEpoch = function(timeline, epoch, edition){
         angular.element(window).spin();
+        angular.element(".resetstarthour").remove();
         $rootScope.spin = 1;
         if(edition == false){
             epochs.post(epoch, function(data){
@@ -386,12 +392,22 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.scale_coef = scale_coef;
         //$scope.$route.reload();
     };
+
     $scope.stopExperiment = function() {
         $scope.experiment.end = new Date();
         $scope.jsonContentExp = angular.toJson($scope.experiment);
         Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
-            angular.element(".btnAddEvtEpoch  button").remove();
+            angular.element(".btnAddEvtEpoch button").remove();
+            angular.element(".glyphicon-stop").remove();
+            angular.element(".resetstarthour").remove();
         });
+    };
+
+    $scope.resetStartHour = function() {
+        $scope.experiment.start = new Date();
+        $scope.jsonContentExp = angular.toJson($scope.experiment);
+        Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){});
+        //$scope.$route.reload();
     };
 });
 
