@@ -24,7 +24,7 @@
 #buttons_zoom_stop_bar {
 	position: absolute;
 	top: 65px;
-	width: 90px;
+	/*width: 200px;*/
 }
 .group_line {
 	/*margin-top:10px;*/
@@ -98,4 +98,7 @@
 	float:left;
 	min-width: 139px;
 	display: none;
+}
+.glyphicon-stop {
+	color:red;
 }

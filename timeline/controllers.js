@@ -6,7 +6,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'hermann.experiments',
                                          'CellTypeService',
                                          'DeviceTypeService',
-                                         'SupplierService'
+                                         'SupplierService',
                                          ]);
 
 mod_tlv.controller('timeLineVisualController', 
@@ -175,6 +175,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     $scope.experiment = Experiment.get(
         {id:$routeParams.eID},
         function(data){
+            //format of date of end experiment
+            $dateEndExp = new Date($scope.experiment.end);
+            if($scope.experiment.end != null){
+              $scope.dateEndExp = $dateEndExp.format('dd/mm/yyyy - HH:MM');
+            }
+
             // get timelines for this experiment only
             $scope.TLExp = timeLine.get(
                 {experiment__id: $scope.experiment.id}, 
@@ -243,7 +249,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 timeline : "/notebooks/timeline/" + timeline.id,
                 text : "",
                 date : dateEvent,
-                dateFormat : dateEvent.format('dd/mm/yyyy HH:MM'),
+                dateFormat : dateEvent.format('yyyy/mm/dd HH:MM'),
                 type : $scope.config_defaults[$scope.experiment.type][timeline.name]['event'],
                 color : "#FFFFFF",
                 vPlacement : (((new Date(dateEvent)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
@@ -251,7 +257,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             // template add
             edition = false;
         } else {
-            //EDIT
+            // EDIT
             edition = true;
         }
 
@@ -286,8 +292,8 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $scope.TLExp.objects[timeline.key].height = event.vPlacement + $scope.margin_bottom_timeline;
                 $scope.stopSpin();
             });
-        } else {
-            // if event.id is not null: PUT
+        } else {            
+            event.vPlacement = (((new Date(event.date.valueOf())/1e3|0) - (new Date($scope.experiment.start.valueOf())/1e3|0)) / $scope.scale_coef);
             events.put({id:event.id}, angular.toJson(event), function(){
                 $scope.stopSpin();
             });
@@ -309,7 +315,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 end : null,
                 type : $scope.config_defaults[$scope.experiment.type][timeline.name]['epoch'],
                 text : "",
-                color : "#FFF600",//
+                color : "#FFF600",
                 vPlacement : (((new Date(dateStartEpoch)/1e3|0) - (new Date(dateStartExp)/1e3|0)) / $scope.scale_coef),
                 depend : null,
             }
@@ -375,6 +381,18 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             });
         }
     };
+
+    $scope.displayZoomEvent = function(scale_coef, $route){
+        $scope.scale_coef = scale_coef;
+        //$scope.$route.reload();
+    };
+    $scope.stopExperiment = function() {
+        $scope.experiment.end = new Date();
+        $scope.jsonContentExp = angular.toJson($scope.experiment);
+        Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
+            angular.element(".btnAddEvtEpoch  button").remove();
+        });
+    };
 });
 
 mod_tlv.directive('timeLineDir', function(){
@@ -402,15 +420,15 @@ mod_tlv.controller('ManageEventController', [
     '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
     function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
 
+    $scope.dateFormat = new Date(event.date).format("yyyy/mm/dd HH:MM");
     $scope.event = event;
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
     $scope.edition = edition;
-    $scope.dateFormat = new Date(event.date).format("yyyy/mm/dd HH:MM");
 
     $scope.beforeClose = function() {
         //console.log($scope.dateFormat);
-        event.date = new Date($scope.dateFormat);
+        event.date = new Date($scope.event.date);
         if($scope.event.text == ""){
             $scope.msgAlert = "Text field is required";
         } else {

@@ -18,8 +18,27 @@ mod_exp.controller('ListExperiment', [
     var nb_create_timeline = 7;
     $scope.nameTimeLines = ['1 Anesthetic', '2 Paralytic', '3 Physiologic', '4 Environment', '5 Electrode', '6 Neuron', '7 Protocol'];
     $scope.colorTimeLine = ['#D5E5FF', '#FFAACC', '#AAFFCC', '#FFEEAA', '#f2f7ff','#f2f7ff', '#f2f7ff'];
+    var default_lab_date = new Date();
+    var default_lab_year = default_lab_date.format('yyyy');
 
-    //var defered = $q.defer();
+    $scope.getWeekNumber = function(d){
+        // Copy date so don't modify original
+        d = new Date(+d);
+        d.setHours(0,0,0);
+        // Set to nearest Thursday: current date + 4 - current day number
+        // Make Sunday's day number 7
+        d.setDate(d.getDate() + 4 - (d.getDay()||7));
+        // Get first day of year
+        var yearStart = new Date(d.getFullYear(),0,1);
+        // Calculate full weeks to nearest Thursday
+        var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+        // Return array of year and week number
+        //return [d.getFullYear(), weekNo];
+        return [weekNo];
+    };
+
+    var default_lab_week = $scope.getWeekNumber(default_lab_date);
+
     $scope.experiment = Experiment.get();
     $scope.showDlgAddExperiment = function($http, $q){
       ModalService.showModal({
@@ -27,6 +46,7 @@ mod_exp.controller('ListExperiment', [
         controller: "AddExperimentController",
         inputs: {
           title: "Experiment information",
+          default_label: default_lab_year + " " + default_lab_week,
         }
       }).then(function(modal) {
         modal.element.modal();
@@ -130,17 +150,17 @@ mod_exp.controller('ListExperiment', [
 }]);
 
 mod_exp.controller('AddExperimentController', [
-  '$scope', '$element', 'title', 'close', 'Setup', 
-  function($scope, $element, title, close, Setup) {
+  '$scope', '$element', 'title', 'default_label', 'close', 'Setup', 
+  function($scope, $element, title, default_label, close, Setup) {
 
   $scope.lstSetup = Setup.get();
 
-  $scope.label = null;
+  $scope.label = default_label;
   $scope.type = null;
   $scope.notes = null;
   $scope.setup = null;
   $scope.title = title;
-  
+
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
