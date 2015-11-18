@@ -279,7 +279,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }).then(function(modal) {
             modal.element.modal();
             modal.close.then( function(result) {
-                $scope.manageEvent( timeline, result.event, edition );
+                if(result.del_evt == true){
+                    $scope.showConfirmRemoveEvent(result.event);
+                } else{
+                    $scope.manageEvent( timeline, result.event, edition );                    
+                }
             });
         });
     };
@@ -287,6 +291,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     //create event: display it in the timaline and insert it in the database
     $scope.manageEvent = function( timeline, event, edition ){
         angular.element(window).spin();
+        //hide reset start hour of experiment
         angular.element(".resetstarthour").remove();
         $rootScope.spin = 1;
 
@@ -303,6 +308,25 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $scope.stopSpin();
             });
         }
+    };
+
+    $scope.showConfirmRemoveEvent = function(event) {
+        ModalService.showModal({
+            templateUrl: 'timeline/modal_confirm_remove_event.tpl.html',
+            controller: "ModalController"
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {
+                if (result=="Yes") {
+                    $scope.removeEvent(event);
+                }
+            });
+        });
+    };
+
+    $scope.removeEvent = function(event){
+        angular.element('#event_' + event.id).remove(); 
+        events.del({id:event.id});
     };
 
     //show dialog add epoch
@@ -363,7 +387,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         }).then(function(modal) {
             modal.element.modal();
             modal.close.then(function(result) {
-                $scope.manageEpoch( timeline, result.epoch, edition );
+                if(result.del_epoch == true){
+                    $scope.showConfirmRemoveEpoch(result.epoch);
+                } else {
+                    $scope.manageEpoch( timeline, result.epoch, edition );
+                }
             });
         });
     };
@@ -386,6 +414,25 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $scope.stopSpin();
             });
         }
+    };
+
+    $scope.showConfirmRemoveEpoch = function(epoch) {
+        ModalService.showModal({
+            templateUrl: 'timeline/modal_confirm_remove_epoch.tpl.html',
+            controller: "ModalController"
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {
+                if (result=="Yes") {
+                    $scope.removeEpoch(epoch);
+                }
+            });
+        });
+    };
+
+    $scope.removeEpoch = function(epoch){
+        angular.element('#epoch_' + epoch.id).remove(); 
+        epochs.del({id:epoch.id});
     };
 
     $scope.displayZoomEvent = function(scale_coef, $route){
@@ -441,6 +488,7 @@ mod_tlv.controller('ManageEventController', [
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
     $scope.edition = edition;
+    $scope.del_evt = false;
 
     $scope.beforeClose = function() {
         //console.log($scope.dateFormat);
@@ -452,9 +500,15 @@ mod_tlv.controller('ManageEventController', [
         }
     };
 
+    $scope.delete = function(){
+        $scope.del_evt = true;
+        $scope.close();
+    };
+
     $scope.close = function() {
         close({
             event: $scope.event,
+            del_evt: $scope.del_evt,
         }, 100); // close, but give 500ms for bootstrap to animate
     };
 
@@ -479,6 +533,7 @@ mod_tlv.controller('ManageEpochController', [
     $scope.list_selection = config_choices[timeline_name];
     $scope.depend_selection = depend_choices[timeline_name];
     $scope.edition = edition;
+    $scope.del_epoch = false;
 
     $scope.beforeClose = function() {
         if($scope.epoch.text == ""){
@@ -490,9 +545,15 @@ mod_tlv.controller('ManageEpochController', [
         }
     };
 
+    $scope.delete = function(){
+        $scope.del_epoch = true;
+        $scope.close();
+    };
+
     $scope.close = function() {
         close({
             epoch: $scope.epoch,
+            del_epoch: $scope.del_epoch,
         }, 100); // close, but give 500ms for bootstrap to animate
     };
 
@@ -507,3 +568,9 @@ mod_tlv.controller('ManageEpochController', [
         }, 100); // close, but give 500ms for bootstrap to animate
     };
 }]);
+
+mod_tlv.controller('ModalController', function($scope, close) {
+  $scope.close = function(result) {
+    close(result, 100); // close, but give 500ms for bootstrap to animate
+  };
+});
