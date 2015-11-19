@@ -44,7 +44,7 @@
                     </tr>
                 </thead>
                 <tr ng-repeat="elec in electrode.objects | filter:query | orderBy:predicate:reverse">
-                    <td><a href ="#/electrode/{{elec.id}}">{{elec.label}}</a></td>
+                    <td><a href ="#/electrode/{{elec.id}}">{{elec.text}}</a></td>
                     <td>{{elec.start}}</td>
                     <td>{{elec.end}}</td>
                     <td>{{elec.type}}</td>

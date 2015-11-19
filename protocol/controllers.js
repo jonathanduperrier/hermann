@@ -6,7 +6,8 @@ var mod_exp = angular.module( 'hermann.protocol', [
     'hermann.people',
     'ui.bootstrap', 
     'angularModalService',
-    'mod_tlv'
+    'mod_tlv',
+    'protocolServices'
     ]);
 
 mod_exp.controller('ListProtocol', [

@@ -4,7 +4,8 @@ var neuronServices = angular.module('neuronServices', ['ngResource']);
 
 neuronServices.factory('neuron', ['$resource',
   function($resource){
-    return $resource( base_url + 'notebooks/neuron/:id', {id:'@eId'}, {
+    //return $resource( base_url + 'notebooks/neuron/:id', {id:'@eId'}, {
+    return $resource( base_url + 'notebooks/epoch/?timeline__name', {timeline__name:"6 Neuron"}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},
       put: {method:'PUT', params:{format:'json'}, headers:{ 'Content-Type':'application/json' }},
       post: { method: 'POST', params:{ format:'json' }, headers:{ 'Content-Type':'application/json' } },

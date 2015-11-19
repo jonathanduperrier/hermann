@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tr ng-repeat="neur in neuron.objects | filter:query | orderBy:predicate:reverse">
-                    <td><a href ="#/neuron/{{neur.id}}">{{neur.label}}</a></td>
+                    <td><a href ="#/neuron/{{neur.id}}">{{neur.text}}</a></td>
                     <td>{{neur.start}}</td>
                     <td>{{neur.end}}</td>
                     <td>{{neur.type.name}}</td>

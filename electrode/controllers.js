@@ -6,7 +6,8 @@ var mod_exp = angular.module( 'hermann.electrode', [
     'hermann.people',
     'ui.bootstrap', 
     'angularModalService',
-    'mod_tlv'
+    'mod_tlv',
+    'electrodeServices'
     ]);
 
 mod_exp.controller('ListElectrode', [

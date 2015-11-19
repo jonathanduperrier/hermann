@@ -6,7 +6,8 @@ var mod_exp = angular.module( 'hermann.neuron', [
     'hermann.people',
     'ui.bootstrap', 
     'angularModalService',
-    'mod_tlv'
+    'mod_tlv',
+    'neuronServices'
     ]);
 
 mod_exp.controller('ListNeuron', [

@@ -450,6 +450,20 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         });
     };
 
+    $scope.showConfirmResetStartHour = function() {
+        ModalService.showModal({
+            templateUrl: 'timeline/modal_confirm_reset_start.tpl.html',
+            controller: "ModalController"
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {
+                if (result=="Yes") {
+                    $scope.resetStartHour();
+                }
+            });
+        });
+    };
+
     $scope.resetStartHour = function() {
         $scope.experiment.start = new Date();
         $scope.jsonContentExp = angular.toJson($scope.experiment);
