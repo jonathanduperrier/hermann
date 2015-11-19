@@ -238,6 +238,17 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                     });
                 }
             );
+            //chronometer
+            var currentDate = new Date();
+            var pastDate  = new Date($scope.experiment.start);
+
+            var diff = currentDate.getTime() / 1000 - pastDate.getTime() / 1000;
+            var clock = $('.clock').FlipClock(diff, {
+                clockFace: 'DailyCounter',
+                countdown: false
+            });
+            //end of chronometer
+
         }
     );
 
