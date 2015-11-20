@@ -241,14 +241,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             //chronometer
             var currentDate = new Date();
             var pastDate  = new Date($scope.experiment.start);
-
             var diff = currentDate.getTime() / 1000 - pastDate.getTime() / 1000;
             var clock = $('.clock').FlipClock(diff, {
                 clockFace: 'DailyCounter',
                 countdown: false
             });
             //end of chronometer
-
         }
     );
 
@@ -479,6 +477,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         $scope.experiment.start = new Date();
         $scope.jsonContentExp = angular.toJson($scope.experiment);
         Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){});
+        //renitialisation of the timer
+        var clock = $('.clock').FlipClock({
+            clockFace: 'DailyCounter',
+            countdown: false
+        });
         //$scope.$route.reload();
     };
 });
