@@ -16,7 +16,7 @@
                         <th>Type</th>
                     </tr>
                 </thead>
-                <tr ng-repeat="exp in experiment.objects | filter:query | orderBy:orderProp">
+                <tr ng-repeat="exp in experiment.objects | filter:query | orderBy:exp.label">
                     <td>
                         <button ng-click="showDlgEditExperiment(exp.resource_uri)" class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-pencil"></span>

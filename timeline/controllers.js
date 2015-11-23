@@ -7,10 +7,12 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'CellTypeService',
                                          'DeviceTypeService',
                                          'SupplierService',
+                                         'ngRoute',
                                          ]);
 
 mod_tlv.controller('timeLineVisualController', 
-function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epochs, CellType, DeviceType, $routeParams, Experiment) {
+function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epochs, CellType, DeviceType, $routeParams, Experiment, $route) {
+    $scope.$route = $route;
 
     $scope.idExp = 0;
     $scope.dateStartExp = "";
@@ -235,6 +237,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                 });
                             }
                         );
+
+                        // verify length of evetnts and epochs
+                        // display: block of restart
                     });
                 }
             );
@@ -444,9 +449,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         epochs.del({id:epoch.id});
     };
 
-    $scope.displayZoomEvent = function(scale_coef, $route){
+    $scope.displayZoomEvent = function(scale_coef){
         $scope.scale_coef = scale_coef;
-        //$scope.$route.reload();
+        $scope.$route.reload();
     };
 
     $scope.stopExperiment = function() {
@@ -482,7 +487,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             clockFace: 'DailyCounter',
             countdown: false
         });
-        //$scope.$route.reload();
     };
 });
 
@@ -511,8 +515,13 @@ mod_tlv.controller('ManageEventController', [
     '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
     function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
 
-    $scope.dateFormat = new Date(event.date).format("yyyy/mm/dd HH:MM");
     $scope.event = event;
+    console.log($scope.event.date);
+    console.log(typeof($scope.event.date));
+    // console.log(new Date(event.date));
+    // console.log(new Date(event.date).format("yyyy-mm-dd HH:MM"))
+    // $scope.event.date = new Date(event.date).format("yyyy-mm-dd HH:MM");
+    $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
     $scope.edition = edition;
