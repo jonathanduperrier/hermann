@@ -164,7 +164,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
         },
     }
 
-
     $scope.stopSpin = function() {
       if($rootScope.spin == 1){
         setTimeout(function(){ angular.element(window).spin(); }, 3500);
@@ -172,30 +171,33 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
       $rootScope.spin = 0;
     };
 
+    //$scope.stopSpin();
 
     // get the current experiment
     $scope.experiment = Experiment.get(
         {id:$routeParams.eID},
         function(data){
+            angular.element(window).spin();
+            $rootScope.spin = 1;
+
             //format of date of end experiment
             $dateEndExp = new Date($scope.experiment.end);
             if($scope.experiment.end != null){
               $scope.dateEndExp = $dateEndExp.format('dd/mm/yyyy - HH:MM');
             }
-
+            //$scope.stopSpin();
             // get timelines for this experiment only
             $scope.TLExp = timeLine.get(
                 {experiment__id: $scope.experiment.id}, 
                 function(data){
+                    angular.element(window).spin();
+                    $rootScope.spin = 1;
                     angular.forEach( $scope.TLExp.objects, function(value, key) {
                         $scope.TLExp.objects[key].height = $scope.margin_bottom_timeline;
                         $scope.TLExp.objects[key].key = key;
                         // get dependency keys
                         angular.forEach( $scope.depend_choices, function(dep, k) {
                             if( dep.timeline == value.name ){
-                                /*console.log("depend choice: "+k);
-                                console.log("depend obj: "+dep);
-                                console.log("parent key:"+key);*/
                                 $scope.depend_choices[k].timeline_key = key;
                             };
                         });
@@ -204,8 +206,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                         $scope.TLExp.objects[key].events = events.get(
                             {timeline__id: $scope.TLExp.objects[key].id}, 
                             function(data){
+                                angular.element(window).spin();
+                                $rootScope.spin = 1;
                                 angular.forEach( $scope.TLExp.objects[key].events.objects, function(value2, key2) {
-                                    //hide reset start hour of experiment
                                     angular.element(".resetstarthour").remove();
                                     //calculation of event placement on timeline
                                     timeStampStartExp = $scope.experiment.start.valueOf();
@@ -223,8 +226,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                         $scope.TLExp.objects[key].epochs = epochs.get(
                             {timeline__id: $scope.TLExp.objects[key].id},
                             function(data){
+                                angular.element(window).spin();
+                                $rootScope.spin = 1;
                                 angular.forEach( $scope.TLExp.objects[key].epochs.objects, function(value2, key2) {
-                                    //hide reset start hour of experiment
                                     angular.element(".resetstarthour").remove();
                                     //calculation of event placement on timeline
                                     timeStampStartExp = $scope.experiment.start.valueOf();
@@ -237,9 +241,6 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                 });
                             }
                         );
-
-                        // verify length of evetnts and epochs
-                        // display: block of restart
                     });
                 }
             );

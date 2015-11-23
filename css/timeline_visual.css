@@ -102,14 +102,12 @@
 .glyphicon-stop {
 	color:red;
 }
-
 .clock {
 	float:left;
 	zoom: 0.5;
 	-moz-transform: scale(0.5);
 	padding:0 0 0 500px;
 }
-
 .clock .flip-clock-label {
 	font-size: 200%;
 }
