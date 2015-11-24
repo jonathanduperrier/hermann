@@ -6,6 +6,8 @@ var app_url = 'http://127.0.0.1:8080/';
 var mainApp = angular.module('mainApp', [
 	'ngRoute',
 	'mod_tlv',
+  'hermann.animal',
+  //'hermann.preparation',
 	'hermann.experiments',
 	'hermann.login',
 	'hermann.people',
@@ -38,6 +40,18 @@ mainApp.config(['$routeProvider', '$httpProvider',
           when('/login', {
             templateUrl: 'login/form.tpl.html',
             controller: 'LoginForm'
+          }).
+          when('/animal_list', {
+            templateUrl: 'animal/animal_list.tpl.html',
+            controller: 'ListAnimal'
+          }).
+          when('/animal/:eID', {
+            templateUrl: 'animal/animal_detail.tpl.html',
+            controller: 'DetailAnimal'
+          }).
+          when('/preparation_list', {
+            templateUrl: 'preparation/list.tpl.html',
+            controller: 'ListPrepartion'
           }).
           when('/experiment', {
             templateUrl: 'experiments/list.tpl.html',

@@ -1,4 +1,4 @@
-	<div ng-repeat="epc in tl.epochs.objects" class="epoch" id="epoch_{{epc.id}}" style="top:{{30+epc.vPlacement}}px; background-color:{{epc.color}}; border:1px solid black;" ng-class="{'epoch_open' : epc.end == null, 'epoch_close' : epc.end != null}"  >
+	<div ng-repeat="epc in tl.epochs.objects" class="epoch" id="epoch_{{epc.id}}" style="top:{{30+epc.vPlacement}}px; background-color:{{epc.color}}; border:1px solid black; height:{{epc.epoch_height}}px;" ng-class="{'epoch_open' : epc.end == null, 'epoch_close' : epc.end != null}"  >
 		<div class="btn-group btn-group-xs btnDelEvent">
 			<button ng-click="showDlgEpoch(tl, epc)" class="btn btn-default">
 				<span class="glyphicon glyphicon glyphicon-edit"></span>

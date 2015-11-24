@@ -233,7 +233,11 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                     //calculation of event placement on timeline
                                     timeStampStartExp = $scope.experiment.start.valueOf();
                                     timeStampEpoch = $scope.TLExp.objects[key].epochs.objects[key2].start.valueOf();
+                                    timeStampEpochEnd = $scope.TLExp.objects[key].epochs.objects[key2].end.valueOf();
+
                                     $scope.TLExp.objects[key].epochs.objects[key2].vPlacement = ((new Date(timeStampEpoch)/1e3|0) - (new Date(timeStampStartExp)/1e3|0)) / $scope.scale_coef;
+                                    
+                                    $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = ((new Date(timeStampEpochEnd)/1e3|0) - (new Date(timeStampEpoch)/1e3|0)) / $scope.scale_coef;
                                     // check whether event placement is higher than current value
                                     if( $scope.TLExp.objects[key].epochs.objects[key2].vPlacement > $scope.TLExp.objects[key].height){
                                         $scope.TLExp.objects[key].height = $scope.TLExp.objects[key].epochs.objects[key2].vPlacement + $scope.margin_bottom_timeline;
@@ -517,11 +521,6 @@ mod_tlv.controller('ManageEventController', [
     function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
 
     $scope.event = event;
-    console.log($scope.event.date);
-    console.log(typeof($scope.event.date));
-    // console.log(new Date(event.date));
-    // console.log(new Date(event.date).format("yyyy-mm-dd HH:MM"))
-    // $scope.event.date = new Date(event.date).format("yyyy-mm-dd HH:MM");
     $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
     $scope.title = title;
     $scope.list_selection = config_choices[timeline_name];
@@ -593,6 +592,11 @@ mod_tlv.controller('ManageEpochController', [
             epoch: $scope.epoch,
             del_epoch: $scope.del_epoch,
         }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    $scope.stop = function(){
+        $scope.epoch.end = new Date();
+        $scope.close();
     };
 
   //  This cancel function must use the bootstrap, 'modal' function because
