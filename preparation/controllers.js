@@ -4,32 +4,26 @@ var mod_exp = angular.module( 'hermann.preparation', [
     'ngResource',
     'ngRoute',
     'hermann.people',
+    'hermann.animal',
     'ui.bootstrap', 
     'angularModalService',
     'mod_tlv',
-    'preparationServices'
+    'preparationServices',
+    'animalServices'
     ]);
 
 mod_exp.controller('ListPreparation', [
-  '$scope', 'preparation' ,'ModalService',
-  function($scope, preparation, ModalService) {
+  '$scope', 'preparation', 'animal' ,'ModalService',
+  function($scope, preparation, animal, ModalService) {
   	$scope.preparation = preparation.get({}, function(data){
-      /*$scope.animal.objects.forEach( function( elec ){
-        var $type = elec.type.split('/');
-        elec.type = $type[3];
-        var $manufacturer = elec.manufacturer.split('/');
-        elec.manufacturer = $manufacturer[3];
-        //get timeline
-        var $timeline = elec.timeline.split('/');
-        var $idTimeline = parseInt($timeline[3]);
-        elec.timeline = timeLine.get({id:$idTimeline}, function(data){
-          var $exp = data.experiment;
-          //get experiment
-          var $experiment = $exp.split('/');
-          var $idExperiment = $experiment[2];
-          elec.experiment = Experiment.get({id:$idExperiment});
+      $scope.preparation.objects.forEach(function(prep, key){
+
+        var animal0 = prep.animal.split('/');
+        var idAnimal = animal0[3];
+        $scope.animal = animal.get({id:idAnimal}, function(data){
+          $scope.preparation.objects[key].animal = data.identifier;
         });
-      });*/
+      });
     });
     $scope.predicate = 'identifier';
     $scope.reverse = false;
