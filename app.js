@@ -7,7 +7,7 @@ var mainApp = angular.module('mainApp', [
 	'ngRoute',
 	'mod_tlv',
   'hermann.animal',
-  //'hermann.preparation',
+  'hermann.preparation',
 	'hermann.experiments',
 	'hermann.login',
 	'hermann.people',
@@ -50,8 +50,12 @@ mainApp.config(['$routeProvider', '$httpProvider',
             controller: 'DetailAnimal'
           }).
           when('/preparation_list', {
-            templateUrl: 'preparation/list.tpl.html',
-            controller: 'ListPrepartion'
+            templateUrl: 'preparation/preparation_list.tpl.html',
+            controller: 'ListPreparation'
+          }).
+          when('/preparation/:eID', {
+            templateUrl: 'preparation/preparation_detail.tpl.html',
+            controller: 'DetailPreparation'
           }).
           when('/experiment', {
             templateUrl: 'experiments/list.tpl.html',
