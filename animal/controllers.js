@@ -15,8 +15,8 @@ mod_exp.controller('ListAnimal', [
   function($scope, animal, ModalService) {
   	$scope.animal = animal.get({}, function(data){
       $scope.animal.objects.forEach( function( animal ){
-        var sup = animal.supplier.split('/');
-        animal.supplier = sup[3];
+        var sup0 = animal.supplier.split('/');
+        animal.supplier = sup0[3];
       });
     });
     $scope.predicate = 'identifier';
@@ -30,8 +30,8 @@ mod_exp.controller('ListAnimal', [
 
 mod_exp.controller('DetailAnimal', ['$scope', '$routeParams', 'animal' ,'ModalService', function($scope, $routeParams, animal, ModalService){
     $scope.animal = animal.get( {id: $routeParams.eID}, function(data){
-        var sup = $scope.animal.supplier.split('/');
-        $scope.animal.supplier = sup[3];
+        var sup0 = $scope.animal.supplier.split('/');
+        $scope.animal.supplier = sup0[3];
     });
   }
 ]);
