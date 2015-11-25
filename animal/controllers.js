@@ -105,7 +105,26 @@ mod_animal.controller('ManageAnimalController', [
         //console.log($scope.dateFormat);
         if($scope.animal.identifier == ""){
             $scope.msgAlert = "Identifier field is required";
-        } else {
+        }
+        else if($scope.animal.nickname == ""){
+          $scope.msgAlert = "Nickname field is required";
+        }
+        else if(!$.isNumeric($scope.animal.weight)){
+          $scope.msgAlert = "Weight field must be a number";
+        } 
+        else if($scope.animal.sex == ""){
+          $scope.msgAlert = "Sex field is required";
+        }
+        else if($scope.animal.birth  == ""){
+          $scope.msgAlert = "Birth field is required";
+        }
+        else if($scope.animal.sacrifice  == ""){
+          $scope.msgAlert = "Sacrifice field is required";
+        }
+        else if($scope.animal.supplier == null){
+          $scope.msgAlert = "Supplier field is required";
+        }
+        else {
             $scope.close();
         }
       };
