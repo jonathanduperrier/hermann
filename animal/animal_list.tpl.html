@@ -6,6 +6,11 @@
                 <thead>
                     <tr>
                         <th>
+                            <button ng-click="" class="btn btn-default">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                            </button>
+                        </th>
+                        <th>
                             <a href="" ng-click="order('identifier')">Identifier</a>
                             <span class="sortorder" ng-show="predicate === 'identifier'" ng-class="{reverse:reverse}"></span>
                         </th>
@@ -26,7 +31,7 @@
                             <span class="sortorder" ng-show="predicate === 'birth'" ng-class="{reverse:reverse}"></span>
                         </th>
                         <th>                            
-                            <a href="" ng-click="order('sacrifice')">Sacrifice/Id</a>
+                            <a href="" ng-click="order('sacrifice')">Sacrifice</a>
                             <span class="sortorder" ng-show="predicate === 'sacrifice'" ng-class="{reverse:reverse}"></span>
                         </th>
                         <th>
@@ -36,6 +41,11 @@
                     </tr>
                 </thead>
                 <tr ng-repeat="animal in animal.objects | filter:query | orderBy:predicate:reverse">
+                    <td>
+                        <button ng-click="" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </td>
                     <td><a href ="#/animal/{{animal.id}}">{{animal.identifier}}</a></td>
                     <td>{{animal.nickname}}</td>
                     <td>{{animal.weight}}</td>

@@ -6,6 +6,11 @@
                 <thead>
                     <tr>
                         <th>
+                            <button ng-click="" class="btn btn-default">
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                            </button>
+                        </th>
+                        <th>
                             <a href="" ng-click="order('animal')">Animal</a>
                             <span class="sortorder" ng-show="predicate === 'animal'" ng-class="{reverse:reverse}"></span>
                         </th>
@@ -44,6 +49,11 @@
                     </tr>
                 </thead>
                 <tr ng-repeat="prep in preparation.objects | filter:query | orderBy:predicate:reverse">
+                    <td>
+                        <button ng-click="" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </td>
                     <td><a href ="#/preparation/{{prep.id}}">{{prep.animal}}</a></td>
                     <td>{{prep.type}}</td>
                     <td>{{prep.protocol}}</td>
