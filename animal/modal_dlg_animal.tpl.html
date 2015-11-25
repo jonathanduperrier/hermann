@@ -6,6 +6,7 @@
 				        <h4 class="modal-title">{{title}}</h4>
 				      </div>
 				      <div class="modal-body">
+				      	<form class="form-horizontal" role="form">
 						  <div class="form-group">
 						    <label for="identifier" class="col-sm-2 control-label">Identifier : </label>
 						    <div class="col-sm-10">
@@ -44,13 +45,20 @@
 						  <div class="form-group">
 						    <label for="supplier" class="col-sm-2 control-label">Supplier : </label>
 						    <div class="col-sm-10">
-						      <input type="supplier" class="form-control" id="supplier" name="supplier" placeholder="name ..." ng-model="animal.supplier">
+
+						      <!--<input type="supplier" class="form-control" id="supplier" name="supplier" placeholder="name ..." ng-model="animal.supplier">-->
+						  	  <select class="form-control" id="supplier" name="supplier" ng-model="animal.supplier">
+						  	  	<option ng-repeat="supplier in lstSupplier.objects" ng-selected="animal.supplier==supplier.resource_uri" value="{{supplier.resource_uri}}">{{supplier.name}}</option>
+						  	  </select>
 						    </div>
 						  </div>
+						</form>
+						<span style="color:red;">{{msgAlert}}</span>
   				      </div>
 
 					  <div class="modal-footer">
-
+				        <button type="button" ng-click="beforeClose()" class="btn btn-primary">OK</button>
+				        <button type="button" ng-click="delete()" class="btn btn-danger" ng-if="edition==true">Delete</button>
 					  </div>
 				    </div>
 				  </div>

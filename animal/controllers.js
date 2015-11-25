@@ -1,22 +1,26 @@
 'use strict';
 /* Controllers */
-var mod_exp = angular.module( 'hermann.animal', [
+var mod_animal = angular.module( 'hermann.animal', [
     'ngResource',
     'ngRoute',
     'hermann.people',
     'ui.bootstrap', 
     'angularModalService',
     'mod_tlv',
-    'animalServices'
+    'animalServices',
+    'supplierServices',
+    'ngRoute',
     ]);
 
-mod_exp.controller('ListAnimal', [
-  '$scope', 'animal' ,'ModalService',
-  function($scope, animal, ModalService) {
-  	$scope.animal = animal.get({}, function(data){
+mod_animal.controller('ListAnimal', [
+  '$scope', '$rootScope', 'animals' ,'ModalService', '$route',
+  function($scope, $rootScope, animals, ModalService, $route) {
+    $scope.$route = $route;
+    $rootScope.spin = 0;
+  	$scope.animal = animals.get({}, function(data){
       $scope.animal.objects.forEach( function( animal ){
         var sup0 = animal.supplier.split('/');
-        animal.supplier = sup0[3];
+        animal.supplier_view = sup0[3];
       });
     });
     $scope.predicate = 'identifier';
@@ -27,63 +31,114 @@ mod_exp.controller('ListAnimal', [
     };
 
     $scope.showDlgAnimal = function(animal){
-      if( event == null ){
+      if( animal == null ){
         // ADD
-        
-        edition = false;
+        animal = {
+          id: null,
+          identifier: "",
+          nickname: "",
+          weight: "",
+          sex: "",
+          birth: new Date(),
+          sacrifice: new Date(),
+          supplier: null,
+        };
+        var edition = false;
       } else {
         // EDIT
-        edition = true;
+        var edition = true;
+      }
+      ModalService.showModal({
+        templateUrl: "animal/modal_dlg_animal.tpl.html",
+        controller: "ManageAnimalController",
+        inputs: {
+          title: "Animal information",
+          edition: edition,
+          animal: animal,
+        }
+      }).then(function(modal) {
+        modal.element.modal();
+            modal.close.then( function(result) {
+              if(result.del_evt == true){
+                  $scope.showConfirmRemoveAnimal(result.animal);
+              } else{
+                  $scope.manageAnimal( result.animal, edition );                    
+              }
+          });
+      });
+    };
+
+    $scope.manageAnimal = function(animal, edition){
+      angular.element(window).spin();
+      $rootScope.spin = 1;
+      if(edition == false){
+        animals.post(animal, function(data){
+          $scope.stopSpin();
+          $scope.$route.reload();
+        });
+      } else {
+        animals.put({id:animal.id}, angular.toJson(animal), function(){
+            $scope.stopSpin();
+            $scope.$route.reload();
+        });
       }
     };
+
+    $scope.stopSpin = function() {
+      if($rootScope.spin == 1){
+        setTimeout(function(){ angular.element(window).spin(); }, 3500);
+      }
+      $rootScope.spin = 0;
+    };
+
   }
 ]);
 
-mod_tlv.controller('ManageAnimalController', [
-    '$scope', '$element', 'title', 'close', 'edition', 'animal',
-    function($scope, $element, title, close, edition, animal) {
+mod_animal.controller('ManageAnimalController', [
+    '$scope', '$element', 'title', 'close', 'edition', 'animal', 'suppliers',
+    function($scope, $element, title, close, edition, animal, suppliers) {
       $scope.animal = animal;
       $scope.title = title;
 
-    $scope.beforeClose = function() {
+      $scope.lstSupplier = suppliers.get();
+      $scope.beforeClose = function() {
         //console.log($scope.dateFormat);
-        event.date = new Date($scope.event.date);
-        if($scope.event.identifier == ""){
+        if($scope.animal.identifier == ""){
             $scope.msgAlert = "Identifier field is required";
         } else {
             $scope.close();
         }
-    };
+      };
 
-    $scope.delete = function(){
-        $scope.del_evt = true;
-        $scope.close();
-    };
+      $scope.delete = function(){
+          $scope.del_evt = true;
+          $scope.close();
+      };
 
-    $scope.close = function() {
-        close({
-            event: $scope.event,
-            del_evt: $scope.del_evt,
-        }, 100); // close, but give 500ms for bootstrap to animate
-    };
+      $scope.close = function() {
+          close({
+              animal: $scope.animal,
+              del_evt: $scope.del_evt,
+          }, 100); // close, but give 500ms for bootstrap to animate
+      };
 
-    //  This cancel function must use the bootstrap, 'modal' function because
-    //  the doesn't have the 'data-dismiss' attribute.
-    $scope.cancel = function() {
-        //  Manually hide the modal.
-        $element.modal('hide');
-        //  Now call close, returning control to the caller.
-        close({
-            event: $scope.event,
-        }, 100); // close, but give 500ms for bootstrap to animate
-    };
+      //  This cancel function must use the bootstrap, 'modal' function because
+      //  the doesn't have the 'data-dismiss' attribute.
+      $scope.cancel = function() {
+          //  Manually hide the modal.
+          $element.modal('hide');
+          //  Now call close, returning control to the caller.
+          close({
+              animal: $scope.animal,
+          }, 100); // close, but give 500ms for bootstrap to animate
+      };
 
 }]);
 
-mod_exp.controller('DetailAnimal', ['$scope', '$routeParams', 'animal' ,'ModalService', function($scope, $routeParams, animal, ModalService){
-    $scope.animal = animal.get( {id: $routeParams.eID}, function(data){
+mod_animal.controller('DetailAnimal', ['$scope', '$routeParams', 'animals' ,'ModalService', function($scope, $routeParams, animals, ModalService){
+    $scope.animal = animals.get( {id: $routeParams.eID}, function(data){
         var sup0 = $scope.animal.supplier.split('/');
-        $scope.animal.supplier = sup0[3];
+        $scope.animal.supplier_view = sup0[3];
     });
   }
 ]);

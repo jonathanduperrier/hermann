@@ -6,7 +6,7 @@
                 <thead>
                     <tr>
                         <th>
-                            <button ng-click="" class="btn btn-default">
+                            <button ng-click="showDlgAnimal(null)" class="btn btn-default">
                                 <span class="glyphicon glyphicon-plus-sign"></span>
                             </button>
                         </th>
@@ -42,7 +42,7 @@
                 </thead>
                 <tr ng-repeat="animal in animal.objects | filter:query | orderBy:predicate:reverse">
                     <td>
-                        <button ng-click="" class="btn btn-default btn-xs">
+                        <button ng-click="showDlgAnimal(animal)" class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                     </td>
@@ -52,7 +52,7 @@
                     <td>{{animal.sex}}</td>
                     <td>{{animal.birth}}</td>
                     <td>{{animal.sacrifice}}</td>
-                    <td>{{animal.supplier}}</td>
+                    <td>{{animal.supplier_view}}</td>
                 </tr>
             </table>
         </div>

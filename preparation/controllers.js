@@ -14,13 +14,13 @@ var mod_exp = angular.module( 'hermann.preparation', [
     ]);
 
 mod_exp.controller('ListPreparation', [
-  '$scope', 'preparation', 'animal', 'itemDevices' ,'ModalService',
-  function($scope, preparation, animal, itemDevices, ModalService) {
+  '$scope', 'preparation', 'animals', 'itemDevices' ,'ModalService',
+  function($scope, preparation, animals, itemDevices, ModalService) {
   	$scope.preparation = preparation.get({}, function(data){
       $scope.preparation.objects.forEach(function(prep, key){
         var animal0 = prep.animal.split('/');
         var idAnimal = animal0[3];
-        $scope.animal = animal.get({id:idAnimal}, function(data){
+        $scope.animal = animals.get({id:idAnimal}, function(data){
           $scope.preparation.objects[key].animal = data.identifier;
         });
 
