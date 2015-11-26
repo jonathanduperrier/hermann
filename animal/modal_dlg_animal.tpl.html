@@ -10,47 +10,76 @@
 						  <div class="form-group">
 						    <label for="identifier" class="col-sm-2 control-label">Identifier : </label>
 						    <div class="col-sm-10">
-						      <input type="identifier" class="form-control" id="identifier" name="identifier" placeholder="name ..." ng-model="animal.identifier">
+						      <input class="form-control" id="identifier" name="identifier" placeholder="name ..." ng-model="animal.identifier">
 						    </div>
 						  </div>
 
 						  <div class="form-group">
 						    <label for="nickname" class="col-sm-2 control-label">Nickname : </label>
 						    <div class="col-sm-10">
-						      <input type="nickname" class="form-control" id="nickname" name="nickname" placeholder="nickname ..." ng-model="animal.nickname">
+						      <input class="form-control" id="nickname" name="nickname" placeholder="nickname ..." ng-model="animal.nickname">
 						    </div>
 						  </div>
-
 						  <div class="form-group">
-						    <label for="weight" class="col-sm-2 control-label">Weight : </label>
-						    <div class="col-sm-10">
-						      <input type="weight" class="form-control" id="weight" name="weight" placeholder="weight ..." ng-model="animal.weight">
-						    </div>
-						  </div>
-
-						  <div class="form-group">
-						    <label for="sex" class="col-sm-2 control-label">Sex : </label>
-						    <div class="col-sm-10">
-						  	  <select class="form-control" id="supplier" name="supplier" ng-model="animal.sex">
-						  	  	<option value="M">M</option>
-						  	  	<option value="F">F</option>
-						  	  </select>
-						    </div>
-						  </div>
-
-						  <div class="form-group">
-						    <label for="birth" class="col-sm-2 control-label birth">Birth : </label>
-						    <div class="col-sm-10">
-						      <div class='input-group date' id='datetimepicker'>
-						    	<input type="birth" class="form-control" id="birth" name="birth" placeholder="birth ..." ng-model="animal.birth">
-								<span class="input-group-addon">
-									<span class="glyphicon glyphicon-calendar"></span>
-								</span>
+							  <div class="col-md-6">
+							    <label for="weight" class="col-sm-4 control-label">Weight (Kg) : </label>
+							    <div class="col-sm-8">
+							      <input class="form-control" id="weight" name="weight" placeholder="weight ..." ng-model="animal.weight">
+							    </div>
 							  </div>
-						    </div>
+
+							  <div class="col-md-6">
+							    <label for="sex" class="col-sm-4 control-label">Sex : </label>
+							    <div class="col-sm-8">
+							  	  <select class="form-control" id="supplier" name="supplier" ng-model="animal.sex">
+							  	  	<option value="M">M</option>
+							  	  	<option value="F">F</option>
+							  	  </select>
+							    </div>
+							  </div>
 						  </div>
-							<script type="text/javascript">
-								$('.birth').datetimepicker({
+						  <div class="form-group">
+							  <div class="col-md-6">
+							    <label for="birth" class="col-sm-4 control-label">Birth : </label>
+							    <div class="col-sm-8">
+							    	<div class='input-group date' id='datetimepicker'>
+										<input class="form-control birth" id="birth" name="birth" placeholder="birth ..." ng-model="animal.birth">
+										<span class="input-group-addon birth">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</span>
+									</div>
+							    </div>
+							  </div>
+								<script type="text/javascript">
+									$('.birth').datetimepicker({
+								        language:  'fr',
+								        weekStart: 1,
+								        todayBtn:  1,
+										autoclose: 1,
+										todayHighlight: 1,
+										startView: 2,
+										minView: 0,
+										maxView: 1,
+										format: 'yyyy-mm-dd',
+										forceParse: true,
+										initialDate: new Date().format('yyyy-mm-dd')
+									})
+								</script>
+
+							  <div class="col-md-6">
+							    <label for="sacrifice" class="col-sm-4 control-label">Sacrifice : </label>
+							    <div class="col-sm-8">
+							    	<div class='input-group date' id='datetimepicker'>
+								    	<input class="form-control sacrifice" id="sacrifice" name="sacrifice" placeholder="sacrifice ..." ng-model="animal.sacrifice">
+										<span class="input-group-addon sacrifice">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</span>
+								    </div>
+							    </div>
+							  </div>
+						  </div>
+  							<script type="text/javascript">
+								$('.sacrifice').datetimepicker({
 							        language:  'fr',
 							        weekStart: 1,
 							        todayBtn:  1,
@@ -61,21 +90,16 @@
 									maxView: 1,
 									format: 'yyyy-mm-dd',
 									forceParse: true,
-									//initialDate: new Date(animal.birth)
-							    });
+									initialDate: new Date().format('yyyy-mm-dd')
+								})
 							</script>
-
-						  <div class="form-group">
-						    <label for="sacrifice" class="col-sm-2 control-label">Sacrifice : </label>
-						    <div class="col-sm-10">
-						      <input type="sacrifice" class="form-control" id="sacrifice" name="sacrifice" placeholder="name ..." ng-model="animal.sacrifice">
-						    </div>
-						  </div>
 						</form>
-						<span style="color:red;">{{msgAlert}}</span>
   				      </div>
 
 					  <div class="modal-footer">
+						<div class="col-md-12" style="text-align:left;">
+							<span style="color:red;">&nbsp{{msgAlert}}</span>
+						</div>
 				        <button type="button" ng-click="beforeClose()" class="btn btn-primary">OK</button>
 				        <button type="button" ng-click="delete()" class="btn btn-danger" ng-if="edition==true">Delete</button>
 					  </div>

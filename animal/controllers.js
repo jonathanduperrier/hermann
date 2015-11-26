@@ -112,10 +112,10 @@ mod_animal.controller('ManageAnimalController', [
         else if($scope.animal.sex == ""){
           $scope.msgAlert = "Sex field is required";
         }
-        else if($scope.animal.birth  == ""){
+        else if($scope.animal.birth == ""){
           $scope.msgAlert = "Birth field is required";
         }
-        else if($scope.animal.sacrifice  == ""){
+        else if($scope.animal.sacrifice == ""){
           $scope.msgAlert = "Sacrifice field is required";
         }
         else {
