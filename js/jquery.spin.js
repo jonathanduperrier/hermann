@@ -19,7 +19,7 @@
         var styles = {
             overlay: {
                 position: 'absolute',
-                opacity: '0.5',
+                opacity: '0',
                 zIndex: '10000',
                 backgroundColor: '#000'
             },
