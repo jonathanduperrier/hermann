@@ -233,11 +233,16 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                     //calculation of event placement on timeline
                                     timeStampStartExp = $scope.experiment.start.valueOf();
                                     timeStampEpoch = $scope.TLExp.objects[key].epochs.objects[key2].start.valueOf();
-                                    timeStampEpochEnd = $scope.TLExp.objects[key].epochs.objects[key2].end.valueOf();
 
                                     $scope.TLExp.objects[key].epochs.objects[key2].vPlacement = ((new Date(timeStampEpoch)/1e3|0) - (new Date(timeStampStartExp)/1e3|0)) / $scope.scale_coef;
+
+                                    if($scope.TLExp.objects[key].epochs.objects[key2].end != null){
+                                        timeStampEpochEnd = $scope.TLExp.objects[key].epochs.objects[key2].end.valueOf();
+                                        $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = ((new Date(timeStampEpochEnd)/1e3|0) - (new Date(timeStampEpoch)/1e3|0)) / $scope.scale_coef;
+                                    } else {
+                                        $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = 35;
+                                    }
                                     
-                                    $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = ((new Date(timeStampEpochEnd)/1e3|0) - (new Date(timeStampEpoch)/1e3|0)) / $scope.scale_coef;
                                     // check whether event placement is higher than current value
                                     if( $scope.TLExp.objects[key].epochs.objects[key2].vPlacement > $scope.TLExp.objects[key].height){
                                         $scope.TLExp.objects[key].height = $scope.TLExp.objects[key].epochs.objects[key2].vPlacement + $scope.margin_bottom_timeline;

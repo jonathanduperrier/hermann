@@ -19,8 +19,6 @@ mod_animal.controller('ListAnimal', [
     $rootScope.spin = 0;
   	$scope.animal = animals.get({}, function(data){
       $scope.animal.objects.forEach( function( animal ){
-        var sup0 = animal.supplier.split('/');
-        animal.supplier_view = sup0[3];
       });
     });
     $scope.predicate = 'identifier';
@@ -95,12 +93,11 @@ mod_animal.controller('ListAnimal', [
 ]);
 
 mod_animal.controller('ManageAnimalController', [
-    '$scope', '$element', 'title', 'close', 'edition', 'animal', 'suppliers',
-    function($scope, $element, title, close, edition, animal, suppliers) {
+    '$scope', '$element', 'title', 'close', 'edition', 'animal',
+    function($scope, $element, title, close, edition, animal) {
       $scope.animal = animal;
       $scope.title = title;
 
-      $scope.lstSupplier = suppliers.get();
       $scope.beforeClose = function() {
         //console.log($scope.dateFormat);
         if($scope.animal.identifier == ""){
@@ -120,9 +117,6 @@ mod_animal.controller('ManageAnimalController', [
         }
         else if($scope.animal.sacrifice  == ""){
           $scope.msgAlert = "Sacrifice field is required";
-        }
-        else if($scope.animal.supplier == null){
-          $scope.msgAlert = "Supplier field is required";
         }
         else {
             $scope.close();
@@ -156,8 +150,6 @@ mod_animal.controller('ManageAnimalController', [
 
 mod_animal.controller('DetailAnimal', ['$scope', '$routeParams', 'animals' ,'ModalService', function($scope, $routeParams, animals, ModalService){
     $scope.animal = animals.get( {id: $routeParams.eID}, function(data){
-        var sup0 = $scope.animal.supplier.split('/');
-        $scope.animal.supplier_view = sup0[3];
     });
   }
 ]);

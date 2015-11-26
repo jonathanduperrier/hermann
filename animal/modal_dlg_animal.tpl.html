@@ -39,27 +39,36 @@
 						  </div>
 
 						  <div class="form-group">
-						    <label for="birth" class="col-sm-2 control-label">Birth : </label>
+						    <label for="birth" class="col-sm-2 control-label birth">Birth : </label>
 						    <div class="col-sm-10">
-						      <input type="birth" class="form-control" id="birth" name="birth" placeholder="birth ..." ng-model="animal.birth">
+						      <div class='input-group date' id='datetimepicker'>
+						    	<input type="birth" class="form-control" id="birth" name="birth" placeholder="birth ..." ng-model="animal.birth">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							  </div>
 						    </div>
 						  </div>
+							<script type="text/javascript">
+								$('.birth').datetimepicker({
+							        language:  'fr',
+							        weekStart: 1,
+							        todayBtn:  1,
+									autoclose: 1,
+									todayHighlight: 1,
+									startView: 2,
+									minView: 0,
+									maxView: 1,
+									format: 'yyyy-mm-dd',
+									forceParse: true,
+									//initialDate: new Date(animal.birth)
+							    });
+							</script>
 
 						  <div class="form-group">
 						    <label for="sacrifice" class="col-sm-2 control-label">Sacrifice : </label>
 						    <div class="col-sm-10">
 						      <input type="sacrifice" class="form-control" id="sacrifice" name="sacrifice" placeholder="name ..." ng-model="animal.sacrifice">
-						    </div>
-						  </div>
-
-						  <div class="form-group">
-						    <label for="supplier" class="col-sm-2 control-label">Supplier : </label>
-						    <div class="col-sm-10">
-
-						      <!--<input type="supplier" class="form-control" id="supplier" name="supplier" placeholder="name ..." ng-model="animal.supplier">-->
-						  	  <select class="form-control" id="supplier" name="supplier" ng-model="animal.supplier">
-						  	  	<option ng-repeat="supplier in lstSupplier.objects" ng-selected="animal.supplier==supplier.resource_uri" value="{{supplier.resource_uri}}">{{supplier.name}}</option>
-						  	  </select>
 						    </div>
 						  </div>
 						</form>
