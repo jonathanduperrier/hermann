@@ -57,7 +57,7 @@ mod_animal.controller('ListAnimal', [
       }).then(function(modal) {
         modal.element.modal();
             modal.close.then( function(result) {
-              if(result.del_evt == true){
+              if(result.del_animal == true){
                   $scope.showConfirmRemoveAnimal(result.animal);
               } else{
                   $scope.manageAnimal( result.animal, edition );                    
@@ -124,14 +124,14 @@ mod_animal.controller('ManageAnimalController', [
       };
 
       $scope.delete = function(){
-          $scope.del_evt = true;
+          $scope.del_animal = true;
           $scope.close();
       };
 
       $scope.close = function() {
           close({
               animal: $scope.animal,
-              del_evt: $scope.del_evt,
+              del_animal: $scope.del_animal,
           }, 100); // close, but give 500ms for bootstrap to animate
       };
 
