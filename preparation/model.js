@@ -3,7 +3,7 @@
 
 var preparationServices = angular.module('preparationServices', ['ngResource']);
 
-preparationServices.factory('preparation', ['$resource',
+preparationServices.factory('preparations', ['$resource',
   function($resource){
     return $resource( base_url + 'preparations/preparation/:id', {id:'@eId'}, {
       get: {method:'GET', params:{format:'json'}, isArray:false},

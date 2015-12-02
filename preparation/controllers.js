@@ -14,12 +14,12 @@ var mod_prep = angular.module( 'hermann.preparation', [
     ]);
 
 mod_prep.controller('ListPreparation', [
-  '$scope', '$rootScope', 'preparation', 'animals', 'itemDevices' ,'ModalService', '$route',
-  function($scope, $rootScope, preparation, animals, itemDevices, ModalService, $route) {
+  '$scope', '$rootScope', 'preparations', 'animals', 'itemDevices' ,'ModalService', '$route',
+  function($scope, $rootScope, preparations, animals, itemDevices, ModalService, $route) {
     $scope.$route = $route;
     $rootScope.spin = 0;
 
-  	$scope.preparation = preparation.get({}, function(data){
+  	$scope.preparation = preparations.get({}, function(data){
       $scope.preparation.objects.forEach(function(prep, key){
         var animal0 = prep.animal.split('/');
         var idAnimal = animal0[3];
@@ -70,14 +70,20 @@ mod_prep.controller('ListPreparation', [
       });
     };
 
-    $scope.ManagePreparation = function(preparation, edition){
+    $scope.managePreparation = function(preparation, edition){
       angular.element(window).spin();
       $rootScope.spin = 1;
-      /*if(edition == false){
-
+      if(edition == false){
+        preparations.post(preparation, function(data){
+          $scope.stopSpin();
+          $scope.$route.reload();
+        });
       } else {
-
-      }*/
+        preparations.put({id:preparation.id}, angular.toJson(preparation), function(){
+          $scope.stopSpin();
+          $scope.$route.reload();
+        });
+      }
     };
 
     $scope.stopSpin = function() {
@@ -89,8 +95,8 @@ mod_prep.controller('ListPreparation', [
   }
 ]);
 
-mod_prep.controller('DetailPreparation', ['$scope', '$routeParams', 'preparation', 'animals', 'itemDevices' ,'ModalService', function($scope, $routeParams, preparation, animals, itemDevices, ModalService){
-    $scope.prep = preparation.get( {id: $routeParams.eID}, function(prep){
+mod_prep.controller('DetailPreparation', ['$scope', '$routeParams', 'preparations', 'animals', 'itemDevices' ,'ModalService', function($scope, $routeParams, preparations, animals, itemDevices, ModalService){
+    $scope.prep = preparations.get( {id: $routeParams.eID}, function(prep){
         var animal0 = prep.animal.split('/');
         var idAnimal = animal0[3];
         $scope.animal = animals.get({id:idAnimal}, function(data){
@@ -106,4 +112,45 @@ mod_prep.controller('ManagePreparationController', [
       $scope.preparation = preparation;
       $scope.title = title;
       $scope.lstAnimals = animals.get();
+
+
+      $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        if($scope.preparation.animal == ""){
+            $scope.msgAlert = "Animal field is required";
+        }
+        else if($scope.preparation.type == ""){
+          $scope.msgAlert = "Type field is required";
+        }
+        else if($scope.preparation.protocol == ""){
+          $scope.msgAlert = "Protocol field must be a number";
+        } 
+        else {
+            $scope.close();
+        }
+      };
+
+      $scope.delete = function(){
+          $scope.del_preparation = true;
+          $scope.close();
+      };
+
+      $scope.close = function() {
+          close({
+              preparation: $scope.preparation,
+              del_preparation: $scope.del_preparation,
+          }, 100); // close, but give 500ms for bootstrap to animate
+      };
+
+      //  This cancel function must use the bootstrap, 'modal' function because
+      //  the doesn't have the 'data-dismiss' attribute.
+      $scope.cancel = function() {
+          //  Manually hide the modal.
+          $element.modal('hide');
+          //  Now call close, returning control to the caller.
+          close({
+              preparation: $scope.preparation,
+          }, 100); // close, but give 500ms for bootstrap to animate
+      };
+
 }]);
