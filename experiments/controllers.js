@@ -8,12 +8,13 @@ var mod_exp = angular.module( 'hermann.experiments', [
     'hermann.people',
     'ui.bootstrap', 
     'angularModalService',
+    'preparationServices',
     'mod_tlv'
     ]);
 
 mod_exp.controller('ListExperiment', [
-  '$scope', 'Experiment' ,'ModalService', 'timeLine',
-  function($scope, Experiment, ModalService, timeLine, $q){
+  '$scope', 'Experiment' ,'ModalService', 'timeLine', 'preparations',
+  function($scope, Experiment, ModalService, timeLine, preparations, $q){
     $scope.timeLineObj = [];
     var nb_create_timeline = 7;
     $scope.nameTimeLines = ['1 Anesthetic', '2 Paralytic', '3 Physiologic', '4 Environment', '5 Electrode', '6 Neuron', '7 Protocol'];
@@ -54,8 +55,7 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to create experiment !");
           } else {
-
-            $scope.createExp(result.label, result.type, result.notes, result.setup);
+            $scope.createExp(result.label, result.type, result.notes, result.setup, result.preparation);
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
               var $i=0;
@@ -89,7 +89,7 @@ mod_exp.controller('ListExperiment', [
       });
     };
 
-    $scope.createExp = function($label, $type, $notes, $setup){
+    $scope.createExp = function($label, $type, $notes, $setup, $preparation){
       var $date = new Date();
       var $expSend = {
           label: $label,
@@ -97,6 +97,7 @@ mod_exp.controller('ListExperiment', [
           start: $date,
           notes: $notes,
           setup: $setup,
+          preparation: $preparation,
           researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
       };
       $scope.expSend = $expSend;
@@ -107,6 +108,7 @@ mod_exp.controller('ListExperiment', [
           start: $date,
           notes: $notes,
           setup: $setup,
+          preparation: $preparation,
           researchers: [$scope.researcher_uri], // à corriger par l'utilisateur courant
         }
       );
@@ -126,40 +128,43 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to save experiment !");
           } else {
-            $scope.editExperiment($exp_uri, result.label, result.type, result.notes, result.setup);
+            $scope.editExperiment($exp_uri, result.label, result.type, result.notes, result.setup, result.preparation);
 
             var $nCol = $exp_uri.split('/');
             var id_exp = $nCol[2];
-            $scope.jsonNewLabel = '{ "label" : "'+result.label+'", "type": "'+result.type+'", "notes": "'+result.notes+'", "setup": "'+result.setup+'"}';
+            $scope.jsonNewLabel = '{ "label" : "'+result.label+'", "type": "'+result.type+'", "notes": "'+result.notes+'", "setup": "'+result.setup+'", "preparation": "'+result.preparation+'"}';
             Experiment.patch({id:id_exp}, $scope.jsonNewLabel, function(value){});
           }
         });
       });
     };
 
-    $scope.editExperiment = function($exp_uri, $label, $type, $notes, $setup){
+    $scope.editExperiment = function($exp_uri, $label, $type, $notes, $setup, $preparation){
       angular.forEach($scope.experiment.objects, function(value, key) {
         if(value.resource_uri == $exp_uri){
           $scope.experiment.objects[key].label = $label;
           $scope.experiment.objects[key].type = $type;
           $scope.experiment.objects[key].notes = $notes;
           $scope.experiment.objects[key].setup = $setup;
+          $scope.experiment.objects[key].preparation = $preparation;
         }
       });
     };
 }]);
 
 mod_exp.controller('AddExperimentController', [
-  '$scope', '$element', 'title', 'default_label', 'close', 'Setup', 
-  function($scope, $element, title, default_label, close, Setup) {
+  '$scope', '$element', 'title', 'default_label', 'close', 'Setup', 'preparations',
+  function($scope, $element, title, default_label, close, Setup, preparations) {
 
   $scope.lstSetup = Setup.get();
+  $scope.lstPrep = preparations.get();
 
   $scope.label = default_label;
   $scope.type = null;
   $scope.notes = null;
   $scope.setup = null;
   $scope.title = title;
+  $scope.preparation = preparation;
 
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
@@ -184,7 +189,8 @@ mod_exp.controller('AddExperimentController', [
       label: $scope.label,
       type: $scope.type,
       notes: $scope.notes,
-      setup: $scope.setup
+      setup: $scope.setup,
+      preparation: $scope.preparation
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -200,15 +206,17 @@ mod_exp.controller('AddExperimentController', [
       label: $scope.label,
       type: $scope.type,
       notes: $scope.notes,
-      setup: $scope.setup
+      setup: $scope.setup,
+      preparation: $scope.preparation
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
 
 mod_exp.controller('EditExperimentController', [
-  '$scope', '$routeParams', 'Experiment', 'Setup',  '$element', 'exp_uri', 'title', 'close',
-  function($scope, $routeParams, Experiment, Setup, $element, exp_uri, title, close) {
+  '$scope', '$routeParams', 'Experiment', 'Setup', 'preparations', '$element', 'exp_uri', 'title', 'close',
+  function($scope, $routeParams, Experiment, Setup, preparations, $element, exp_uri, title, close) {
     $scope.lstSetup = Setup.get();
+    $scope.lstPrep = preparations.get();
     $scope.experiment = Experiment.get( {id: $routeParams.eId}, function(data){
       angular.forEach($scope.experiment.objects, function(value, key) {
         if(value.resource_uri == exp_uri){
@@ -216,6 +224,7 @@ mod_exp.controller('EditExperimentController', [
           $scope.type = value.type;
           $scope.notes = value.notes;
           $scope.setup = value.setup;
+          $scope.preparation = value.preparation;
         }
       });
       $scope.title = title;
@@ -232,7 +241,8 @@ mod_exp.controller('EditExperimentController', [
       label: $scope.label,
       type: $scope.type,
       notes: $scope.notes,
-      setup: $scope.setup
+      setup: $scope.setup,
+      preparation: $scope.preparation
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 
@@ -248,7 +258,8 @@ mod_exp.controller('EditExperimentController', [
       label: $scope.label,
       type: $scope.type,
       notes: $scope.notes,
-      setup: $scope.setup
+      setup: $scope.setup,
+      preparation: $scope.preparation
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
