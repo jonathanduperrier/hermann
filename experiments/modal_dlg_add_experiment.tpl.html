@@ -36,7 +36,6 @@
 						  	  <select class="form-control" id="setup" name="setup" placeholder="setup ..." ng-model="setup">
 						  	  	<option ng-repeat="setup in lstSetup.objects" value="{{setup.resource_uri}}" >{{setup.label}}</option>
 						  	  </select>
-						  	  <span style="color:red;">{{msgAlert}}</span>
 						  	</div>
 						  </div>
 						  <div class="form-group">
@@ -45,6 +44,7 @@
 							  	<select class="form-control" id="preparation" name="preparation" ng-model="preparation">
 							  		<option ng-repeat="prep in lstPrep.objects" value="{{prep.resource_uri}}" >{{prep.type}} - {{prep.protocol}}</option>
 							  	</select>
+						  	  <span style="color:red;">{{msgAlert}}</span>
 						    </div>
 						  </div>
 						</form>

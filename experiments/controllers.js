@@ -164,8 +164,7 @@ mod_exp.controller('AddExperimentController', [
   $scope.notes = null;
   $scope.setup = null;
   $scope.title = title;
-  $scope.preparation = preparation;
-
+  
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
@@ -230,7 +229,17 @@ mod_exp.controller('EditExperimentController', [
 
 
   $scope.beforeClose = function() {
-    $scope.close();
+    if(($scope.label == "") | ($scope.label == null)) {
+      $scope.msgAlert = "Please enter label to create experiment !";
+    } else if ($scope.type == null) {
+      $scope.msgAlert = "Please choose type to create experiment !";
+    } else if($scope.setup == null) {
+      $scope.msgAlert = "Please choose setup to create experiment !";
+    } else if($scope.preparation == null) {
+      $scope.msgAlert = "Please choose preparation to create experiment !";
+    } else {
+      $scope.close();
+    }
   };
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.

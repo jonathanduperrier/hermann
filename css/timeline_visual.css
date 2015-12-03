@@ -22,7 +22,7 @@
 	content: '\25bc';
 }
 #buttons_zoom_stop_bar {
-	position: absolute;
+	position: fixed;
 	top: 65px;
 	/*width: 200px;*/
 }
@@ -104,10 +104,21 @@
 }
 .clock {
 	float:left;
-	zoom: 0.5;
-	-moz-transform: scale(0.5);
-	padding:0 0 0 500px;
+	zoom: 0.3;
+	-moz-transform: scale(0.3);
+	/*padding:0 0 0 700px;*/
+	position: relative;
+	top:-10px;
+	left:700px;
 }
 .clock .flip-clock-label {
-	font-size: 200%;
+	/*font-size: 200%;*/
+	display:none;
+}
+#fixed_bar {
+	background-color: #ffffff;
+	position: fixed;
+	top:50px;
+	width: 100%;
+	z-index: 1000;
 }
