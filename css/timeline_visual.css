@@ -22,8 +22,9 @@
 	content: '\25bc';
 }
 #buttons_zoom_stop_bar {
-	position: fixed;
-	top: 65px;
+	position: relative;
+	top: 5px;
+	left: 5px;
 	/*width: 200px;*/
 }
 .group_line {
@@ -108,8 +109,8 @@
 	-moz-transform: scale(0.3);
 	/*padding:0 0 0 700px;*/
 	position: relative;
-	top:-10px;
-	left:700px;
+	top:-75px;
+	left:750px;
 }
 .clock .flip-clock-label {
 	/*font-size: 200%;*/
@@ -118,6 +119,7 @@
 #fixed_bar {
 	background-color: #ffffff;
 	position: fixed;
+	height: 40px;
 	top:50px;
 	width: 100%;
 	z-index: 1000;
