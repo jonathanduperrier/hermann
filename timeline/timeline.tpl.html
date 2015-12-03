@@ -12,19 +12,20 @@
 		</div>-->
 	</div>
 	<div ng-repeat="tl in TLExp.objects | orderBy :'name'" number='{{tl.id}}' id='timeline_{{tl.id}}' class='timeline-column' style="background-color:{{tl.color}}; height:{{tl.height}}px;" >
-		<div class="btn-group btn-group-xs btnAddEvent btnAddEvtEpoch">
-			<button ng-click="showDlgEvent(tl, null)" class="btn btn-default" ng-if='dateEndExp == ""'>
-				<span class="glyphicon glyphicon-plus-sign"></span>
-			</button>
-		</div>
-		<span class="timeline_name">{{tl.name}}</span>
+		<div style="position:fixed; top:90px; background-color:{{tl.color}}; z-index: 1000; border-radius: 10px; width:150px">
+			<div class="btn-group btn-group-xs btnAddEvent btnAddEvtEpoch">
+				<button ng-click="showDlgEvent(tl, null)" class="btn btn-default" ng-if='dateEndExp == ""'>
+					<span class="glyphicon glyphicon-plus-sign"></span>
+				</button>
+			</div>
+			<span class="timeline_name">{{tl.name}}</span>
 
-		<div class="btn-group btn-group-xs btnAddEvtEpoch">
-			<button ng-click="showDlgEpoch(tl, null)" class="btn btn-default" ng-if='dateEndExp == ""'>
-				<span class="glyphicon glyphicon-plus"></span>
-			</button>
+			<div class="btn-group btn-group-xs btnAddEvtEpoch">
+				<button ng-click="showDlgEpoch(tl, null)" class="btn btn-default" ng-if='dateEndExp == ""'>
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+			</div>
 		</div>
-
 	
 		<div event-dir></div>
 		<div epoch-dir></div>
