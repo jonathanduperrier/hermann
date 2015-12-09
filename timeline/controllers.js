@@ -10,6 +10,13 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'ngRoute',
                                          ]);
 
+/*mod_tlv.run(function($rootScope, $timeout) {
+    console.log('starting run');
+    $timeout(function() {
+        console.log('update with timeout fired')
+    }, 3000);
+});*/
+
 mod_tlv.controller('timeLineVisualController', 
 function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epochs, CellType, DeviceType, $routeParams, Experiment, $route) {
     $scope.$route = $route;
@@ -217,6 +224,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                     // check whether event placement is higher than current value
                                     if( $scope.TLExp.objects[key].events.objects[key2].vPlacement > $scope.TLExp.objects[key].height){
                                         $scope.TLExp.objects[key].height = $scope.TLExp.objects[key].events.objects[key2].vPlacement + $scope.margin_bottom_timeline;
+                                        //$scope.TLExp.objects[key].height = $( document ).height();
                                     }
                                 });
                             }
@@ -246,6 +254,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                     // check whether event placement is higher than current value
                                     if( $scope.TLExp.objects[key].epochs.objects[key2].vPlacement > $scope.TLExp.objects[key].height){
                                         $scope.TLExp.objects[key].height = $scope.TLExp.objects[key].epochs.objects[key2].vPlacement + $scope.margin_bottom_timeline;
+                                        //$scope.TLExp.objects[key].height = $( document ).height();
                                     }
                                 });
                             }
@@ -520,6 +529,21 @@ mod_tlv.directive('epochDir', function(){
     templateUrl: 'timeline/epoch.tpl.html'
   };
 });
+
+mod_tlv.directive('onFinishRender', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            if (scope.$last === true) {
+                $timeout(function () {
+                    angular.element("#graduation").remove();
+                    angular.element(".timeline-column").height($(document).height());
+                });
+            }
+        }
+    }
+});
+
 
 mod_tlv.controller('ManageEventController', [
     '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',

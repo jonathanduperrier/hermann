@@ -1,4 +1,4 @@
-	<div ng-repeat="evt in tl.events.objects" class="event" id="event_{{evt.id}}" style="top:{{30+evt.vPlacement}}px; background-color:{{evt.color}}; border:1px solid black;" >
+	<div ng-repeat="evt in tl.events.objects" class="event" id="event_{{evt.id}}" style="top:{{30+evt.vPlacement}}px; background-color:{{evt.color}}; border:1px solid black;" on-finish-render >
 		<div class="btn-group btn-group-xs btnDelEvent">
 			<button ng-click="showDlgEvent(tl, evt)" class="btn btn-default">
 				<span class="glyphicon glyphicon glyphicon-edit"></span>
