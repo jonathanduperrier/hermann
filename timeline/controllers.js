@@ -536,8 +536,9 @@ mod_tlv.directive('onFinishRender', function ($timeout) {
         link: function (scope, element, attr) {
             if (scope.$last === true) {
                 $timeout(function () {
+                    var global_height = $(document).height() - ($(".navbar-fixed-top").height() + $("#fixed_bar").height());
                     angular.element("#graduation").remove();
-                    angular.element(".timeline-column").height($(document).height());
+                    angular.element(".timeline-column").height(global_height);
                 });
             }
         }
