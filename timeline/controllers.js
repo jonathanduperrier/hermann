@@ -10,13 +10,6 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'ngRoute',
                                          ]);
 
-/*mod_tlv.run(function($rootScope, $timeout) {
-    console.log('starting run');
-    $timeout(function() {
-        console.log('update with timeout fired')
-    }, 3000);
-});*/
-
 mod_tlv.controller('timeLineVisualController', 
 function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epochs, CellType, DeviceType, $routeParams, Experiment, $route) {
     $scope.$route = $route;
