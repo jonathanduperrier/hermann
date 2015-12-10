@@ -37,8 +37,8 @@ mod_animal.controller('ListAnimal', [
           nickname: "",
           weight: "",
           sex: "",
-          birth: new Date(),
-          sacrifice: new Date(),
+          birth: new Date().format("yyyy-mm-dd"),
+          sacrifice: new Date().format("yyyy-mm-dd"),
           supplier: null,
         };
         var edition = false;
