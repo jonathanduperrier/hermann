@@ -29,3 +29,13 @@ mod_exp.factory(
         });
     }
 );
+
+mod_exp.factory( 
+    'Researcher', // Object model
+    function( $resource ){ // , $filter can be added if ngFilter is injected above
+        return $resource( base_url + 'people/researcher/:id', { id:'@eId' },
+        {
+            get: { method: 'GET', params:{ format:'json' }, isArray: false },
+        });
+    }
+);

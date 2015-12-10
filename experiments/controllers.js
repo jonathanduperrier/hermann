@@ -153,11 +153,12 @@ mod_exp.controller('ListExperiment', [
 }]);
 
 mod_exp.controller('AddExperimentController', [
-  '$scope', '$element', 'title', 'default_label', 'close', 'Setup', 'preparations',
-  function($scope, $element, title, default_label, close, Setup, preparations) {
+  '$scope', '$element', 'title', 'default_label', 'close', 'Setup', 'preparations', 'Researcher',
+  function($scope, $element, title, default_label, close, Setup, preparations, Researcher) {
 
   $scope.lstSetup = Setup.get();
   $scope.lstPrep = preparations.get();
+  $scope.lstResearcher = Researcher.get();
 
   $scope.label = default_label;
   $scope.type = null;
