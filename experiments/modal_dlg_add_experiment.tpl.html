@@ -41,7 +41,7 @@
 						  <div class="form-group">
 						  	<label for="researchers" class="col-sm-2 control-label">Researchers : </label>
 						  	<div class="col-sm-10">
-								<select  multiple="multiple" id="id_researchers" name="researchers">
+								<select multiple="true" id="id_researchers" name="researchers" ng-model="selectedResearchers">
 									<option ng-repeat="reasearcher in lstResearcher.objects" value="{{reasearcher.resource_uri}}"> {{reasearcher.user.username}}</option>
 								</select>
 						  	</div>

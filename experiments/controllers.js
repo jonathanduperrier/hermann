@@ -55,7 +55,7 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to create experiment !");
           } else {
-            $scope.createExp(result.label, result.type, result.notes, result.setup, result.preparation);
+            $scope.createExp(result.label, result.type, result.notes, result.setup, result.preparation, result.researchers);
             Experiment.save($scope.expSend, function(value){
               var $dateTL = new Date();
               var $i=0;
@@ -89,7 +89,7 @@ mod_exp.controller('ListExperiment', [
       });
     };
 
-    $scope.createExp = function($label, $type, $notes, $setup, $preparation){
+    $scope.createExp = function($label, $type, $notes, $setup, $preparation, $researchers){
       var $date = new Date();
       var $expSend = {
           label: $label,
@@ -98,7 +98,7 @@ mod_exp.controller('ListExperiment', [
           notes: $notes,
           setup: $setup,
           preparation: $preparation,
-          researchers: [$scope.researcher_uri] // à corriger par l'utilisateur courant
+          researchers: $researchers,
       };
       $scope.expSend = $expSend;
       $scope.experiment.objects.push(
@@ -109,7 +109,7 @@ mod_exp.controller('ListExperiment', [
           notes: $notes,
           setup: $setup,
           preparation: $preparation,
-          researchers: [$scope.researcher_uri], // à corriger par l'utilisateur courant
+          researchers: $researchers,
         }
       );
     };
@@ -128,18 +128,18 @@ mod_exp.controller('ListExperiment', [
           if(result.type == null){
             bootbox.alert("Please choose type to save experiment !");
           } else {
-            $scope.editExperiment($exp_uri, result.label, result.type, result.notes, result.setup, result.preparation);
+            $scope.editExperiment($exp_uri, result.label, result.type, result.notes, result.setup, result.preparation, result.researchers);
 
             var $nCol = $exp_uri.split('/');
             var id_exp = $nCol[2];
-            $scope.jsonNewLabel = '{ "label" : "'+result.label+'", "type": "'+result.type+'", "notes": "'+result.notes+'", "setup": "'+result.setup+'", "preparation": "'+result.preparation+'"}';
+            $scope.jsonNewLabel = '{ "label" : "'+result.label+'", "type": "'+result.type+'", "notes": "'+result.notes+'", "setup": "'+result.setup+'", "preparation": "'+result.preparation+'", "researchers": '+JSON.stringify(result.researchers)+' }';
             Experiment.patch({id:id_exp}, $scope.jsonNewLabel, function(value){});
           }
         });
       });
     };
 
-    $scope.editExperiment = function($exp_uri, $label, $type, $notes, $setup, $preparation){
+    $scope.editExperiment = function($exp_uri, $label, $type, $notes, $setup, $preparation, $researchers){
       angular.forEach($scope.experiment.objects, function(value, key) {
         if(value.resource_uri == $exp_uri){
           $scope.experiment.objects[key].label = $label;
@@ -147,6 +147,7 @@ mod_exp.controller('ListExperiment', [
           $scope.experiment.objects[key].notes = $notes;
           $scope.experiment.objects[key].setup = $setup;
           $scope.experiment.objects[key].preparation = $preparation;
+          $scope.experiment.objects[key].researchers = $researchers;
         }
       });
     };
@@ -188,6 +189,7 @@ mod_exp.controller('AddExperimentController', [
       type: $scope.type,
       notes: $scope.notes,
       setup: $scope.setup,
+      researchers: $scope.selectedResearchers,
       preparation: $scope.preparation
     }, 100); // close, but give 500ms for bootstrap to animate
   };
@@ -205,16 +207,19 @@ mod_exp.controller('AddExperimentController', [
       type: $scope.type,
       notes: $scope.notes,
       setup: $scope.setup,
-      preparation: $scope.preparation
+      researchers: $scope.selectedResearchers,
+      preparation: $scope.preparation,
     }, 100); // close, but give 500ms for bootstrap to animate
   };
 }]);
 
 mod_exp.controller('EditExperimentController', [
-  '$scope', '$routeParams', 'Experiment', 'Setup', 'preparations', '$element', 'exp_uri', 'title', 'close',
-  function($scope, $routeParams, Experiment, Setup, preparations, $element, exp_uri, title, close) {
+  '$scope', '$routeParams', 'Experiment', 'Setup', 'preparations', '$element', 'exp_uri', 'title', 'close', 'Researcher',
+  function($scope, $routeParams, Experiment, Setup, preparations, $element, exp_uri, title, close, Researcher) {
     $scope.lstSetup = Setup.get();
     $scope.lstPrep = preparations.get();
+    $scope.lstResearcher = Researcher.get();
+
     $scope.experiment = Experiment.get( {id: $routeParams.eId}, function(data){
       angular.forEach($scope.experiment.objects, function(value, key) {
         if(value.resource_uri == exp_uri){
@@ -222,12 +227,12 @@ mod_exp.controller('EditExperimentController', [
           $scope.type = value.type;
           $scope.notes = value.notes;
           $scope.setup = value.setup;
+          $scope.selectedResearchers = value.researchers;
           $scope.preparation = value.preparation;
         }
       });
       $scope.title = title;
     });
-
 
   $scope.beforeClose = function() {
     if(($scope.label == "") | ($scope.label == null)) {
@@ -250,6 +255,7 @@ mod_exp.controller('EditExperimentController', [
       type: $scope.type,
       notes: $scope.notes,
       setup: $scope.setup,
+      researchers: $scope.selectedResearchers,
       preparation: $scope.preparation
     }, 100); // close, but give 500ms for bootstrap to animate
   };
@@ -267,6 +273,7 @@ mod_exp.controller('EditExperimentController', [
       type: $scope.type,
       notes: $scope.notes,
       setup: $scope.setup,
+      researchers: $scope.selectedResearchers,
       preparation: $scope.preparation
     }, 100); // close, but give 500ms for bootstrap to animate
   };
