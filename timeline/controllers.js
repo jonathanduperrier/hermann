@@ -437,6 +437,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             });
         } else {
             epochs.put({id:epoch.id}, angular.toJson(epoch), function(){
+                if(epoch.end != null){
+                    epoch.epoch_height = ((new Date(epoch.end)/1e3|0) - (new Date(epoch.start)/1e3|0)) / $scope.scale_coef;
+                }
                 $scope.stopSpin();
             });
         }
