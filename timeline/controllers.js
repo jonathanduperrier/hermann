@@ -470,20 +470,19 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.stopExperiment = function() {
-        //alert("tttt");
         bootbox.confirm( "Do you really want to stop this experiment ?",
-                         function(result){
-                           if(result == true){
-                             $scope.experiment.end = new Date();
-                             $scope.jsonContentExp = angular.toJson($scope.experiment);
-                             Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
-                                 angular.element(".btnAddEvtEpoch button").remove();
-                                 angular.element(".glyphicon-stop").remove();
-                                 angular.element(".resetstarthour").remove();
-                             });
-                           }
-                         }
-                       );
+         function(result){
+           if(result == true){
+             $scope.experiment.end = new Date();
+             $scope.jsonContentExp = angular.toJson($scope.experiment);
+             Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
+                 angular.element(".btnAddEvtEpoch button").remove();
+                 angular.element(".glyphicon-stop").remove();
+                 angular.element(".resetstarthour").remove();
+             });
+           }
+         }
+       );
     };
 
     $scope.showConfirmResetStartHour = function() {
