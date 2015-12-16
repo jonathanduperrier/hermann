@@ -6,7 +6,7 @@ var mod_exp = angular.module( 'hermann.experiments', [
     'ngResource',
     'ngRoute',
     'hermann.people',
-    'ui.bootstrap', 
+    'ui.bootstrap',
     'angularModalService',
     'preparationServices',
     'mod_tlv'
@@ -40,7 +40,17 @@ mod_exp.controller('ListExperiment', [
 
     var default_lab_week = $scope.getWeekNumber(default_lab_date);
 
-    $scope.experiment = Experiment.get();
+    $scope.experiment = Experiment.get({}, function(data){
+      $scope.experiment.objects.forEach( function( experiment ){
+      });
+    });
+    $scope.predicate = 'start';
+    $scope.reverse = false;
+    $scope.order = function(predicate) {
+      $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+      $scope.predicate = predicate;
+    };
+
     $scope.showDlgAddExperiment = function($http, $q){
       ModalService.showModal({
         templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
@@ -165,7 +175,7 @@ mod_exp.controller('AddExperimentController', [
   $scope.notes = null;
   $scope.setup = null;
   $scope.title = title;
-  
+
   //  This close function doesn't need to use jQuery or bootstrap, because
   //  the button has the 'data-dismiss' attribute.
   $scope.beforeClose = function() {
@@ -199,7 +209,7 @@ mod_exp.controller('AddExperimentController', [
 
     //  Manually hide the modal.
     $element.modal('hide');
-    
+
     //  Now call close, returning control to the caller.
     close({
       label: $scope.label,
@@ -265,7 +275,7 @@ mod_exp.controller('EditExperimentController', [
 
     //  Manually hide the modal.
     $element.modal('hide');
-    
+
     //  Now call close, returning control to the caller.
     close({
       label: $scope.label,

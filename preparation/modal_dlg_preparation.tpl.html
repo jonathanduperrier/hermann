@@ -9,7 +9,7 @@
 				      	<form class="form-horizontal" role="form">
 
 						  <div class="form-group">
-						    <label for="animal" class="col-sm-2 control-label">Animal : </label>
+						    <label for="animal" class="col-sm-2 control-label">Animal </label>
 						    <div class="col-sm-10">
   						  	  <select class="form-control" id="animal" name="animal" ng-model="preparation.animal">
 						  	  	<option ng-repeat="animal in lstAnimals.objects" value="{{animal.resource_uri}}" ng-selected="{{prep.resource_uri == preparation}}">{{animal.identifier}}</option>
@@ -17,7 +17,7 @@
 						    </div>
 						  </div>
 						  <div class="form-group">
-						    <label for="type" class="col-sm-2 control-label">Type of preparation : </label>
+						    <label for="type" class="col-sm-2 control-label">Type of preparation </label>
 						    <div class="col-sm-10">
 						      <select class="form-control" id="type" name="type" ng-model="preparation.type">
 						      	<option value="IN-VIVO-INTRA">in vivo intracellular</option>

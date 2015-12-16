@@ -1,6 +1,6 @@
-var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap', 
-                                         'angularModalService', 
-                                         'timeLineServices', 
+var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
+                                         'angularModalService',
+                                         'timeLineServices',
                                          'eventServices',
                                          'epochServices',
                                          'hermann.experiments',
@@ -10,7 +10,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'ngRoute',
                                          ]);
 
-mod_tlv.controller('timeLineVisualController', 
+mod_tlv.controller('timeLineVisualController',
 function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epochs, CellType, DeviceType, $routeParams, Experiment, $route) {
     $scope.$route = $route;
 
@@ -188,7 +188,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             //$scope.stopSpin();
             // get timelines for this experiment only
             $scope.TLExp = timeLine.get(
-                {experiment__id: $scope.experiment.id}, 
+                {experiment__id: $scope.experiment.id},
                 function(data){
                     angular.element(window).spin();
                     $rootScope.spin = 1;
@@ -204,7 +204,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
                         // get events
                         $scope.TLExp.objects[key].events = events.get(
-                            {timeline__id: $scope.TLExp.objects[key].id}, 
+                            {timeline__id: $scope.TLExp.objects[key].id},
                             function(data){
                                 angular.element(window).spin();
                                 $rootScope.spin = 1;
@@ -243,7 +243,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                     } else {
                                         $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = 35;
                                     }
-                                    
+
                                     // check whether event placement is higher than current value
                                     if( $scope.TLExp.objects[key].epochs.objects[key2].vPlacement > $scope.TLExp.objects[key].height){
                                         $scope.TLExp.objects[key].height = $scope.TLExp.objects[key].epochs.objects[key2].vPlacement + $scope.margin_bottom_timeline;
@@ -308,7 +308,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 if(result.del_evt == true){
                     $scope.showConfirmRemoveEvent(result.event);
                 } else{
-                    $scope.manageEvent( timeline, result.event, edition );                    
+                    $scope.manageEvent( timeline, result.event, edition );
                 }
             });
         });
@@ -351,7 +351,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.removeEvent = function(event){
-        angular.element('#event_' + event.id).remove(); 
+        angular.element('#event_' + event.id).remove();
         events.del({id:event.id});
     };
 
@@ -387,7 +387,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             //console.log( $scope.TLExp.objects.indexOf( $scope.depend_choices[timeline.name].timeline ) )
             // get all epochs in parent timeline
             $scope.depend_choices[timeline.name].option_epochs = [];
-            angular.forEach( $scope.TLExp.objects[ $scope.depend_choices[timeline.name].timeline_key ].epochs.objects, 
+            angular.forEach( $scope.TLExp.objects[ $scope.depend_choices[timeline.name].timeline_key ].epochs.objects,
                 function(epc, k) {
                     opt = {
                         text: epc.text,
@@ -460,7 +460,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.removeEpoch = function(epoch){
-        angular.element('#epoch_' + epoch.id).remove(); 
+        angular.element('#epoch_' + epoch.id).remove();
         epochs.del({id:epoch.id});
     };
 
@@ -470,13 +470,20 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.stopExperiment = function() {
-        $scope.experiment.end = new Date();
-        $scope.jsonContentExp = angular.toJson($scope.experiment);
-        Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
-            angular.element(".btnAddEvtEpoch button").remove();
-            angular.element(".glyphicon-stop").remove();
-            angular.element(".resetstarthour").remove();
-        });
+        //alert("tttt");
+        bootbox.confirm( "Do you really want to stop this experiment ?",
+                         function(result){
+                           if(result == true){
+                             $scope.experiment.end = new Date();
+                             $scope.jsonContentExp = angular.toJson($scope.experiment);
+                             Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
+                                 angular.element(".btnAddEvtEpoch button").remove();
+                                 angular.element(".glyphicon-stop").remove();
+                                 angular.element(".resetstarthour").remove();
+                             });
+                           }
+                         }
+                       );
     };
 
     $scope.showConfirmResetStartHour = function() {
@@ -621,8 +628,14 @@ mod_tlv.controller('ManageEpochController', [
     };
 
     $scope.stop = function(){
-        $scope.epoch.end = new Date();
-        $scope.close();
+      bootbox.confirm( "Do you really want to stop this epoch ?",
+        function(result){
+          if(result == true){
+            $scope.epoch.end = new Date();
+            $scope.close();
+          }
+        }
+      );
     };
 
   //  This cancel function must use the bootstrap, 'modal' function because

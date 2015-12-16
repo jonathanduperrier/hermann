@@ -79,7 +79,7 @@
 	background: linear-gradient(to bottom, rgba(255, 255, 0, 1), rgba(255, 0, 0, 0))!important;
 }
 .epoch_close{
-	
+
 }
 .btnDelEvent {
 	float:left;
@@ -107,10 +107,8 @@
 	float:left;
 	zoom: 0.3;
 	-moz-transform: scale(0.3);
-	/*padding:0 0 0 700px;*/
 	position: relative;
-	top:-75px;
-	left:750px;
+	top:-10px;
 }
 .clock .flip-clock-label {
 	/*font-size: 200%;*/
