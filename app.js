@@ -1,4 +1,4 @@
-var base_url = 'http://helm1/';
+var base_url = 'http://127.0.0.1/';
 var app_url = 'http://127.0.0.1:8080/';
 //var base_url = 'https://www.dbunic.cnrs-gif.fr/visiondb/';
 
@@ -20,7 +20,7 @@ mainApp.factory('errorHttpInterceptor', ['$q', function ($q) {
         return {
             responseError: function responseError(rejection) {
                 if (rejection.status === 401 ) {
-                    angular.element(location).attr('href','/#/login');
+                    angular.element(location).attr('href','/app/#/login');
                 }
                 return $q.reject(rejection);
             }
@@ -96,6 +96,9 @@ mainApp.config(['$routeProvider', '$httpProvider',
           when('/protocol/:eID', {
             templateUrl: 'protocol/protocol_detail.tpl.html',
             controller: 'DetailProtocol'
+          }).
+          when('/', {
+            redirectTo: '/login'
           }).
           otherwise({
             redirectTo: '/experiment'
