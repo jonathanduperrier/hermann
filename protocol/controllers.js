@@ -4,15 +4,16 @@ var mod_exp = angular.module( 'hermann.protocol', [
     'ngResource',
     'ngRoute',
     'hermann.people',
-    'ui.bootstrap', 
+    'ui.bootstrap',
     'angularModalService',
     'mod_tlv',
     'protocolServices'
     ]);
 
 mod_exp.controller('ListProtocol', [
-  '$scope', 'protocol' ,'ModalService', 'neuron','timeLine', 'Experiment',
-  function($scope, protocol, ModalService, neuron, timeLine, Experiment) {
+  '$scope', '$rootScope', 'protocol' ,'ModalService', 'neuron','timeLine', 'Experiment',
+  function($scope, $rootScope, protocol, ModalService, neuron, timeLine, Experiment) {
+    $rootScope.page_title = "Protocol";
   	$scope.protocol = protocol.get({}, function(data){
       $scope.protocol.objects.forEach( function( prot ){
         var $neur = prot.neuron.split('/');
@@ -40,7 +41,9 @@ mod_exp.controller('ListProtocol', [
   }
 ]);
 
-mod_exp.controller('DetailProtocol', ['$scope', '$routeParams', 'timeLine', 'neuron', 'protocol', 'Experiment', function($scope, $routeParams, timeLine, neuron, protocol, Experiment){
+mod_exp.controller('DetailProtocol', ['$scope', '$rootScope', '$routeParams', 'timeLine', 'neuron', 'protocol', 'Experiment',
+function($scope, $rootScope, $routeParams, timeLine, neuron, protocol, Experiment){
+  $rootScope.page_title = "Protocol";
   $scope.prot = protocol.get( {id: $routeParams.eID}, function(data){
 
   });

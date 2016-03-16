@@ -13,8 +13,9 @@ var mod_exp = angular.module( 'hermann.experiments', [
     ]);
 
 mod_exp.controller('ListExperiment', [
-  '$scope', 'Experiment' ,'ModalService', 'timeLine', 'preparations',
-  function($scope, Experiment, ModalService, timeLine, preparations, $q){
+  '$scope', '$rootScope', 'Experiment' ,'ModalService', 'timeLine', 'preparations',
+  function($scope, $rootScope, Experiment, ModalService, timeLine, preparations, $q){
+    $rootScope.page_title = "Experiment";
     $scope.timeLineObj = [];
     var nb_create_timeline = 7;
     $scope.nameTimeLines = ['1 Anesthetic', '2 Paralytic', '3 Physiologic', '4 Environment', '5 Electrode', '6 Neuron', '7 Protocol'];
@@ -288,9 +289,9 @@ mod_exp.controller('EditExperimentController', [
   };
 }]);
 
-
-//mod_exp.controller('DetailExperiment', ['$scope', '$routeParams', 'Experiment', 'People', 'Preparation', 'Animal' , function($scope, $routeParams, Experiment, People, Preparation, Animal){
-mod_exp.controller('DetailExperiment', ['$scope', '$routeParams', 'Experiment', 'People', function($scope, $routeParams, Experiment, People, Preparation, Animal){
+mod_exp.controller('DetailExperiment', ['$scope', '$rootScope', '$routeParams', 'Experiment', 'People',
+function($scope, $rootScope, $routeParams, Experiment, People, Preparation, Animal){
+    $rootScope.page_title = "Experiment";
     $scope.experiment = Experiment.get( {id: $routeParams.eId}, function(data){
         // when the exp is available, get researchers, to be expanded with another request
         $scope.researchers = new Array;

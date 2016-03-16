@@ -4,15 +4,16 @@ var mod_exp = angular.module( 'hermann.electrode', [
     'ngResource',
     'ngRoute',
     'hermann.people',
-    'ui.bootstrap', 
+    'ui.bootstrap',
     'angularModalService',
     'mod_tlv',
     'electrodeServices'
     ]);
 
 mod_exp.controller('ListElectrode', [
-  '$scope', 'electrode' ,'ModalService', 'timeLine', 'Experiment',
-  function($scope, electrode, ModalService, timeLine, Experiment) {
+  '$scope', '$rootScope', 'electrode' ,'ModalService', 'timeLine', 'Experiment',
+  function($scope, $rootScope, electrode, ModalService, timeLine, Experiment) {
+    $rootScope.page_title = "Electrode";
   	$scope.electrode = electrode.get({}, function(data){
       $scope.electrode.objects.forEach( function( elec ){
         var $type = elec.type.split('/');
@@ -40,7 +41,9 @@ mod_exp.controller('ListElectrode', [
   }
 ]);
 
-mod_exp.controller('DetailElectrode', ['$scope', '$routeParams', 'timeLine', 'electrode', 'Experiment', function($scope, $routeParams, timeLine, electrode, Experiment){
+mod_exp.controller('DetailElectrode', ['$scope', '$rootScope', '$routeParams', 'timeLine', 'electrode', 'Experiment',
+function($scope, $rootScope, $routeParams, timeLine, electrode, Experiment){
+    $rootScope.page_title = "Electrode";
     $scope.elec = electrode.get( {id: $routeParams.eID}, function(data){
         var $type = $scope.elec.type.split('/');
         $scope.elec.type = $type[3];

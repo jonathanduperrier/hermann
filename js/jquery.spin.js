@@ -1,14 +1,14 @@
 /**
  * jQuery Spin
- * 
+ *
  * Overlays desired DOM element(s) with a spinner, fading out the background.
  * Nothing required other than the script.
- * 
+ *
  * @author Oliver Nassar <onassar@gmail.com>
  */
 
 // preload spinner
-(new Image()).src = '../img/ajax-loader.gif';
+(new Image()).src = '../app/img/ajax-loader.gif';
 
 // let's do this
 (function($){
@@ -29,7 +29,7 @@
                 padding: '10px',
                 backgroundSize: '20px',
                 backgroundColor: '#fff',
-                backgroundImage: 'url(../img/ajax-loader.gif)',
+                backgroundImage: 'url(../app/img/ajax-loader.gif)',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center center',
                 height: '40px',

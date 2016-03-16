@@ -4,7 +4,7 @@ var mod_animal = angular.module( 'hermann.animal', [
     'ngResource',
     'ngRoute',
     'hermann.people',
-    'ui.bootstrap', 
+    'ui.bootstrap',
     'angularModalService',
     'mod_tlv',
     'animalServices',
@@ -21,6 +21,7 @@ mod_animal.controller('ListAnimal', [
       $scope.animal.objects.forEach( function( animal ){
       });
     });
+    $rootScope.page_title = "Animals";
     $scope.predicate = 'identifier';
     $scope.reverse = false;
     $scope.order = function(predicate) {
@@ -60,7 +61,7 @@ mod_animal.controller('ListAnimal', [
               if(result.del_animal == true){
                   $scope.showConfirmRemoveAnimal(result.animal);
               } else{
-                  $scope.manageAnimal( result.animal, edition );                    
+                  $scope.manageAnimal( result.animal, edition );
               }
           });
       });
@@ -88,7 +89,6 @@ mod_animal.controller('ListAnimal', [
       }
       $rootScope.spin = 0;
     };
-
   }
 ]);
 
@@ -108,7 +108,7 @@ mod_animal.controller('ManageAnimalController', [
         }
         else if(!$.isNumeric($scope.animal.weight)){
           $scope.msgAlert = "Weight field must be a number";
-        } 
+        }
         else if($scope.animal.sex == ""){
           $scope.msgAlert = "Sex field is required";
         }

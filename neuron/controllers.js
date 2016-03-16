@@ -4,15 +4,16 @@ var mod_exp = angular.module( 'hermann.neuron', [
     'ngResource',
     'ngRoute',
     'hermann.people',
-    'ui.bootstrap', 
+    'ui.bootstrap',
     'angularModalService',
     'mod_tlv',
     'neuronServices'
     ]);
 
 mod_exp.controller('ListNeuron', [
-  '$scope', 'neuron' ,'ModalService', 'CellType', 'electrode', 'timeLine', 'Experiment',
-  function($scope, neuron, ModalService, CellType, electrode, timeLine, Experiment) {
+  '$scope', '$rootScope', 'neuron' ,'ModalService', 'CellType', 'electrode', 'timeLine', 'Experiment',
+  function($scope, $rootScope, neuron, ModalService, CellType, electrode, timeLine, Experiment) {
+    $rootScope.page_title = "Cells";
   	$scope.neuron = neuron.get({}, function(data){
       $scope.neuron.objects.forEach( function( neur ){
         var $type = neur.type.split('/');
@@ -42,7 +43,9 @@ mod_exp.controller('ListNeuron', [
   }
 ]);
 
-mod_exp.controller('DetailNeuron', ['$scope', '$routeParams', 'timeLine', 'electrode' ,'neuron', 'Experiment', 'CellType', function($scope, $routeParams, timeLine, electrode, neuron, Experiment, CellType){
+mod_exp.controller('DetailNeuron', ['$scope', '$rootScope', '$routeParams', 'timeLine', 'electrode' ,'neuron', 'Experiment', 'CellType',
+function($scope, $rootScope, $routeParams, timeLine, electrode, neuron, Experiment, CellType){
+    $rootScope.page_title = "Cells";
     $scope.neur = neuron.get( {id: $routeParams.eID}, function(data){
         var $type = $scope.neur.type.split('/');
         var $idType = $type[3];

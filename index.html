@@ -46,6 +46,18 @@
         <script type="text/javascript" src="protocol/model.js"></script>
         <script type="text/javascript" src="protocol/controllers.js"></script>
 
+        <script type="text/javascript" src="blocks/model.js"></script>
+        <script type="text/javascript" src="blocks/controllers.js"></script>
+
+        <script type="text/javascript" src="recording/model.js"></script>
+        <script type="text/javascript" src="recording/controllers.js"></script>
+
+        <script type="text/javascript" src="files/model.js"></script>
+        <script type="text/javascript" src="files/controllers.js"></script>
+
+        <script type="text/javascript" src="images/model.js"></script>
+        <script type="text/javascript" src="images/controllers.js"></script>
+
         <script type="text/javascript" src="app.js"></script>
 
         <link rel="stylesheet" href="css/bootstrap.css">
@@ -57,7 +69,8 @@
     </head>
     <body ng-app="mainApp">
         <div class="navbar navbar-inverse navbar-fixed-top">
-            <span class="navbar-brand" href="#"><strong>H</strong></span>
+            <!--<span class="navbar-brand" href="#"><strong>H</strong></span>-->
+            <span class="navbar-brand" href="#"><strong>{{page_title}}</strong></span>
             <ul class="nav navbar-nav" ng-show="showLogout">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Experiments data <span class="caret"></span></a>
@@ -73,6 +86,20 @@
                         <li><a ng-click="" href="#/electrode_list">Electrode</a></li>
                         <li><a ng-click="" href="#/neuron_list">Cells</a></li>
                         <li><a ng-click="" href="#/protocol_list">Protocol</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Recordings <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="" href="#/blocks_list">Blocks</a></li>
+                        <li><a ng-click="" href="#/recording_list">Recording</a></li>
+                        <li><a ng-click="" href="#/files_list">Files</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Analysis <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="" href="#/images_list">Images</a></li>
                     </ul>
                 </li>
             </ul>

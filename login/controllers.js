@@ -8,6 +8,7 @@ var mod_login = angular.module( 'hermann.login', [
 /* Login Controllers */
 
 mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope', 'Login', 'People' , function( $scope, $http, $location, $rootScope, Login, People ){
+    $rootScope.page_title = "Login";
     // set focus on username
     document.getElementById('username').focus();
     // the controller declares a function used onclick submit
