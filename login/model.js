@@ -9,13 +9,14 @@ mod_login.config(['$resourceProvider', function($resourceProvider) {
   $resourceProvider.defaults.stripTrailingSlashes = false;
 }]);
 
-mod_login.factory( 
+mod_login.factory(
     'Login', // Object model
-    function( $resource, $rootScope, $http, $location ){ // , $filter can be added if ngFilter is injected above
+    function( $resource, $rootScope, $http, $location, $cookieStore ){ // , $filter can be added if ngFilter is injected above
         // define 'Logout' function
         $rootScope.showLogout = false;
         $rootScope.removeAuthorization = function(){
             //remove default
+            $cookieStore.remove('username');
             $rootScope.showLogout = false;
             $http.defaults.headers.common['Authorization'] = null;
             $location.path( '/login' );

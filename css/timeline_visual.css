@@ -1,14 +1,14 @@
 @media (max-width: 769px) {
-	body {
-		overflow : scroll!important;
-		padding-top: 220px;
-	}
+  body {
+    overflow : scroll!important;
+    padding-top: 220px;
+  }
 }
 @media (min-width: 770px) {
-	body {
-		overflow : scroll!important;
-		padding-top: 70px;
-	}
+  body {
+    overflow : scroll!important;
+    padding-top: 70px;
+  }
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
@@ -16,109 +16,119 @@
   src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
 .sortorder:after {
-	content: '\25b2';
+  content: '\25b2';
 }
 .sortorder.reverse:after {
-	content: '\25bc';
+  content: '\25bc';
 }
 #buttons_zoom_stop_bar {
-	position: relative;
-	top: 5px;
-	left: 5px;
-	/*width: 200px;*/
+  position: relative;
+  top: 5px;
+  left: 5px;
+  /*width: 200px;*/
 }
 .group_line {
-	/*margin-top:10px;*/
+  /*margin-top:10px;*/
 }
 #graduation {
-	width: 150px;
-	min-height: 100%;
-	margin: 0;
-	padding: 0;
-	border-radius: 0px;
-	position: relative;
+  width: 150px;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: 0px;
+  position: relative;
 }
 #date_beginning_exp {
-	border: 1px solid #000000;
-	border-radius: 5px;
-	background-color: #dcdcdc;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  background-color: #dcdcdc;
 }
 .timeline-column {
-	width : 150px;
-	height: 100%;
-	float : left;
-	border-radius: 10px;
-	margin: 0 3px 0 3px;
-	font-size: 10px;
-	position: relative;
-	top: 0px;
+  width : 150px;
+  height: 100%;
+  float : left;
+  border-radius: 10px;
+  margin: 0 3px 0 3px;
+  font-size: 10px;
+  position: relative;
+  top: 0px;
 }
 .TL_top_bar {
-	width : 150px;
-	border-radius: 10px;
-    position: relative;
-    top:0px;
+  width : 150px;
+  border-radius: 10px;
+  position: relative;
+  top:0px;
 }
 .timeline-column .btnAddEvent {
-	margin: 5px;
+  margin: 5px;
+	overflow:auto;
 }
 .timeline_name {
-	font-weight: bold;
-	font-size:11px;
+  font-weight: bold;
+  font-size:11px;
 }
 .event, .epoch {
-    margin-left: 5px;
-    margin-right: 5px;
-	width : 140px;
-	border-radius: 5px;
-	position: absolute;
-	transform-origin: 0 0;
+  margin-left: 5px;
+  margin-right: 5px;
+  width : 140px;
+  border-radius: 5px;
+  position: absolute;
+  transform-origin: 0 0;
+}
+.event {
+	width:70px;
+	float:left;
+}
+.epoch{
+	width:70px;
+	float:right;
+	margin-left: 75px;
 }
 .epoch_open{
-	border: 0px!important;
-	background: linear-gradient(to bottom, rgba(255, 255, 0, 1), rgba(255, 0, 0, 0))!important;
+  border: 0px!important;
+  background: linear-gradient(to bottom, rgba(255, 255, 0, 1), rgba(255, 0, 0, 0))!important;
 }
 .epoch_close{
 
 }
 .btnDelEvent {
-	float:left;
+  float:left;
 }
 .dateTypeEvent {
-	float:left;
-	margin-left:5px;
-	font-weight: bold;
+  float:left;
+  margin-left:5px;
+  font-weight: bold;
 }
 .textEvent {
-	float:left;
-	width: 109px;
-	margin-left:30px;
-	margin-top:-10px;
+  float:left;
+  width: 109px;
+  margin-left:5px;
+  margin-top:-5px;
 }
 .textEventLeft {
-	float:left;
-	min-width: 139px;
-	display: none;
+  float:left;
+  min-width: 139px;
+  display: none;
 }
 .glyphicon-stop {
-	color:red;
+  color:red;
 }
 .clock {
-	float:left;
-	zoom: 0.3;
-	-moz-transform: scale(0.3);
-	position: relative;
-	top:-10px;
+  float:left;
+  zoom: 0.3;
+  -moz-transform: scale(0.3);
+  position: relative;
+  top:-10px;
 }
 .clock .flip-clock-label {
-	/*font-size: 200%;*/
-	display:none;
+  /*font-size: 200%;*/
+  display:none;
 }
 #fixed_bar {
-	background-color: #ffffff;
-	position: fixed;
-	height: 40px;
-	top:50px;
-	width: 100%;
-	z-index: 1000;
+  background-color: #ffffff;
+  position: fixed;
+  height: 40px;
+  top:50px;
+  width: 100%;
+  z-index: 1000;
 }

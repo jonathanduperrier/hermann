@@ -15,23 +15,23 @@
 		<div style="position:fixed; top:90px; background-color:{{tl.color}}; z-index: 1000; border-radius: 10px; width:150px">
 			<div class="btn-group btn-group-xs btnAddEvent btnAddEvtEpoch">
 				<button ng-click="showDlgEvent(tl, null)" class="btn btn-default" ng-if='dateEndExp == ""'>
-					<span class="glyphicon glyphicon-plus-sign"></span>
+					<span class="glyphicon glyphicon-resize-horizontal"></span>
 				</button>
 			</div>
 			<span class="timeline_name">{{tl.name}}</span>
 
 			<div class="btn-group btn-group-xs btnAddEvtEpoch">
 				<button ng-click="showDlgEpoch(tl, null)" class="btn btn-default" ng-if='dateEndExp == ""'>
-					<span class="glyphicon glyphicon-plus"></span>
+					<span class="glyphicon glyphicon-resize-vertical"></span>
 				</button>
 			</div>
 		</div>
-	
+
 		<div event-dir></div>
 		<div epoch-dir></div>
 	</div>
 </div>
 
   <div class="form-group" id="error_val_type" style="display:none;">
-  	<p>Select Type value before validate</p> 
+  	<p>Select Type value before validate</p>
   </div>

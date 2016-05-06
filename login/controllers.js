@@ -7,10 +7,14 @@ var mod_login = angular.module( 'hermann.login', [
 
 /* Login Controllers */
 
-mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope', 'Login', 'People' , function( $scope, $http, $location, $rootScope, Login, People ){
+mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope', 'Login', 'People', '$cookieStore' , function( $scope, $http, $location, $rootScope, Login, People, $cookieStore ){
     $rootScope.page_title = "Login";
     // set focus on username
     document.getElementById('username').focus();
+    //remove cookie
+    $cookieStore.remove("username");
+    $cookieStore.remove("userpass64");
+
     // the controller declares a function used onclick submit
     $scope.submitLogin = function(){
         // retrieve login form data
@@ -18,6 +22,7 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
         var password = $scope.password;
         // encode base64
         var userpass64 = btoa( username+':'+password );
+
         // assign default Authorization header
         $http.defaults.headers.common['Authorization'] = "Basic " + userpass64;
         // send message to check
@@ -28,6 +33,8 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
             if( headers('content-type').search('json') > 0 ){
                 $rootScope.showLogout = true;
                 $rootScope.username = username;
+                $cookieStore.put("username", username);
+                $cookieStore.put("userpass64", userpass64);
                 $location.path( '/experiment' );
             }
         },
@@ -66,5 +73,4 @@ mod_login.controller('LoginForm', ['$scope', '$http', '$location', '$rootScope',
             //alert( 'func:'+$rootScope.users.length);
         });
     };
-
 }]);

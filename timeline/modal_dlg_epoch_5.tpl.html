@@ -1,0 +1,87 @@
+				<div class="modal fade">
+				  <div class="modal-dialog modal-lg">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" ng-click="" data-dismiss="modal" aria-hidden="true">&times;</button>
+				        <h4 class="modal-title">{{title}}</h4>
+				      </div>
+				      <div class="modal-body">
+						<form class="form-horizontal" role="form">
+						  <div class="form-group">
+						    <label for="text" class="col-sm-2 control-label">Quantity/Speed : </label>
+						    <div class="col-sm-10">
+						      <input type="text" class="form-control" id="text" name="text" placeholder="name ..." ng-model="epoch.text">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="type" class="col-sm-2 control-label">Type : </label>
+						    <div class="col-sm-10">
+						    	<select class="form-control" id="type" name="type" placeholder="type ..." ng-model="epoch.type">
+						    		<option ng-repeat="l in list_selection" ng-selected="{{l==epoch.type}}" value="{{l}}">{{l}}</option>
+								</select>
+						    </div>
+						  </div>
+						  <div class="form-group" ng-if="depend_selection!=undefined">
+						    <label for="type" class="col-sm-2 control-label">Parent : </label>
+						    <div class="col-sm-10">
+						    	<select class="form-control" id="type" name="type" placeholder="type ..." ng-model="epoch.depend">
+						    		<option ng-repeat="l in depend_selection.option_epochs" value="{{l.resource_uri}}">{{l.text}}</option>
+								</select>
+						    </div>
+						  </div>
+							<div class="form-group">
+						    <label for="descent" class="col-sm-2 control-label">Descent : </label>
+						    <div class="col-sm-10">
+									<input type="descent" class="form-control" id="descent" name="descent" placeholder="descent ..." ng-model="epoch.descent">
+						    </div>
+						  </div>
+							<div class="form-group">
+						    <label for="resistance" class="col-sm-2 control-label">Resistance : </label>
+						    <div class="col-sm-10">
+									<input type="resistance" class="form-control" id="resistance" name="resistance" placeholder="resistance ..." ng-model="epoch.resistance">
+						    </div>
+						  </div>
+							<div class="form-group">
+						    <label for="zero_set_point" class="col-sm-2 control-label">Zero set-point : </label>
+						    <div class="col-sm-10">
+									<input type="zero_set_point" class="form-control" id="zero_set_point" name="zero_set_point" placeholder="zero_set_point ..." ng-model="epoch.zero_set_point">
+						    </div>
+						  </div>
+							<div class="form-group">
+						    <label for="hemisphere" class="col-sm-2 control-label">Hemisphere : </label>
+						    <div class="col-sm-10">
+									<select class="form-control" id="hemisphere" name="hemisphere" placeholder="hemisphere ..." ng-model="epoch.hemisphere">
+										<option value="L" selected>L</option>
+										<option value="R">R</option>
+									</select>
+						    </div>
+						  </div>
+							<div class="form-group">
+						    <label for="craniotomy" class="col-sm-2 control-label">Craniotomy : </label>
+						    <div class="col-sm-10">
+									<select class="form-control" id="hemisphere" name="hemisphere" placeholder="hemisphere ..." ng-model="epoch.craniotomy">
+										<option value="0" selected>0</option>
+										<option value="1">1</option>
+										<option value="3">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+									</select>
+						    </div>
+						  </div>
+						</form>
+						<span style="color:red;">{{msgAlert}}</span>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" ng-click="beforeClose()" class="btn btn-primary">OK</button>
+				        <button type="button" ng-click="delete()" class="btn btn-danger" ng-if="edition==true">Delete</button>
+				        <button type="button" ng-click="stop()" class="btn btn-danger" ng-if="(edition==true)&&(epoch.end==null)">STOP</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>

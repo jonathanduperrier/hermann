@@ -13,8 +13,8 @@ var mod_exp = angular.module( 'hermann.experiments', [
     ]);
 
 mod_exp.controller('ListExperiment', [
-  '$scope', '$rootScope', 'Experiment' ,'ModalService', 'timeLine', 'preparations',
-  function($scope, $rootScope, Experiment, ModalService, timeLine, preparations, $q){
+  '$scope', '$rootScope', 'Experiment' ,'ModalService', 'timeLine', 'preparations', '$location',
+  function($scope, $rootScope, Experiment, ModalService, timeLine, preparations, $q, $location){
     $rootScope.page_title = "Experiment";
     $scope.timeLineObj = [];
     var nb_create_timeline = 7;
@@ -46,13 +46,13 @@ mod_exp.controller('ListExperiment', [
       });
     });
     $scope.predicate = 'start';
-    $scope.reverse = false;
+    $scope.reverse = true;
     $scope.order = function(predicate) {
       $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
       $scope.predicate = predicate;
     };
 
-    $scope.showDlgAddExperiment = function($http, $q){
+    $scope.showDlgAddExperiment = function($http, $q, $location){
       ModalService.showModal({
         templateUrl: "experiments/modal_dlg_add_experiment.tpl.html",
         controller: "AddExperimentController",
@@ -89,6 +89,7 @@ mod_exp.controller('ListExperiment', [
                   if($i==nb_create_timeline){
                     $scope.experiment = Experiment.get();//reload experiments
                   }
+                  angular.element(location).attr('href','/app/#/timeline'+$scope.resource_uri);
                 });
                 setTimeout(function(){ angular.element(window).spin(); }, 3500);
                 $i++;

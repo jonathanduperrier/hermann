@@ -3,6 +3,7 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          'timeLineServices',
                                          'eventServices',
                                          'epochServices',
+                                         'DeviceItemService',
                                          'hermann.experiments',
                                          'CellTypeService',
                                          'DeviceTypeService',
@@ -11,13 +12,13 @@ var mod_tlv = angular.module('mod_tlv', ['ui.bootstrap',
                                          ]);
 
 mod_tlv.controller('timeLineVisualController',
-function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epochs, CellType, DeviceType, $routeParams, Experiment, $route) {
+function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, events, epochs, CellType, DeviceType, $routeParams, Experiment, $route, DeviceItems) {
     $scope.$route = $route;
 
     $scope.idExp = 0;
     $scope.dateStartExp = "";
     $scope.dateEndExp = "";
-    $scope.heightMinEpoch = 35;
+    $scope.min_epoch_height = 20;
     $rootScope.spin = 0;
 
     $scope.margin_bottom_timeline = 150;
@@ -240,8 +241,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                     if($scope.TLExp.objects[key].epochs.objects[key2].end != null){
                                         timeStampEpochEnd = $scope.TLExp.objects[key].epochs.objects[key2].end.valueOf();
                                         $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = ((new Date(timeStampEpochEnd)/1e3|0) - (new Date(timeStampEpoch)/1e3|0)) / $scope.scale_coef;
+                                        if($scope.TLExp.objects[key].epochs.objects[key2].epoch_height < $scope.min_epoch_height){
+                                          $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = $scope.min_epoch_height;
+                                        }
                                     } else {
-                                        $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = 35;
+                                        var current_timeline_height = $( "#timeline_"+$scope.TLExp.objects[key].id ).height();
+                                        $scope.TLExp.objects[key].epochs.objects[key2].epoch_height = current_timeline_height - $scope.TLExp.objects[key].epochs.objects[key2].vPlacement;
                                     }
 
                                     // check whether event placement is higher than current value
@@ -249,6 +254,9 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                                         $scope.TLExp.objects[key].height = $scope.TLExp.objects[key].epochs.objects[key2].vPlacement + $scope.margin_bottom_timeline;
                                         //$scope.TLExp.objects[key].height = $( document ).height();
                                     }
+                                });
+                                $scope.TLExp.objects[key].DeviceItems = DeviceItems.get({timeline__id: $scope.TLExp.objects[key].id},function(value3, key3){
+                                  //console.log($scope.TLExp.objects[key].DeviceItems.objects);
                                 });
                             }
                         );
@@ -270,6 +278,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     //show dialog add event
     $scope.showDlgEvent = function( timeline, event ){
         // if we are creating an event, we initialize it here
+        var tln = timeline.name.split(' ');
         if( event == null ){
             // ADD
             dateStartExp = $scope.experiment.start.valueOf();
@@ -286,16 +295,22 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
             };
             // template add
             edition = false;
+            var title_event = "Event "+tln[1];
         } else {
             // EDIT
             edition = true;
+            var currentDate = new Date();
+            var startDate  = new Date(event.date);
+            var diff = new Date(currentDate.getTime() - startDate.getTime());
+            var title_event = "Event "+tln[1]+" - "+startDate.format('dd/mm/yyyy - HH:MM')+" -   "+diff.format('dd / HH:MM');
         }
 
+        //define controller in terms of timeline.name
         ModalService.showModal({
-            templateUrl: "timeline/modal_dlg_event.tpl.html",
-            controller: "ManageEventController",
+            templateUrl: "timeline/modal_dlg_event_"+tln[0]+".tpl.html",
+            controller: "ManageEventController_"+tln[0],
             inputs: {
-                title: "Event information",
+                title: title_event,
                 config_defaults: $scope.config_defaults,
                 config_choices: $scope.config_choices,
                 timeline_name: timeline.name,
@@ -357,6 +372,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
 
     //show dialog add epoch
     $scope.showDlgEpoch = function(timeline, epoch){
+        var tln = timeline.name.split(' ');
         // check new epoch
         if( epoch == null ){
             // ADD
@@ -375,9 +391,14 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 depend : null,
             }
             edition = false;
+            var title_epoch = "Epoch "+tln[1];
         } else {
             // EDIT
             edition = true;
+            var currentDate = new Date();
+            var startDate  = new Date(epoch.start);
+            var diff = new Date(currentDate.getTime() - startDate.getTime());
+            var title_epoch = "Epoch "+tln[1]+" - "+startDate.format('dd/mm/yyyy - HH:MM')+" -   "+diff.format('dd / HH:MM');
         }
 
         // set dependencies
@@ -398,12 +419,12 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 }
             );
         }
-
+        //define controller in terms of timeline.name
         ModalService.showModal({
-            templateUrl: "timeline/modal_dlg_epoch.tpl.html",
-            controller: "ManageEpochController",
+            templateUrl: "timeline/modal_dlg_epoch_"+tln[0]+".tpl.html",
+            controller: "ManageEpochController_"+tln[0],
             inputs: {
-                title: "Epoch information",
+                title: title_epoch,
                 depend_choices: $scope.depend_choices,
                 config_choices: $scope.config_choices,
                 timeline_name: timeline.name,
@@ -416,7 +437,7 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 if(result.del_epoch == true){
                     $scope.showConfirmRemoveEpoch(result.epoch);
                 } else {
-                    $scope.manageEpoch( timeline, result.epoch, edition );
+                    $scope.manageEpoch( timeline, result.epoch, edition, DeviceItems );
                 }
             });
         });
@@ -435,13 +456,31 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
                 $scope.TLExp.objects[timeline.key].height = epoch.vPlacement + $scope.margin_bottom_timeline;
                 $scope.stopSpin();
             });
+          if(timeline.name == "5 Electrode"){
+            DeviceItem = {
+                label : "e",
+                descent : epoch.descent,
+                resistance : epoch.resistance,
+                zero_set_point : epoch.zero_set_point,
+                hemisphere : epoch.hemisphere,
+                craniotomy : epoch.craniotomy,
+            }
+            DeviceItems.post(DeviceItem, function(data){
+              $scope.stopSpin();
+            });
+          }
         } else {
             epochs.put({id:epoch.id}, angular.toJson(epoch), function(){
                 if(epoch.end != null){
                     epoch.epoch_height = ((new Date(epoch.end)/1e3|0) - (new Date(epoch.start)/1e3|0)) / $scope.scale_coef;
+                    if(epoch.epoch_height < $scope.min_epoch_height){
+                      epoch.epoch_height = $scope.min_epoch_height;
+                    }
                 }
                 $scope.stopSpin();
             });
+            if(timeline.name == "5 Electrode"){
+            }
         }
     };
 
@@ -470,19 +509,23 @@ function ($scope, $rootScope, $compile, ModalService, $http, $q, timeLine, event
     };
 
     $scope.stopExperiment = function() {
-        bootbox.confirm( "Do you really want to stop this experiment ?",
-         function(result){
-           if(result == true){
-             $scope.experiment.end = new Date();
-             $scope.jsonContentExp = angular.toJson($scope.experiment);
-             Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
-                 angular.element(".btnAddEvtEpoch button").remove();
-                 angular.element(".glyphicon-stop").remove();
-                 angular.element(".resetstarthour").remove();
-             });
-           }
-         }
-       );
+      ModalService.showModal({
+          templateUrl: 'timeline/modal_confirm_stop_exp.tpl.html',
+          controller: "ModalController"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+              if (result=="Yes") {
+                $scope.experiment.end = new Date();
+                $scope.jsonContentExp = angular.toJson($scope.experiment);
+                Experiment.put({id:$scope.experiment.id}, $scope.jsonContentExp, function(){
+                    angular.element(".btnAddEvtEpoch button").remove();
+                    angular.element(".glyphicon-stop").remove();
+                    angular.element(".resetstarthour").remove();
+                });
+              }
+          });
+      });
     };
 
     $scope.showConfirmResetStartHour = function() {
@@ -548,7 +591,7 @@ mod_tlv.directive('onFinishRender', function ($timeout) {
 });
 
 
-mod_tlv.controller('ManageEventController', [
+mod_tlv.controller('ManageEventController_1', [
     '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
     function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
 
@@ -593,7 +636,277 @@ mod_tlv.controller('ManageEventController', [
     };
 }]);
 
-mod_tlv.controller('ManageEpochController', [
+mod_tlv.controller('ManageEventController_2', [
+    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
+    function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
+
+    $scope.event = event;
+    $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_evt = false;
+
+    $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        event.date = new Date($scope.event.date);
+        if($scope.event.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_evt = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            event: $scope.event,
+            del_evt: $scope.del_evt,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    //  This cancel function must use the bootstrap, 'modal' function because
+    //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+        //  Manually hide the modal.
+        $element.modal('hide');
+        //  Now call close, returning control to the caller.
+        close({
+            event: $scope.event,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEventController_3', [
+    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
+    function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
+
+    $scope.event = event;
+    $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_evt = false;
+
+    $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        event.date = new Date($scope.event.date);
+        if($scope.event.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_evt = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            event: $scope.event,
+            del_evt: $scope.del_evt,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    //  This cancel function must use the bootstrap, 'modal' function because
+    //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+        //  Manually hide the modal.
+        $element.modal('hide');
+        //  Now call close, returning control to the caller.
+        close({
+            event: $scope.event,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEventController_4', [
+    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
+    function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
+
+    $scope.event = event;
+    $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_evt = false;
+
+    $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        event.date = new Date($scope.event.date);
+        if($scope.event.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_evt = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            event: $scope.event,
+            del_evt: $scope.del_evt,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    //  This cancel function must use the bootstrap, 'modal' function because
+    //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+        //  Manually hide the modal.
+        $element.modal('hide');
+        //  Now call close, returning control to the caller.
+        close({
+            event: $scope.event,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEventController_5', [
+    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
+    function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
+
+    $scope.event = event;
+    $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_evt = false;
+
+    $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        event.date = new Date($scope.event.date);
+        if($scope.event.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_evt = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            event: $scope.event,
+            del_evt: $scope.del_evt,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    //  This cancel function must use the bootstrap, 'modal' function because
+    //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+        //  Manually hide the modal.
+        $element.modal('hide');
+        //  Now call close, returning control to the caller.
+        close({
+            event: $scope.event,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEventController_6', [
+    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
+    function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
+
+    $scope.event = event;
+    $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_evt = false;
+
+    $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        event.date = new Date($scope.event.date);
+        if($scope.event.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_evt = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            event: $scope.event,
+            del_evt: $scope.del_evt,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    //  This cancel function must use the bootstrap, 'modal' function because
+    //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+        //  Manually hide the modal.
+        $element.modal('hide');
+        //  Now call close, returning control to the caller.
+        close({
+            event: $scope.event,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEventController_7', [
+    '$scope', '$element', 'title', 'close', 'config_choices', 'timeline_name', 'edition', 'event',
+    function($scope, $element, title, close, config_choices, timeline_name, edition, event) {
+
+    $scope.event = event;
+    $scope.event.date = new Date(event.date).format("yyyy/mm/dd HH:MM");
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_evt = false;
+
+    $scope.beforeClose = function() {
+        //console.log($scope.dateFormat);
+        event.date = new Date($scope.event.date);
+        if($scope.event.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_evt = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            event: $scope.event,
+            del_evt: $scope.del_evt,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    //  This cancel function must use the bootstrap, 'modal' function because
+    //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+        //  Manually hide the modal.
+        $element.modal('hide');
+        //  Now call close, returning control to the caller.
+        close({
+            event: $scope.event,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEpochController_1', [
     '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
     function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
 
@@ -648,6 +961,343 @@ mod_tlv.controller('ManageEpochController', [
         }, 100); // close, but give 500ms for bootstrap to animate
     };
 }]);
+
+mod_tlv.controller('ManageEpochController_2', [
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
+
+    $scope.epoch = epoch;
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.depend_selection = depend_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_epoch = false;
+
+    $scope.beforeClose = function() {
+        if($scope.epoch.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else if(($scope.epoch.depend == null) && ((timeline_name == "6 Neuron") || (timeline_name == "7 Protocol"))) {
+            $scope.msgAlert = "Parent field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_epoch = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            epoch: $scope.epoch,
+            del_epoch: $scope.del_epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    $scope.stop = function(){
+      bootbox.confirm( "Do you really want to stop this epoch ?",
+        function(result){
+          if(result == true){
+            $scope.epoch.end = new Date();
+            $scope.close();
+          }
+        }
+      );
+    };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+        close({
+            epoch: $scope.epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEpochController_3', [
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
+
+    $scope.epoch = epoch;
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.depend_selection = depend_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_epoch = false;
+
+    $scope.beforeClose = function() {
+        if($scope.epoch.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else if(($scope.epoch.depend == null) && ((timeline_name == "6 Neuron") || (timeline_name == "7 Protocol"))) {
+            $scope.msgAlert = "Parent field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_epoch = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            epoch: $scope.epoch,
+            del_epoch: $scope.del_epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    $scope.stop = function(){
+      bootbox.confirm( "Do you really want to stop this epoch ?",
+        function(result){
+          if(result == true){
+            $scope.epoch.end = new Date();
+            $scope.close();
+          }
+        }
+      );
+    };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+        close({
+            epoch: $scope.epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEpochController_4', [
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
+
+    $scope.epoch = epoch;
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.depend_selection = depend_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_epoch = false;
+
+    $scope.beforeClose = function() {
+        if($scope.epoch.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else if(($scope.epoch.depend == null) && ((timeline_name == "6 Neuron") || (timeline_name == "7 Protocol"))) {
+            $scope.msgAlert = "Parent field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_epoch = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            epoch: $scope.epoch,
+            del_epoch: $scope.del_epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    $scope.stop = function(){
+      bootbox.confirm( "Do you really want to stop this epoch ?",
+        function(result){
+          if(result == true){
+            $scope.epoch.end = new Date();
+            $scope.close();
+          }
+        }
+      );
+    };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+        close({
+            epoch: $scope.epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEpochController_5', [
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
+
+    $scope.epoch = epoch;
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.depend_selection = depend_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_epoch = false;
+
+    $scope.beforeClose = function() {
+        if($scope.epoch.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else if(($scope.epoch.depend == null) && ((timeline_name == "6 Neuron") || (timeline_name == "7 Protocol"))) {
+            $scope.msgAlert = "Parent field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_epoch = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            epoch: $scope.epoch,
+            del_epoch: $scope.del_epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    $scope.stop = function(){
+      bootbox.confirm( "Do you really want to stop this epoch ?",
+        function(result){
+          if(result == true){
+            $scope.epoch.end = new Date();
+            $scope.close();
+          }
+        }
+      );
+    };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+        close({
+            epoch: $scope.epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEpochController_6', [
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
+
+    $scope.epoch = epoch;
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.depend_selection = depend_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_epoch = false;
+
+    $scope.beforeClose = function() {
+        if($scope.epoch.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else if(($scope.epoch.depend == null) && ((timeline_name == "6 Neuron") || (timeline_name == "7 Protocol"))) {
+            $scope.msgAlert = "Parent field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_epoch = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            epoch: $scope.epoch,
+            del_epoch: $scope.del_epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    $scope.stop = function(){
+      bootbox.confirm( "Do you really want to stop this epoch ?",
+        function(result){
+          if(result == true){
+            $scope.epoch.end = new Date();
+            $scope.close();
+          }
+        }
+      );
+    };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+        close({
+            epoch: $scope.epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
+mod_tlv.controller('ManageEpochController_7', [
+    '$scope', '$element', 'title', 'close', 'depend_choices', 'config_choices', 'timeline_name', 'edition', 'epoch',
+    function($scope, $element, title, close, depend_choices, config_choices, timeline_name, edition, epoch) {
+
+    $scope.epoch = epoch;
+    $scope.title = title;
+    $scope.list_selection = config_choices[timeline_name];
+    $scope.depend_selection = depend_choices[timeline_name];
+    $scope.edition = edition;
+    $scope.del_epoch = false;
+
+    $scope.beforeClose = function() {
+        if($scope.epoch.text == ""){
+            $scope.msgAlert = "Text field is required";
+        } else if(($scope.epoch.depend == null) && ((timeline_name == "6 Neuron") || (timeline_name == "7 Protocol"))) {
+            $scope.msgAlert = "Parent field is required";
+        } else {
+            $scope.close();
+        }
+    };
+
+    $scope.delete = function(){
+        $scope.del_epoch = true;
+        $scope.close();
+    };
+
+    $scope.close = function() {
+        close({
+            epoch: $scope.epoch,
+            del_epoch: $scope.del_epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+
+    $scope.stop = function(){
+      bootbox.confirm( "Do you really want to stop this epoch ?",
+        function(result){
+          if(result == true){
+            $scope.epoch.end = new Date();
+            $scope.close();
+          }
+        }
+      );
+    };
+
+  //  This cancel function must use the bootstrap, 'modal' function because
+  //  the doesn't have the 'data-dismiss' attribute.
+    $scope.cancel = function() {
+    //  Manually hide the modal.
+    $element.modal('hide');
+    //  Now call close, returning control to the caller.
+        close({
+            epoch: $scope.epoch,
+        }, 100); // close, but give 500ms for bootstrap to animate
+    };
+}]);
+
 
 mod_tlv.controller('ModalController', function($scope, close) {
   $scope.close = function(result) {

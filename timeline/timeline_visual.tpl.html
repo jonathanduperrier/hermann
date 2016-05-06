@@ -4,20 +4,20 @@
             <div id="fixed_bar">
               <div class="clock" ng-if='dateEndExp == ""'></div>
 
-                <div id="buttons_zoom_stop_bar">
-                    <!--<div class="btn-group btn-group-xs btnAddEvent">
-                        <button ng-click="displayZoomEvent(1)" class="btn btn-default">M</button>
-                        <button ng-click="displayZoomEvent(60)" class="btn btn-default">H</button>
-                        <button ng-click="displayZoomEvent(3600)" class="btn btn-default">D</button>
-                    </div>-->
-                    <div class="btn-group btn-group-xs btnAddEvent">
-                        <button ng-click="stopExperiment()" class="btn btn-default glyphicon glyphicon-stop" ng-if='dateEndExp == ""'></button>
-                    </div>
-                    <div class="btn-group btn-group-xs btnAddEvent">
-                        <button ng-click="showConfirmResetStartHour()" class="btn btn-default resetstarthour" ng-if='dateEndExp == ""'>Reset start hour</button>
-                    </div>
-                    <span ng-if='dateEndExp != ""'>Experiment ended on {{dateEndExp}}</span>
-                </div>
+              <div id="buttons_zoom_stop_bar">
+                  <!--<div class="btn-group btn-group-xs btnAddEvent">
+                      <button ng-click="displayZoomEvent(1)" class="btn btn-default">M</button>
+                      <button ng-click="displayZoomEvent(60)" class="btn btn-default">H</button>
+                      <button ng-click="displayZoomEvent(3600)" class="btn btn-default">D</button>
+                  </div>-->
+                  <div class="btn-group btn-group-xs btnAddEvent">
+                      <button ng-click="stopExperiment()" class="btn btn-default glyphicon glyphicon-stop" ng-if='dateEndExp == ""'></button>
+                  </div>
+                  <div class="btn-group btn-group-xs btnAddEvent">
+                      <button ng-click="showConfirmResetStartHour()" class="btn btn-default resetstarthour" ng-if='dateEndExp == ""'>Reset start hour</button>
+                  </div>
+                  <span ng-if='dateEndExp != ""'>Experiment ended on {{dateEndExp}}</span>
+              </div>
 
             </div>
 
